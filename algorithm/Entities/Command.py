@@ -1,10 +1,10 @@
 import math
-import settings
+import algorithm.settings
 
 class Command:
     def __init__(self, time):
         self.time = time
-        self.ticks = math.ceil(time * settings.FRAMES)
+        self.ticks = math.ceil(time * algorithm.settings.FRAMES)
         self.total_ticks = self.ticks
 
     def tick(self):

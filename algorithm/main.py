@@ -5,9 +5,6 @@ from Entities.arena import Arena
 from Entities.Obstacle import Obstacle
 from Entities.Robot import Robot
 
-BLACK = (0, 0, 0)
-WHITE = (200, 200, 200)
-GREEN = (122,213,1)
 
 
 def main():
@@ -15,18 +12,27 @@ def main():
     pygame.init()
     SCREEN = pygame.display.set_mode((settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT))
     CLOCK = pygame.time.Clock()
-    SCREEN.fill(BLACK)
+    SCREEN.fill(settings.BLACK)
     test = [Obstacle((80,80), "left", (4*settings.BLOCK_SIZE,4*settings.BLOCK_SIZE)), Obstacle((200,200), "top", (4*settings.BLOCK_SIZE,4*settings.BLOCK_SIZE))]
     arena = Arena(test, 800, 800, settings.BLOCK_SIZE)
     robot = Robot()
-
+    arena.drawGrid(SCREEN)
+    robot.drawCar(SCREEN)
     while True:
-        arena.drawGrid(SCREEN,WHITE,GREEN)
-        robot.drawCar(SCREEN)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    robot.moveStraight(-10)
+                    arena.updateGrid(robot, SCREEN)
+                elif event.key == pygame.K_d:
+                    if robot.orientation == 0:
+                        robot.moveStraight(10)
+                    else:
+                        robot.turning(10, 0)
+                    arena.updateGrid(robot,SCREEN)
         pygame.display.update()
 
 # Press the green button in the gutter to run the script.
