@@ -13,7 +13,7 @@ def main():
     SCREEN = pygame.display.set_mode((settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT))
     CLOCK = pygame.time.Clock()
     SCREEN.fill(settings.BLACK)
-    test = [Obstacle((80,80), "left", (4*settings.BLOCK_SIZE,4*settings.BLOCK_SIZE)), Obstacle((200,200), "top", (4*settings.BLOCK_SIZE,4*settings.BLOCK_SIZE))]
+    test = [Obstacle((80,80), "left", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)), Obstacle((200,200), "top", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE))]
     arena = Arena(test, 800, 800, settings.BLOCK_SIZE)
     robot = Robot()
     arena.drawGrid(SCREEN)
@@ -25,14 +25,12 @@ def main():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
-                    robot.moveStraight(-10)
-                    arena.updateGrid(robot, SCREEN)
+                    robot.moveStraight(10)
                 elif event.key == pygame.K_d:
-                    if robot.orientation == 0:
-                        robot.moveStraight(10)
-                    else:
-                        robot.turning(10, 0)
-                    arena.updateGrid(robot,SCREEN)
+                    robot.turnRight(10)
+                elif event.key == pygame.K_a:
+                    robot.turnLeft(10)
+                arena.updateGrid(robot, SCREEN)
         pygame.display.update()
 
 # Press the green button in the gutter to run the script.

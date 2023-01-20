@@ -14,7 +14,6 @@ class Arena:
 
     def drawGrid(self, SCREEN):
         RED = (251,0,0)
-
         for x in range(0,self.width, self.blockSize):
             for y in range(0, self.height, self.blockSize):
                 grid = pygame.Rect(x,y, self.blockSize, self.blockSize)
