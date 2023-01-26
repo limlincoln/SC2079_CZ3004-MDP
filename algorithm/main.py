@@ -15,7 +15,7 @@ def main():
     SCREEN.fill(settings.BLACK)
     test = [Obstacle((80,80), "left", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)), Obstacle((200,200), "top", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE))]
     arena = Arena(test, 800, 800, settings.BLOCK_SIZE)
-    robot = Robot()
+    robot = Robot(arena.obList)
     arena.drawGrid(SCREEN)
     robot.drawCar(SCREEN)
     while True:

@@ -38,3 +38,5 @@ class Arena:
         SCREEN.fill((0,0,0))
         self.drawGrid(SCREEN)
         robot.drawCar(SCREEN)
+
+
