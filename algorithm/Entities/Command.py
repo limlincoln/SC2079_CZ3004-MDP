@@ -8,7 +8,7 @@ class Command:
         self.total_ticks = self.ticks
 
     def tick(self):
-        self.ticks -=1
+        self.ticks -= 1
 
     def doOneTick(self, robot):
         pass

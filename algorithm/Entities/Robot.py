@@ -2,19 +2,21 @@ import pygame
 
 from algorithm import settings
 from Entities.RectRobot import RectRobot
-
+from Entities.arena import Arena
 
 class Robot:
     def __init__(self, ob):
         self.x = 0
-        self.y = 800
+        self.y = 19
         self.pos = (self.x, self.y)
         self.height = 300
         self.width = 300
         self.orientation = 90
-        self.image = pygame.transform.scale(pygame.image.load("assets/car.png"), (6*settings.BLOCK_SIZE, 6*settings.BLOCK_SIZE))
+        self.image = pygame.transform.scale(pygame.image.load("assets/car.png"), (3 * settings.BLOCK_SIZE, 3
+                                                                                  * settings.BLOCK_SIZE))
         self.car_rect = self.image.get_rect()
-        self.arrow = pygame.transform.scale(pygame.image.load("assets/icons8-arrow-100.png"), (6*settings.BLOCK_SIZE, 6*settings.BLOCK_SIZE))
+        self.arrow = pygame.transform.scale(pygame.image.load("assets/icons8-arrow-100.png"), (3 * settings.BLOCK_SIZE,
+                                                                                               3 * settings.BLOCK_SIZE))
         self.arrow = pygame.transform.rotate(self.arrow, 90)
         self.command = "S"
         self.obstacles = ob
@@ -29,7 +31,8 @@ class Robot:
 
         self.image = pygame.transform.rotate(self.image, turn)
         self.arrow = pygame.transform.rotate(self.arrow, turn)
-        self.car_rect.bottomleft = (self.x,  self.y)
+        pos = (self.x, self.y)
+        self.car_rect.bottomleft = Arena.posConverter(pos)
         SCREEN.blit(self.image, self.car_rect)
         SCREEN.blit(self.arrow, self.car_rect)
 

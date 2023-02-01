@@ -4,7 +4,7 @@ import settings
 from Entities.arena import Arena
 from Entities.Obstacle import Obstacle
 from Entities.Robot import Robot
-
+from algo.Astar import Astar
 
 
 def main():
@@ -13,11 +13,13 @@ def main():
     SCREEN = pygame.display.set_mode((settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT))
     CLOCK = pygame.time.Clock()
     SCREEN.fill(settings.BLACK)
-    test = [Obstacle((80,80), "left", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)), Obstacle((200,200), "top", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE))]
-    arena = Arena(test, 800, 800, settings.BLOCK_SIZE)
+    test = [Obstacle((0,0), "left", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)), Obstacle((5,5), "top", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)), Obstacle((19,19), "top", (2*settings.BLOCK_SIZE, 2*settings.BLOCK_SIZE))]
+    arena = Arena(test, 400, 400, settings.BLOCK_SIZE)
     robot = Robot(arena.obList)
     arena.drawGrid(SCREEN)
     robot.drawCar(SCREEN)
+    aStar = Astar([], arena.obstacles)
+    arena.drawStuff(aStar.targetLocations, SCREEN, settings.GREEN)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
