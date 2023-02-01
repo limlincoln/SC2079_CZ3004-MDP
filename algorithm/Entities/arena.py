@@ -14,8 +14,8 @@ class Arena:
 
     def drawGrid(self, SCREEN):
         RED = (251,0,0)
-        for x in range(0,self.width, self.blockSize):
-            for y in range(0, self.height, self.blockSize):
+        for x in range(0 + settings.GRID_OFFSET,self.width, self.blockSize):
+            for y in range(0 + settings.GRID_OFFSET, self.height, self.blockSize):
                 grid = pygame.Rect(x,y, self.blockSize, self.blockSize)
                 pygame.draw.rect(SCREEN, settings.WHITE, grid, 1)
         for obstacle in self.obstacles:
@@ -46,5 +46,8 @@ class Arena:
 
     @staticmethod
     def posConverter(pos):
-        return (pos[0]) * settings.BLOCK_SIZE, (pos[1]) * settings.BLOCK_SIZE
+        return (pos[0] // settings.GRID_SCALE_FACTOR) * settings.BLOCK_SIZE + settings.GRID_OFFSET, \
+                            (settings.GRID_Y_OFFSET - (pos[1] // settings.GRID_SCALE_FACTOR) * settings.BLOCK_SIZE) + \
+                            settings.GRID_OFFSET
+
 

@@ -13,8 +13,9 @@ def main():
     SCREEN = pygame.display.set_mode((settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT))
     CLOCK = pygame.time.Clock()
     SCREEN.fill(settings.BLACK)
-    test = [Obstacle((0,0), "left", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)), Obstacle((5,5), "top", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)), Obstacle((19,19), "top", (2*settings.BLOCK_SIZE, 2*settings.BLOCK_SIZE))]
-    arena = Arena(test, 400, 400, settings.BLOCK_SIZE)
+    test = [Obstacle((40,20), "right", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE)),
+            Obstacle((70,70), "top", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE))]
+    arena = Arena(test, 400+settings.GRID_OFFSET, 400+settings.GRID_OFFSET, settings.BLOCK_SIZE)
     robot = Robot(arena.obList)
     arena.drawGrid(SCREEN)
     robot.drawCar(SCREEN)
