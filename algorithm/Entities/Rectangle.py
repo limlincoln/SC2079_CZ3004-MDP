@@ -6,11 +6,11 @@ class Rectangle:
     def __init__(self, pos, type):
         if type == 'R':
             self.x = pos[0]
-            self.y = pos[1]
+            self.y = pos[1] + 30
             self.length = 30
         elif type == 'O':
             self.x = pos[0] - 15
-            self.y = pos[0] - 15
+            self.y = pos[0] + 25
             self.length = 40
 
     def isCollided(self, rec2):
