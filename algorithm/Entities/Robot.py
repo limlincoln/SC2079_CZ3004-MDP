@@ -7,7 +7,7 @@ from Entities.arena import Arena
 class Robot:
     def __init__(self, ob):
         self.x = 0
-        self.y = 19
+        self.y = 0
         self.pos = (self.x, self.y)
         self.height = 300
         self.width = 300

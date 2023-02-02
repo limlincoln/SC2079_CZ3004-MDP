@@ -3,7 +3,7 @@ def ortho(pos):
     return np.array((-pos[1], pos[0]))
 
 def dist(a,b):
-    return ((a[0]-b[0])**2 + (a[1]-b[1])**2) **0.5
+    return ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
 class Dubins:
     """
     Class implementing a Dubins path planner with a constant turn radius.
@@ -12,7 +12,7 @@ class Dubins:
         pointSeparation: float
         precision of the path but computation time of colision check will be compromised
     """
-    def __init_(self, radius, pointSeparation):
+    def __init__(self, radius, pointSeparation):
         assert radius > 0 and pointSeparation > 0
         self.radius = radius
         self.pointSeparation = pointSeparation
@@ -317,11 +317,11 @@ class Dubins:
         # generating the points with desired precision
 
         points = []
-        for x in np.arrange(0, total, self.pointSeparation):
-            if x < abs(path[0]* self.radius):
+        for x in np.arange(0, total, self.pointSeparation):
+            if x < abs(path[0])*self.radius:
                 points.append(self.circleArc(start, path[0], startCenter, x))
-            elif x > total - abs(path[1]*self.radius):
-                points.append(self.circleArc(goal, path[1], goalCenter, startCenter, x-total))
+            elif x > total - abs(path[1])*self.radius:
+                points.append(self.circleArc(goal, path[1], goalCenter, x-total))
             else:
                 coeff = (x-abs(path[0])*self.radius)/StraightDistance
                 points.append(coeff*fin + (1-coeff)*ini)
