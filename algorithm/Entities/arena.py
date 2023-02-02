@@ -1,6 +1,7 @@
 import pygame
+from algorithm import settings
 """
-Represents the navigational area (default: 40x40 grid of 5x5cm grid cells)
+Represents the navigational area (default: 20x20 grid of 10x10cm grid cells)
 """
 class Arena:
     def __init__(self,obstacles, width, height, blockSize):
@@ -11,16 +12,17 @@ class Arena:
         self.obList = []
 
 
-    def drawGrid(self, SCREEN, WHITE, BLACK):
+    def drawGrid(self, SCREEN):
         RED = (251,0,0)
-        for x in range(0,self.width, self.blockSize):
-            for y in range(0, self.height, self.blockSize):
+        for x in range(0 + settings.GRID_OFFSET,self.width, self.blockSize):
+            for y in range(0 + settings.GRID_OFFSET, self.height, self.blockSize):
                 grid = pygame.Rect(x,y, self.blockSize, self.blockSize)
-                pygame.draw.rect(SCREEN, WHITE, grid, 1)
+                pygame.draw.rect(SCREEN, settings.WHITE, grid, 1)
         for obstacle in self.obstacles:
-            ob = pygame.Rect(obstacle.pos, obstacle.dimension)
+            ob = pygame.Rect(obstacle.gridPosition, obstacle.dimension)
+            ob.bottomleft = obstacle.gridPosition
             self.obList.append(ob)
-            pygame.draw.rect(SCREEN, BLACK, ob)
+            pygame.draw.rect(SCREEN, settings.GREEN, ob)
             self.drawBorder(obstacle,SCREEN,RED,ob)
 
     def drawBorder(self, obstacle,  SCREEN, COLOUR, ob):
@@ -32,3 +34,20 @@ class Arena:
             pygame.draw.line(SCREEN, COLOUR, ob.bottomleft, ob.bottomright, 2)
         elif obstacle.imageOrientation == "left":
             pygame.draw.line(SCREEN, COLOUR, ob.topleft, ob.bottomleft, 2)
+
+    def drawStuff(self, stuff: list[tuple], SCREEN, COLOUR):
+        for s in stuff:
+            print("rrt")
+            pygame.draw.circle(SCREEN, COLOUR, self.posConverter(s), 20)
+    def updateGrid(self, robot, SCREEN):
+        SCREEN.fill((0,0,0))
+        self.drawGrid(SCREEN)
+        robot.drawCar(SCREEN)
+
+    @staticmethod
+    def posConverter(pos):
+        return (pos[0] // settings.GRID_SCALE_FACTOR) * settings.BLOCK_SIZE + settings.GRID_OFFSET, \
+                            (settings.GRID_Y_OFFSET - (pos[1] // settings.GRID_SCALE_FACTOR) * settings.BLOCK_SIZE) + \
+                            settings.GRID_OFFSET
+
+
