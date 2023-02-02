@@ -2,7 +2,7 @@ from Entities.Rectangle import Rectangle
 from Entities.Obstacle import Obstacle
 from scipy.spatial import KDTree
 import numpy as np
-
+from constants import DIRECTION
 
 class StaticEnvironment:
     """
@@ -55,11 +55,11 @@ class StaticEnvironment:
         targetLocations = []
         for ob in self.obstacles:
             if ob.imageOrientation == "right":
-                targetLocations.append((ob.pos[0] + 50, ob.pos[0] - 10, 0))
+                targetLocations.append((ob.pos[0] + 50, ob.pos[0] - 10, DIRECTION.RIGHT))
             elif ob.imageOrientation == "top":
-                targetLocations.append((ob.pos[0] + 10, ob.pos[1] + 50, np.pi/2))
+                targetLocations.append((ob.pos[0] + 10, ob.pos[1] + 50, DIRECTION.TOP))
             elif ob.imageOrientation == "left":
-                targetLocations.append((ob.pos[0] - 50, ob.pos[1] + 10, np.pi))
+                targetLocations.append((ob.pos[0] - 50, ob.pos[1] + 10, DIRECTION.LEFT))
             else:
-                targetLocations.append((ob.pos[0] + 10, ob.pos[1] - 50, -(np.pi/2)))
+                targetLocations.append((ob.pos[0] + 10, ob.pos[1] - 50, DIRECTION.BOTTOM))
         return targetLocations

@@ -1,194 +1,106 @@
+import constants
+from algo.Command import Command
 from algo.Environment import StaticEnvironment
-from algo.NodeNEdges import Node, Edge
-from algo.Dubins import Dubins, dist
-import numpy as np
+from algo.Dubins import dist
+from queue import PriorityQueue
 class Astar:
-    def __init__(self, environment : StaticEnvironment, precision=(5, 5, 1)):
-        self.environment = environment
-        self.targetLocations = self.environment.generateTargetLocation()
-        self.nodes = {}
-        self.edges = {}
-        self.localPlanner = Dubins(25, 1)
-        self.root = (0, 0, 0)
-        self.goal = (0, 0, 0)
-        self.precision = precision
-
-    def setStart(self, start):
+    def __init__(self, env: StaticEnvironment, start, end):
         """
-        reset graph
-        :param start:  tuple
-        in the form of (x,y,direction in rads)
-        :return:
+        :param env: Static Environment
+        :param start: tuple (x,y,pos) in grid format
+        :param end: tuple (x,y,pos) in grid format
         """
-        self.nodes = {}
-        self.edges = {}
-        self.nodes[start] = Node(start, 0, 0)
-        self.root = start
+        self.env = env
+        self.start = start
+        self.end = end
+        self.path = []
 
-
-
-
-
-    def computePath(self, goal, nbIteration=100, goalRate=0.1, metric='local'):
+    def getNeighbours(self, pos):
         """
-        Executes the algorithm with an empty graph, with the start postion
-        :param goal: tuple
-        :param nbIteration: int
-        the number of maximal iterations
-        :param goalRate: float
-        probaility to expand towards the goal rather than towards a randomly selected sample
-        :param metric: string
-        'local' for dubins and 'euclidian' for euclidian
-        :return:
+        Get next position relative to pos
+        a fix distance of 5 when travelling straight
+        robot will always make a 90 degrees turn
+        :param pos: tuple (x,y,direction in rads)
+        :return: list[nodes]
         """
-        assert len(goal) == len(self.precision)
-        self.goal = goal
+        neighbours = []
+        command = Command(pos)
+        commandList = command.getCommands()
+        turnPenalty = constants.COST.TURN_COST
+        timeCost = constants.COST.MOVE_COST
 
-        for _ in range(nbIteration):
-            if np.random.rand() > 1 - goalRate:
-                sample = goal
-            else:
-                sample = self.environment.randomFreeSpace()
-        options = self.selectOptions(sample, 10, metric)
-        for node, option in options:
-            if option[0] == float('inf'):
-                break
-            path = self.localPlanner.generatePoints(node, sample, option[1], option[2])
+        for index, c in enumerate(commandList):
+            if self.env.isWalkable(c[0], c[1], 0):
+                if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT:
+                    neighbours.append((c, turnPenalty))
+                else:
+                    neighbours.append((c, timeCost))
 
-            for i, point in enumerate(path):
-                if not self.environment.isWalkable(point[0], point[1],
-                                                   self.nodes[node].time+i):
-                    break
-            else:
-                self.nodes[sample] = Node(sample, self.nodes[node].time+option[0],
-                                          self.nodes[node].cost+option[0])
-                self.nodes[node].destinationPointList.append(sample)
-                self.edges[node, sample] = Edge(node, sample, path, option[0])
-                if self.inGoalRegion(sample):
-                    return
-                break
+        return neighbours
 
+    def heuristic(self, pos, end):
+        """
 
-    def selectOptions(self, sample, nbOptions, metric='local'):
-        """
-        Choose the best nodes for expansion of the tree and returns them in a list ordered by increasing cost.
-
-        :param sample: tuple
-        :param nbOptions: int
-            the number of options requested
-        :param metric: str
-        :return:
-        options : list
-        """
-        if metric == 'local':
-            options = []
-            for node in self.nodes:
-                options.extend(
-                    [(node, opt) for opt in self.localPlanner.computeAllPath(node, sample)]
-                )
-                options.sort(key=lambda x: x[1][0])
-                options = options[:nbOptions]
-        else:
-            options = [(node, dist(node, sample)) for node in self.nodes]
-            options.sort(key=lambda x: x[1])
-            options = options[:nbOptions]
-            newOpt = []
-            for node, _ in options:
-                dbOptions = self.localPlanner.computeAllPath(node, sample)
-                newOpt.append((node, min(dbOptions, key=lambda x: x[0])))
-            options = newOpt
-        return options
-    def inGoalRegion(self, sample):
-        for i, value in enumerate(sample):
-            if abs(self.goal[i]-value > self.precision[i]):
-                return False
-        return True
-    def selectBestEdge(self):
-        """
-        Selects the best edge of the tree among the ones leaving from the root
-        :return:
-        the best edge
-        """
-        node = max([(child, self.childrenCount(child)) for child in self.nodes[self.root].destinationPointList],
-                   key= lambda x: x[1])[0]
-        bestEdge = self.edges[(self.root, node)]
-        for child in self.nodes[self.root].destinationPointList:
-            if child == node:
-                continue
-            self.edges.pop((self.root, child))
-            self.deleteAllChildren(child)
-        self.nodes.pop(self.root)
-        self.root = node
-        return bestEdge
-
-    def deleteAllChildren(self, node):
-        """
-        Removesall the nodes of the tree below the requested node
-        :param node: node
-        :return:
-        """
-        if self.nodes[node].destinationPointList:
-            for child in self.nodes[node].destinationPointList:
-                self.edges.pop((node, child))
-                self.deleteAllChildren(child)
-        self.nodes.pop(node)
-
-    def childrenCount(self,node):
-        """
-        high time complexity atm need some optimisation
-        :param node: node
-        :return:
-        """
-        if not self.nodes[node].destinationPointList:
-            return 0
-        total = 0
-        for child in self.nodes[node].destinationPointList:
-            total += 1 + self.childrenCount(child)
-
-        return total
-
-    def getRectCorners(self, pos, type):
-        """
-            get 4 corners of a rect based on the type
         :param pos: tuple
-            in the form (x,y) representing the left bottom corner
-        :param type: char
-            'R' for robot and 'O' for obstacles
+        :param end: tuple
         :return:
-            a tuple of the 4 corners in the order of topLeft->topRight->bottomRight->bottomLeft
+        distance between 2 points
         """
-        corners = []
-        if type == 'R':
-            corners.append((pos[0], pos[1]+30))
-            corners.append((pos[0]+30, pos[1]+30))
-            corners.append((pos[0]+30, pos[1]))
-            corners.append(pos)
-        #this rectCorners is for obstacle avoidance
-        elif type == 'O':
-            ob_pos = (pos[0]+5, pos[1]+5)
-            corners.append((ob_pos[0]-15, ob_pos[1]+15))
-            corners.append((ob_pos[0]+15, ob_pos[1]+15))
-            corners.append((ob_pos[0]+15, ob_pos[1]-15))
-            corners.append((ob_pos[0]-15, ob_pos[1]-15))
+        return dist(pos, end)
 
-        return corners
 
-    def getPath(self, nodes=False):
+    def computePath(self):
         """
-        return the path of nodes
-        :param nodes: bool to display nodes or not
+        YOLO A star attempt
         :return:
         """
-        nodes = []
-        path = []
-        print(self.nodes)
-        print(self.edges)
-        if nodes and self.nodes:
-            nodes = np.array(list(self.nodes.keys()))
+        frontier = PriorityQueue()
+        backtrack = dict()
+        cost = dict()
+        goalNode = self.end
+        startNode = self.start
 
-        for _, val in self.edges.items():
-            if val.path:
-                path = np.array(val.path)
+        offset = 0 # dk for what
+        frontier.put((0, offset, startNode))
+        cost[startNode] = 0
 
-        return path, nodes
+        backtrack[startNode] = None
 
+        while not frontier.empty():
+            priority, _, currentNode = frontier.get()
+            print(currentNode[:3])
+            if currentNode[:3] == goalNode[:3]:
+                self.extractCommands(backtrack, currentNode)
+                return currentNode
+
+            for newNode, weight in self.getNeighbours(currentNode):
+                newCost = cost[currentNode] + weight
+
+                if newNode not in backtrack or newCost < cost[newNode]:
+                    offset += 1
+                    priority = newCost + self.heuristic((newNode[0], newNode[1]), (goalNode[0], goalNode[1]))
+                    backtrack[newNode] = currentNode
+                    frontier.put((priority, offset, newNode))
+                    cost[newNode] = newCost
+
+        return None
+
+    def extractCommands(self, backtrack, goalNode):
+        """
+        Extract dem commands to get to destination
+        :param backtrack: dist
+        :param goalNode: tuple
+        :return:
+        yolo
+        """
+        commands = []
+        current = goalNode
+        while current:
+            current = backtrack.get(current, None)
+            if current:
+                commands.append(current[3])
+        commands.reverse()
+        self.path.extend(commands)
+
+    def getPath(self):
+        return self.path
