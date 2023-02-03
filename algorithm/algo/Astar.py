@@ -30,12 +30,11 @@ class Astar:
         timeCost = constants.COST.MOVE_COST
 
         for index, c in enumerate(commandList):
-            if self.env.isWalkable(c[0], c[1], 0):
+            if self.env.isWalkableV2(c[0], c[1], 0):
                 if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT:
                     neighbours.append((c, turnPenalty+100))
                 else:
                     neighbours.append((c, timeCost))
-
         return neighbours
 
     def heuristic(self, pos, end):
@@ -98,7 +97,7 @@ class Astar:
         while current:
             current = backtrack.get(current, None)
             if current:
-                commands.append(current)
+                commands.append(current[2:4])
         commands.reverse()
         self.path.extend(commands)
 

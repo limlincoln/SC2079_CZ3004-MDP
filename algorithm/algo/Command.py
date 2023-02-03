@@ -21,16 +21,16 @@ class Command:
         """
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'S'))
-            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'S'))
+            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'RV'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'S'))
-            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'S'))
+            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'RV'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'S'))
-            self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'S'))
+            self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'SV'))
         else:
             self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'S'))
-            self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'S'))
+            self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'SV'))
 
     def moveRight(self):
         """

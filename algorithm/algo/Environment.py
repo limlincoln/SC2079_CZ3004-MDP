@@ -3,7 +3,7 @@ from Entities.Obstacle import Obstacle
 from scipy.spatial import KDTree
 import numpy as np
 from constants import DIRECTION
-
+from Entities.RectRobot import RectRobot
 class StaticEnvironment:
     """
 
@@ -35,6 +35,24 @@ class StaticEnvironment:
                 return False
         return True
 
+    def isWalkableV2(self, x,y, time=0):
+        """
+        testing
+        :param x:
+        :param y:
+        :param time:
+        :return:
+        """
+        if x < 0 or x > (self.dimensions[0]-30) or y < 0 or (y > self.dimensions[1]-30):
+            return False
+        robotRect = RectRobot((x,y))
+        for obstacle in self.obstacles:
+            if robotRect.isCollided(obstacle):
+                return False
+        return True
+
+
+
     def randomFreeSpace(self):
         x = np.random.rand()*self.dimensions[0]
         y = np.random.rand()*self.dimensions[1]
@@ -57,11 +75,14 @@ class StaticEnvironment:
         targetLocations = []
         for ob in self.obstacles:
             if ob.imageOrientation == "right":
-                targetLocations.append((ob.pos[0] + 50, ob.pos[0] - 10, DIRECTION.RIGHT))
+                targetLocations.append((ob.pos[0] + 50, ob.pos[1] - 10, DIRECTION.LEFT))
             elif ob.imageOrientation == "top":
-                targetLocations.append((ob.pos[0] + 10, ob.pos[1] + 50, DIRECTION.TOP))
+                print("top")
+                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM))
             elif ob.imageOrientation == "left":
-                targetLocations.append((ob.pos[0] - 50, ob.pos[1] + 10, DIRECTION.LEFT))
+                print("left")
+                targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT))
             else:
-                targetLocations.append((ob.pos[0] + 10, ob.pos[1] - 50, DIRECTION.BOTTOM))
+                print("bottom")
+                targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 50, DIRECTION.TOP))
         return targetLocations

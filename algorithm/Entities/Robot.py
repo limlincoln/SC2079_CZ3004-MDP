@@ -2,6 +2,8 @@ import pygame
 
 from algorithm import settings
 from Entities.arena import Arena
+from constants import DIRECTION
+
 
 class Robot:
     def __init__(self, ob):
@@ -10,7 +12,8 @@ class Robot:
         self.pos = (self.x, self.y)
         self.height = 300
         self.width = 300
-        self.orientation = 90
+        self.orientation = DIRECTION.TOP
+        self.orientationList = [DIRECTION.TOP, DIRECTION.RIGHT, DIRECTION.BOTTOM, DIRECTION.LEFT]
         self.image = pygame.transform.scale(pygame.image.load("assets/car.png"), (3 * settings.BLOCK_SIZE, 3
                                                                                   * settings.BLOCK_SIZE))
         self.car_rect = self.image.get_rect()
@@ -29,9 +32,9 @@ class Robot:
         """
         turn = 0
         if self.command == "R":
-            turn = -90
-        elif self.command == "L":
             turn = 90
+        elif self.command == "L":
+            turn = -90
 
         self.image = pygame.transform.rotate(self.image, turn)
         self.arrow = pygame.transform.rotate(self.arrow, turn)
@@ -40,6 +43,56 @@ class Robot:
         SCREEN.blit(self.image, self.car_rect)
         SCREEN.blit(self.arrow, self.car_rect)
 
-    def moveToDo(self, command):
-        pass
+    def moveToDo(self, command, SCREEN):
+        """
+        To Set pos of the car to the next location ready for display
+        :param command: tuple (direction, command)
+        :return:
+        """
+        self.command = command[1]
+
+        # if the car is going straight or reverse
+        if self.command == 'S':
+            if command[0] == DIRECTION.TOP:
+                self.y += 10
+            elif command[0] == DIRECTION.LEFT:
+                self.x -= 10
+            elif command[0] == DIRECTION.RIGHT:
+                self.x += 10
+            else:
+                self.y -= 10
+        # if car is going reverse:
+        elif self.command == 'RV':
+            if command[0] == DIRECTION.TOP:
+                self.y -= 10
+            elif command[0] == DIRECTION.LEFT:
+                self.x += 10
+            elif command[0] == DIRECTION.RIGHT:
+                self.x -= 10
+            else:
+                self.y += 10
+        # if car going to turn right:
+        elif self.command == 'R':
+            if command[0] == DIRECTION.TOP:
+                pass
+
+            elif command[0] == DIRECTION.LEFT:
+                pass
+
+            elif command[0] == DIRECTION.RIGHT:
+                pass
+            else:
+                pass
+        # if the car is to turn left:
+        elif self.command == 'L':
+            if command[0] == DIRECTION.TOP:
+                pass
+
+            elif command[0] == DIRECTION.LEFT:
+                pass
+
+            elif command[0] == DIRECTION.RIGHT:
+                pass
+            else:
+                pass
 
