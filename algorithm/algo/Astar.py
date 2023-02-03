@@ -32,7 +32,7 @@ class Astar:
         for index, c in enumerate(commandList):
             if self.env.isWalkable(c[0], c[1], 0):
                 if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT:
-                    neighbours.append((c, turnPenalty))
+                    neighbours.append((c, turnPenalty+100))
                 else:
                     neighbours.append((c, timeCost))
 
@@ -98,7 +98,7 @@ class Astar:
         while current:
             current = backtrack.get(current, None)
             if current:
-                commands.append(current[3])
+                commands.append(current)
         commands.reverse()
         self.path.extend(commands)
 

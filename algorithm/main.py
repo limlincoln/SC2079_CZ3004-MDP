@@ -14,7 +14,7 @@ def main():
     CLOCK = pygame.time.Clock()
     SCREEN.fill(settings.BLACK)
     test = [
-            Obstacle((40,20), "right", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE))]
+            Obstacle((70,20), "right", (2*settings.BLOCK_SIZE,2*settings.BLOCK_SIZE))]
     arena = Arena(test, 400+settings.GRID_OFFSET, 400+settings.GRID_OFFSET, settings.BLOCK_SIZE)
     robot = Robot(arena.obList)
     arena.drawGrid(SCREEN)

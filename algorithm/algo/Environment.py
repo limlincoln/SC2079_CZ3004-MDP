@@ -13,7 +13,7 @@ class StaticEnvironment:
         self.obstacles = obstacles
         self.kdtree = KDTree([obs.pos for obs in self.obstacles])
 
-    def isWalkable(self, x,y, time=0):
+    def isWalkable(self, x, y, time=0):
         """
          Checks if the robot can occupy this location
         :param x: int
@@ -28,8 +28,10 @@ class StaticEnvironment:
         if x < 0 or x > (self.dimensions[0]-30) or y < 0 or (y > self.dimensions[1]-30):
             return False
         robotRect = Rectangle((x,y), 'R')
+        print(robotRect.x, robotRect.y)
         for obstacle in self.obstacles:
-            if robotRect.isCollided(Rectangle(obstacle.pos, 'O')):
+            pos = Rectangle(obstacle.pos, 'O')
+            if robotRect.isCollided(pos):
                 return False
         return True
 
