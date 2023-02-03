@@ -1,8 +1,9 @@
 import pygame
 
 from algorithm import settings
-from Entities.RectRobot import RectRobot
 from Entities.arena import Arena
+from constants import DIRECTION
+
 
 class Robot:
     def __init__(self, ob):
@@ -11,7 +12,8 @@ class Robot:
         self.pos = (self.x, self.y)
         self.height = 300
         self.width = 300
-        self.orientation = 90
+        self.orientation = DIRECTION.TOP
+        self.orientationList = [DIRECTION.TOP, DIRECTION.RIGHT, DIRECTION.BOTTOM, DIRECTION.LEFT]
         self.image = pygame.transform.scale(pygame.image.load("assets/car.png"), (3 * settings.BLOCK_SIZE, 3
                                                                                   * settings.BLOCK_SIZE))
         self.car_rect = self.image.get_rect()
@@ -23,11 +25,16 @@ class Robot:
         print(self.obstacles)
 
     def drawCar(self, SCREEN):
+        """
+        Draw the car on the SCREEN according to its pos and orientation
+        :param SCREEN: SCREEN
+        :return: None
+        """
         turn = 0
         if self.command == "R":
-            turn = -90
-        elif self.command == "L":
             turn = 90
+        elif self.command == "L":
+            turn = -90
 
         self.image = pygame.transform.rotate(self.image, turn)
         self.arrow = pygame.transform.rotate(self.arrow, turn)
@@ -36,57 +43,56 @@ class Robot:
         SCREEN.blit(self.image, self.car_rect)
         SCREEN.blit(self.arrow, self.car_rect)
 
-    def moveStraight(self, StraightDistance):
-        self.command = 'S'
-        if self.orientation == 90 and self.isWalkable((self.x, self.y-StraightDistance)):
-            self.y = self.y - StraightDistance
-        elif self.orientation == 0 and self.isWalkable((self.x + StraightDistance, self.y)):
-            self.x = StraightDistance + self.x
-        elif self.orientation == 180 and self.isWalkable((self.x - StraightDistance, self.y)):
-            self.x = self.x - StraightDistance
-        else:
-            if self.isWalkable((self.x, self.y + StraightDistance)):
-                self.y = self.y + StraightDistance
+    def moveToDo(self, command, SCREEN):
+        """
+        To Set pos of the car to the next location ready for display
+        :param command: tuple (direction, command)
+        :return:
+        """
+        self.command = command[1]
 
-    def turnLeft(self, turningDistance):
-        angle = self.orientation + 90
-        if angle > 270:
-            angle = 0
-        self.orientation = angle
-        if self.orientation == 270 or self.orientation == 0:
-            if self.isWalkable((self.x, self.y - settings.TURNING_RADIUS)):
-                self.y = self.y - settings.TURNING_RADIUS
-        else:
-            if self.isWalkable((self.x, self.y + settings.TURNING_RADIUS)):
-                self.y = self.y + settings.TURNING_RADIUS
+        # if the car is going straight or reverse
+        if self.command == 'S':
+            if command[0] == DIRECTION.TOP:
+                self.y += 10
+            elif command[0] == DIRECTION.LEFT:
+                self.x -= 10
+            elif command[0] == DIRECTION.RIGHT:
+                self.x += 10
+            else:
+                self.y -= 10
+        # if car is going reverse:
+        elif self.command == 'RV':
+            if command[0] == DIRECTION.TOP:
+                self.y -= 10
+            elif command[0] == DIRECTION.LEFT:
+                self.x += 10
+            elif command[0] == DIRECTION.RIGHT:
+                self.x -= 10
+            else:
+                self.y += 10
+        # if car going to turn right:
+        elif self.command == 'R':
+            if command[0] == DIRECTION.TOP:
+                pass
 
-        self.command = 'L'
+            elif command[0] == DIRECTION.LEFT:
+                pass
 
-    def turnRight(self, turningDistance):
-        angle = self.orientation - 90
-        print(self.orientation, angle)
-        if angle < 0:
-            angle = 270
-        self.orientation = angle
-        if self.orientation == 270 or self.orientation == 180:
-            if self.isWalkable((self.x, self.y - settings.TURNING_RADIUS)):
-                self.y = self.y - settings.TURNING_RADIUS
-        else:
-            if self.isWalkable((self.x, self.y - settings.TURNING_RADIUS)):
-                self.y = self.y - settings.TURNING_RADIUS
+            elif command[0] == DIRECTION.RIGHT:
+                pass
+            else:
+                pass
+        # if the car is to turn left:
+        elif self.command == 'L':
+            if command[0] == DIRECTION.TOP:
+                pass
 
-       # self.x = self.x - turningDistance
-        self.command = 'R'
+            elif command[0] == DIRECTION.LEFT:
+                pass
 
-    # check if the robot can move to the goal position
-    def isWalkable(self, goalPosition):
-        goalRobotPosition = RectRobot(goalPosition)
-        if goalPosition[0] < 0 or goalPosition[0] > 770:
-            return False
-        elif goalPosition[1] < 30 or goalPosition[1] > 800:
-            return False
-        for ob in self.obstacles:
-            if goalRobotPosition.isCollided(ob):
-                return False
-        print("true")
-        return True
+            elif command[0] == DIRECTION.RIGHT:
+                pass
+            else:
+                pass
+
