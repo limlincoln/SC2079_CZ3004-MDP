@@ -19,8 +19,18 @@ class Command:
         :return:
         new pos forward and backward
         """
-        self.commands.append((self.pos[0], self.pos[1]+10, self.pos[2], 'S'))
-        self.commands.append((self.pos[0], self.pos[1]-10, self.pos[2], 'S'))
+        if self.pos[2] == DIRECTION.TOP:
+            self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'S'))
+            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'S'))
+        elif self.pos[2] == DIRECTION.LEFT:
+            self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'S'))
+            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'S'))
+        elif self.pos[2] == DIRECTION.RIGHT:
+            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'S'))
+            self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'S'))
+        else:
+            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'S'))
+            self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'S'))
 
     def moveRight(self):
         """
@@ -28,7 +38,16 @@ class Command:
         :return:
         new pos after moving right
         """
-        self.commands.append((self.pos[0]+10, self.pos[1], self.dirList[(self.dirList.index(self.pos[2])+1) % 4], 'R'))
+        if self.pos[2] == DIRECTION.TOP:
+            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2])+1) % 4], 'R'))
+        elif self.pos[2] == DIRECTION.LEFT:
+            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+        elif self.pos[2] == DIRECTION.RIGHT:
+            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+        else:
+            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+
+
 
     def moveLeft(self):
         """
@@ -36,8 +55,23 @@ class Command:
         :return:
         new pos after moving right
         """
-        self.commands.append((self.pos[0] - 10, self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
-                              'L'))
+        if self.pos[2] == DIRECTION.TOP:
+            self.commands.append(
+                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                 'L'))
+        elif self.pos[2] == DIRECTION.LEFT:
+            self.commands.append(
+                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                 'L'))
+        elif self.pos[2] == DIRECTION.RIGHT:
+            self.commands.append(
+                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                 'L'))
+        else:
+            self.commands.append(
+                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                 'L'))
+
 
 
 
