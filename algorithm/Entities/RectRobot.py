@@ -1,6 +1,6 @@
 import pygame
 
-import settings
+import algorithm.settings as settings
 
 
 class RectRobot:

@@ -1,8 +1,8 @@
 import pygame
 
 from algorithm import settings
-from Entities.arena import Arena
-from constants import DIRECTION
+from algorithm.Entities.arena import Arena
+from algorithm.constants import DIRECTION
 
 
 class Robot:
@@ -22,7 +22,6 @@ class Robot:
         self.arrow = pygame.transform.rotate(self.arrow, 90)
         self.command = "S"
         self.obstacles = ob
-        print(self.obstacles)
 
     def drawCar(self, SCREEN):
         """
@@ -43,7 +42,7 @@ class Robot:
         SCREEN.blit(self.image, self.car_rect)
         SCREEN.blit(self.arrow, self.car_rect)
 
-    def moveToDo(self, command, SCREEN):
+    def moveToDo(self, command: tuple, SCREEN):
         """
         To Set pos of the car to the next location ready for display
         :param command: tuple (direction, command)

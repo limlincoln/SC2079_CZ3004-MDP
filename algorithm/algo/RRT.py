@@ -1,6 +1,6 @@
-from algo.Environment import StaticEnvironment
-from algo.NodeNEdges import Node, Edge
-from algo.Dubins import Dubins, dist
+from algorithm.algo.Environment import StaticEnvironment
+from algorithm.algo.NodeNEdges import Node, Edge
+from algorithm.algo.Dubins import Dubins, dist
 import numpy as np
 class RRT:
     def __init__(self, environment : StaticEnvironment, precision=(5, 5, 1)):

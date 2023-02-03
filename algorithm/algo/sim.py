@@ -1,10 +1,10 @@
-import settings
+import algorithm.settings as settings
 import numpy as np
-from algo.Environment import StaticEnvironment
+from algorithm.algo.Environment import StaticEnvironment
 from RRT import RRT
-from Entities.Obstacle import Obstacle
+from algorithm.Entities.Obstacle import Obstacle
 from Astar import Astar
-from constants import DIRECTION
+from algorithm.constants import DIRECTION
 
 test = [Obstacle((100, 50), "right", (2 * settings.BLOCK_SIZE, 2 * settings.BLOCK_SIZE))]
 env = StaticEnvironment((200, 200), test)

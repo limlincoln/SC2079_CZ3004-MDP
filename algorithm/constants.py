@@ -9,12 +9,12 @@ class DIRECTION(Enum):
     LEFT = np.pi
     BOTTOM = -(np.pi / 2)
 
+
 class DIRECTIONINT(Enum):
     TOP = 0
     RIGHT = 1
     LEFT = 2
     BOTTOM = 3
-
 
 
 class MOVEMENT(Enum):

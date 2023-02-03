@@ -1,12 +1,12 @@
 import unittest
-import settings
-from constants import DIRECTION
-from algo.Dubins import Dubins
-from algo.Environment import StaticEnvironment
+import algorithm.settings as settings
+from algorithm.constants import DIRECTION
+from algorithm.algo.Dubins import Dubins
+from algorithm.algo.Environment import StaticEnvironment
 from RRT import RRT
-from Entities.Obstacle import Obstacle
+from algorithm.Entities.Obstacle import Obstacle
 from Astar import Astar
-
+from algorithm.DataPopulator import getTestObstacles
 class SimSum(unittest.TestCase):
 
     def testDubins(self):
@@ -51,10 +51,16 @@ class SimSum(unittest.TestCase):
         :return:
         """
 
-        test = [Obstacle((40, 20), "right", (2 * settings.BLOCK_SIZE, 2 * settings.BLOCK_SIZE)),
-                Obstacle((70, 70), "top", (2 * settings.BLOCK_SIZE, 2 * settings.BLOCK_SIZE))]
-        env = StaticEnvironment((100, 100), test)
-        aStar = Astar(env, (0,0, DIRECTION.TOP, 'P'), env.generateTargetLocation()[0])
+        test = getTestObstacles()
+        env = StaticEnvironment((200, 200), test)
+        for image in env.generateTargetLocation():
+            aStar = Astar(env, (0,0, DIRECTION.TOP, 'P'), image)
+            aStar.computePath()
+            path = aStar.getPath()
+            if path:
+                print("Path okay")
+            else:
+                print("not okay", image)
 
         print("Astar OK")
 

@@ -1,7 +1,7 @@
-import constants
-from algo.Command import Command
-from algo.Environment import StaticEnvironment
-from algo.Dubins import dist
+import algorithm.constants as constants
+from algorithm.algo.Command import Command
+from algorithm.algo.Environment import StaticEnvironment
+from algorithm.algo.Dubins import dist
 from queue import PriorityQueue
 class Astar:
     def __init__(self, env: StaticEnvironment, start, end):
@@ -30,7 +30,7 @@ class Astar:
         timeCost = constants.COST.MOVE_COST
 
         for index, c in enumerate(commandList):
-            if self.env.isWalkableV2(c[0], c[1], 0):
+            if self.env.isWalkable(c[0], c[1], 0):
                 if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT:
                     neighbours.append((c, turnPenalty+100))
                 else:
@@ -67,12 +67,12 @@ class Astar:
 
         while not frontier.empty():
             priority, _, currentNode = frontier.get()
-            print(currentNode[:3])
             if currentNode[:3] == goalNode[:3]:
                 self.extractCommands(backtrack, currentNode)
                 return currentNode
 
             for newNode, weight in self.getNeighbours(currentNode):
+
                 newCost = cost[currentNode] + weight
 
                 if newNode not in backtrack or newCost < cost[newNode]:
@@ -98,6 +98,7 @@ class Astar:
             current = backtrack.get(current, None)
             if current:
                 commands.append(current[2:4])
+
         commands.reverse()
         self.path.extend(commands)
 

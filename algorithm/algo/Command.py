@@ -1,4 +1,4 @@
-from constants import DIRECTION
+from algorithm.constants import DIRECTION
 
 
 class Command:

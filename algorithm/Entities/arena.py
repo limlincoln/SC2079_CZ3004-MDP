@@ -37,7 +37,6 @@ class Arena:
 
     def drawStuff(self, stuff: list[tuple], SCREEN, COLOUR):
         for s in stuff:
-            print(s)
             pygame.draw.circle(SCREEN, COLOUR, self.posConverter(s), 20)
     def updateGrid(self, robot, SCREEN):
         SCREEN.fill((0,0,0))
