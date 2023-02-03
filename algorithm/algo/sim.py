@@ -6,9 +6,9 @@ from Entities.Obstacle import Obstacle
 from Astar import Astar
 from constants import DIRECTION
 
-test = [Obstacle((30, 0), "right", (2 * settings.BLOCK_SIZE, 2 * settings.BLOCK_SIZE))]
+test = [Obstacle((100, 50), "right", (2 * settings.BLOCK_SIZE, 2 * settings.BLOCK_SIZE))]
 env = StaticEnvironment((200, 200), test)
-print(env.isWalkable(0,0,1))
+print(env.isWalkable(0, 0, 1))
 aStar = Astar(env, (0,0, DIRECTION.TOP, 'P'), env.generateTargetLocation()[0])
 
 
