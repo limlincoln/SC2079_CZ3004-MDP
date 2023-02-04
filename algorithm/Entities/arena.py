@@ -55,6 +55,18 @@ class Arena:
         SCREEN.fill((0,0,0))
         self.drawGrid(SCREEN)
         robot.drawCar(SCREEN)
+        self.robotCollisionRect(robot,SCREEN, (0, 100, 255))
+
+
+    def robotCollisionRect(self, robot, screen, colour):
+        newRect = Rectangle((robot.x,robot.y), 'R')
+        dim = ((newRect.length // 10) * settings.BLOCK_SIZE, (newRect.length // 10) * settings.BLOCK_SIZE)
+        rectOb = pygame.Rect((newRect.x, newRect.y), dim)
+        rectOb.topleft = self.posConverter((newRect.x, newRect.y))
+        pygame.draw.line(screen, colour, rectOb.topleft, rectOb.topright, 2)
+        pygame.draw.line(screen, colour, rectOb.topright, rectOb.bottomright, 2)
+        pygame.draw.line(screen, colour, rectOb.bottomleft, rectOb.bottomright, 2)
+        pygame.draw.line(screen, colour, rectOb.topleft, rectOb.bottomleft, 2)
 
     @staticmethod
     def posConverter(pos):

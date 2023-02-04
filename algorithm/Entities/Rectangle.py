@@ -10,8 +10,8 @@ class Rectangle:
             self.length = 30
         elif type == 'O':
             self.x = pos[0] - 10
-            self.y = pos[1] + 20
-            self.length = 20
+            self.y = pos[1] + 25
+            self.length = 30
 
     def isCollided(self, rec2):
         """
@@ -26,9 +26,9 @@ class Rectangle:
         bool value true if collided
         """
 
-        if (self.x + self.length >= rec2.x and
-                self.x <= rec2.x + rec2.length and
-                self.y + self.length >= rec2.y and
-                self.y <= rec2.y + rec2.length):
+        if (self.x + self.length > rec2.x and
+                self.x < rec2.x + rec2.length and
+                self.y + self.length > rec2.y and
+                self.y < rec2.y + rec2.length):
             return True
         return False

@@ -1,5 +1,5 @@
 from algorithm.constants import DIRECTION
-
+import settings
 
 class Command:
     def __init__(self, pos):
@@ -39,13 +39,13 @@ class Command:
         new pos after moving right
         """
         if self.pos[2] == DIRECTION.TOP:
-            self.commands.append((self.pos[0]+20, self.pos[1]-20, self.dirList[(self.dirList.index(self.pos[2])+1) % 4], 'R'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2])+1) % 4], 'R'))
         elif self.pos[2] == DIRECTION.LEFT:
-            self.commands.append((self.pos[0]+20, self.pos[1]+20, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
         elif self.pos[2] == DIRECTION.RIGHT:
-            self.commands.append((self.pos[0]-20, self.pos[1]-20, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
         else:
-            self.commands.append((self.pos[0]-20, self.pos[1]+20, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
 
 
 
@@ -57,19 +57,19 @@ class Command:
         """
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append(
-                (self.pos[0]-20, self.pos[1]-20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append(
-                (self.pos[0]+20, self.pos[1]-20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]+settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append(
-                (self.pos[0]-20, self.pos[1]+20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         else:
             self.commands.append(
-                (self.pos[0]+20, self.pos[1]+20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]+settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
 
 

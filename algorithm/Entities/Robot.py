@@ -31,10 +31,10 @@ class Robot:
         """
         turn = 0
         if self.command == "R":
-            turn = 90
-        elif self.command == "L":
             turn = -90
-
+        elif self.command == "L":
+            turn = 90
+        self.command = 'S'
         self.image = pygame.transform.rotate(self.image, turn)
         self.arrow = pygame.transform.rotate(self.arrow, turn)
         pos = (self.x, self.y)

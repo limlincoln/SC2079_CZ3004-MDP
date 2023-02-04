@@ -33,10 +33,9 @@ class NearestNeighbour:
                 cost = 9999999
 
             costList.append((commandPath, path, cost))
-        optimalPath = min(costList, key=lambda tup : tup[2])
+        optimalPath = min(costList, key=lambda tup: tup[2])
         print("Optimal path" , optimalPath[0])
         print("coords", optimalPath[1])
-        print("Comamnd List:", self.convertToCommands(list(optimalPath[0])))
         self.commandList = list(optimalPath[0])
         self.optimalPathWithCoords = optimalPath[1]
 
@@ -53,15 +52,18 @@ class NearestNeighbour:
         counter = 0
         for ob in targetLocations:
             aStar = Astar(self.env, start, ob)
-            if aStar.computePath() == None:
+            next = aStar.computePath()
+            if next == None:
                 print("no path found!!")
                 break
             newPath = aStar.getPath()
             path.extend(newPath)
             cPath = aStar.getCommandPath()
             commandPath.extend(cPath)
-            start = ob
+            start = next
             counter += 1
+            """
+            """
         if counter != 5:
             print("Path is incomplete!!!")
             path = []
@@ -83,7 +85,7 @@ class NearestNeighbour:
         counter = 0
         for x in path:
             if x[1] == prev:
-                counter +=1
+                counter += 1
             else:
                 string = str(counter) + prev
                 commandList.append(string)

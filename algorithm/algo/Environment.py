@@ -80,9 +80,8 @@ class StaticEnvironment:
 
                 targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM))
             elif ob.imageOrientation == "left":
-
                 targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT))
             else:
 
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 50, DIRECTION.TOP))
+                targetLocations.append((ob.pos[0] + 10, ob.pos[1] - 50, DIRECTION.TOP))
         return targetLocations

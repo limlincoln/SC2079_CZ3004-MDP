@@ -63,10 +63,13 @@ class Simulator:
         Set up screen
         :return:
         """
-        self.text = self.font.render("Command:" + self.commandList[self.commandCounter][1], True, settings.GREEN, settings.BLUE)
-        self.text.get_rect().center = (600,400)
-        self.screen.blit(self.text, self.text.get_rect())
-
+        if len(self.commandList) > 0:
+            self.text = self.font.render("Command:" + self.commandList[self.commandCounter][1], True, settings.GREEN, settings.BLUE)
+            self.text.get_rect().center = (600,400)
+            self.screen.blit(self.text, self.text.get_rect())
+            direction = self.font.render("Direction:" + self.commandList[self.commandCounter][0].name, True, settings.GREEN, settings.BLUE)
+            direction.get_rect().center = (600, 200)
+            self.screen.blit(direction, (0,50))
 
     def events(self):
         """
@@ -76,7 +79,7 @@ class Simulator:
 
         for event in pygame.event.get():
             if event.type == self.moveCar:
-                if self.commandCounter < len(self.commandList):
+                if self.commandCounter < len(self.commandList)-1:
                     self.robot.moveToDo(self.optimalCoords[self.commandCounter], self.screen)
                     self.commandCounter += 1
                 self.arena.updateGrid(self.robot, self.screen)

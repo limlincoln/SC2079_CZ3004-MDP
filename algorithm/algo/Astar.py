@@ -32,8 +32,9 @@ class Astar:
         for index, c in enumerate(commandList):
             if self.env.isWalkable(c[0], c[1], 0):
                 if index == constants.MOVEMENT.RIGHT.value or index == constants.MOVEMENT.LEFT.value:
-                    "working"
                     neighbours.append((c, turnPenalty+50))
+                elif index == constants.MOVEMENT.REVERSE.value:
+                    neighbours.append((c, timeCost+15))
                 else:
                     neighbours.append((c, timeCost))
         return neighbours
@@ -53,6 +54,7 @@ class Astar:
         """
         YOLO A star attempt
         :return:
+
         """
         frontier = PriorityQueue()
         backtrack = dict()
@@ -67,6 +69,7 @@ class Astar:
         backtrack[startNode] = None
 
         while not frontier.empty():
+
             priority, _, currentNode = frontier.get()
             if currentNode[:3] == goalNode[:3]:
                 self.extractCommands(backtrack, currentNode)
@@ -75,16 +78,18 @@ class Astar:
             for newNode, weight in self.getNeighbours(currentNode):
 
                 newCost = cost[currentNode] + weight
-                print(newCost)
 
                 if newNode not in backtrack or newCost < cost[newNode]:
+                    cost[newNode] = newCost
                     offset += 1
                     priority = newCost + self.heuristic((newNode[0], newNode[1]), (goalNode[0], goalNode[1]))
                     backtrack[newNode] = currentNode
                     frontier.put((priority, offset, newNode))
-                    cost[newNode] = newCost
 
         return None
+
+
+
 
     def extractCommands(self, backtrack, goalNode):
         """
@@ -96,12 +101,10 @@ class Astar:
         """
         commands = []
         current = goalNode
-        while current:
-            current = backtrack.get(current, None)
-            if current:
-                commands.append(current)
-        commands.pop()
-        #commands.append(goalNode)
+        while current != self.start:
+            commands.append(current)
+            current = backtrack[current]
+        commands.append(self.start)
         commands.reverse()
         self.path.extend(commands)
 

@@ -69,7 +69,8 @@ class SimSum(unittest.TestCase):
 
         test = getTestObstacles()
         env = StaticEnvironment((200,200), test)
-        testCases = [(0,30), ]
+        testCases = [(10,70)]
+        print(env.isWalkable(testCases[0][0],testCases[0][1]))
 
 
 
