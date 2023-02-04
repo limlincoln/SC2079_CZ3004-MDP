@@ -21,10 +21,10 @@ class Command:
         """
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'S'))
-            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'RV'))
+            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'SV'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'S'))
-            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'RV'))
+            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'SV'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'S'))
             self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'SV'))
@@ -39,13 +39,13 @@ class Command:
         new pos after moving right
         """
         if self.pos[2] == DIRECTION.TOP:
-            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2])+1) % 4], 'R'))
+            self.commands.append((self.pos[0]+20, self.pos[1]-20, self.dirList[(self.dirList.index(self.pos[2])+1) % 4], 'R'))
         elif self.pos[2] == DIRECTION.LEFT:
-            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]+20, self.pos[1]+20, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
         elif self.pos[2] == DIRECTION.RIGHT:
-            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-20, self.pos[1]-20, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
         else:
-            self.commands.append((self.pos[0], self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-20, self.pos[1]+20, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
 
 
 
@@ -53,23 +53,23 @@ class Command:
         """
         turn left 90* (for now)
         :return:
-        new pos after moving right
+        new pos after moving left
         """
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append(
-                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-20, self.pos[1]-20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append(
-                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]+20, self.pos[1]-20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append(
-                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-20, self.pos[1]+20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         else:
             self.commands.append(
-                (self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]+20, self.pos[1]+20, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
 
 

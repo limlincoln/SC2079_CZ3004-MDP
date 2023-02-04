@@ -38,6 +38,7 @@ class Robot:
         self.image = pygame.transform.rotate(self.image, turn)
         self.arrow = pygame.transform.rotate(self.arrow, turn)
         pos = (self.x, self.y)
+        print(pos)
         self.car_rect.bottomleft = Arena.posConverter(pos)
         SCREEN.blit(self.image, self.car_rect)
         SCREEN.blit(self.arrow, self.car_rect)
@@ -48,8 +49,10 @@ class Robot:
         :param command: tuple (direction, command)
         :return:
         """
-        self.command = command[1]
-
+        self.command = command[3]
+        self.x = command[0]
+        self.y = command[1]
+        """
         # if the car is going straight or reverse
         if self.command == 'S':
             if command[0] == DIRECTION.TOP:
@@ -61,7 +64,7 @@ class Robot:
             else:
                 self.y -= 10
         # if car is going reverse:
-        elif self.command == 'RV':
+        elif self.command == 'SV':
             if command[0] == DIRECTION.TOP:
                 self.y -= 10
             elif command[0] == DIRECTION.LEFT:
@@ -72,26 +75,42 @@ class Robot:
                 self.y += 10
         # if car going to turn right:
         elif self.command == 'R':
+            print(command)
+
             if command[0] == DIRECTION.TOP:
-                pass
+                self.x += 20
+                self.y += 20
 
             elif command[0] == DIRECTION.LEFT:
-                pass
+                self.x -= 20
+                self.y += 20
 
             elif command[0] == DIRECTION.RIGHT:
-                pass
+
+                self.x += 20
+                self.y -= 20
             else:
-                pass
+
+                self.x -= 20
+                self.y -= 20
         # if the car is to turn left:
         elif self.command == 'L':
+
             if command[0] == DIRECTION.TOP:
-                pass
+                self.x -= 20
+                self.y += 20
 
             elif command[0] == DIRECTION.LEFT:
-                pass
+                self.x -= 20
+                self.y -= 20
 
             elif command[0] == DIRECTION.RIGHT:
-                pass
+                self.x += 20
+                self.y += 20
             else:
-                pass
+                self.x += 20
+                self.y -= 20
 
+        
+        
+        """

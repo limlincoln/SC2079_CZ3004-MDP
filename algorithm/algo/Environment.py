@@ -21,18 +21,18 @@ class StaticEnvironment:
         :param y: int
             y coordinate
         :param time: float
-                robotRect = Rectangle((x,y), 'R')
-        for obstacle in self.obstacles:
-            pos = Rectangle(obstacle.pos, 'O')
-            if robotRect.isCollided(pos):
-                return False
+
 
         :return:
         true if walkable
         """
         if x < 0 or x > (self.dimensions[0]-30) or y < 0 or (y > self.dimensions[1]-30):
             return False
-
+        robotRect = Rectangle((x,y), 'R')
+        for obstacle in self.obstacles:
+            pos = Rectangle(obstacle.pos, 'O')
+            if robotRect.isCollided(pos):
+                return False
         return True
 
     def isWalkableV2(self, x,y, time=0):

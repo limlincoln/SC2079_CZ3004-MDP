@@ -1,5 +1,7 @@
 import pygame
 from algorithm import settings
+from algorithm.Entities.Rectangle import Rectangle
+from algorithm.Entities.Obstacle import Obstacle
 """
 Represents the navigational area (default: 20x20 grid of 10x10cm grid cells)
 """
@@ -23,7 +25,8 @@ class Arena:
             ob.bottomleft = obstacle.gridPosition
             self.obList.append(ob)
             pygame.draw.rect(SCREEN, settings.GREEN, ob)
-            self.drawBorder(obstacle,SCREEN,RED,ob)
+            self.drawBorder(obstacle, SCREEN, RED, ob)
+            self.drawInvisibleObstacle(obstacle,SCREEN, (0, 100, 255))
 
     def drawBorder(self, obstacle,  SCREEN, COLOUR, ob):
         if obstacle.imageOrientation == "top":
@@ -35,9 +38,19 @@ class Arena:
         elif obstacle.imageOrientation == "left":
             pygame.draw.line(SCREEN, COLOUR, ob.topleft, ob.bottomleft, 2)
 
+    def drawInvisibleObstacle(self, obstacle: Obstacle, SCREEN, COLOUR):
+        newRect = Rectangle(obstacle.pos, 'O')
+        dim = ((newRect.length//10)*settings.BLOCK_SIZE, (newRect.length//10)*settings.BLOCK_SIZE)
+        rectOb = pygame.Rect(obstacle.pos, dim)
+        rectOb.topleft = self.posConverter((newRect.x, newRect.y))
+        pygame.draw.line(SCREEN, COLOUR, rectOb.topleft, rectOb.topright, 2)
+        pygame.draw.line(SCREEN, COLOUR, rectOb.topright, rectOb.bottomright, 2)
+        pygame.draw.line(SCREEN, COLOUR, rectOb.bottomleft, rectOb.bottomright, 2)
+        pygame.draw.line(SCREEN, COLOUR, rectOb.topleft, rectOb.bottomleft, 2)
     def drawStuff(self, stuff: list[tuple], SCREEN, COLOUR):
         for s in stuff:
             pygame.draw.circle(SCREEN, COLOUR, self.posConverter(s), 20)
+
     def updateGrid(self, robot, SCREEN):
         SCREEN.fill((0,0,0))
         self.drawGrid(SCREEN)

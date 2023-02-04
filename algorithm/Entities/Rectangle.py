@@ -9,9 +9,9 @@ class Rectangle:
             self.y = pos[1] + 30
             self.length = 30
         elif type == 'O':
-            self.x = pos[0]
-            self.y = pos[0] + 10
-            self.length = 10
+            self.x = pos[0] - 10
+            self.y = pos[1] + 20
+            self.length = 20
 
     def isCollided(self, rec2):
         """

@@ -16,7 +16,7 @@ class Simulator:
     def __init__(self, env, obstacles):
         self.running = False
         self.commandList = []
-        self.screen = None
+        self.screen : pygame.Surface = None
         self.clock = None
         self.env = env
         self.arena = None
@@ -24,6 +24,9 @@ class Simulator:
         self.robot = None
         self.commandCounter = 0
         self.moveCar = None
+        self.text = None
+        self.font = None
+        self.optimalCoords = None
     def init(self):
         """
         set up the simulator
@@ -35,9 +38,15 @@ class Simulator:
         self.clock = pygame.time.Clock()
         self.screen.fill(settings.BLACK)
         pygame.display.set_caption("Calculating Path...")
+        self.font = pygame.font.Font('assets/font.ttf', 32)
+        text = self.font.render("Initiating.... Please Wait", True, settings.GREEN, settings.BLUE)
+        self.text = text
+        self.text.get_rect().center = (600, 400)
+        self.screen.blit(self.text, self.text.get_rect())
         TSP = NearestNeighbour(self.env, (0,0, DIRECTION.TOP, 'P'))
-        self.commandList = TSP.computeSequence()
-        print("path:", self.commandList)
+        TSP.computeSequence()
+        self.commandList = TSP.getCommandList()
+        self.optimalCoords = TSP.getOptimalWithCoords()
         pygame.display.set_caption("Starting simulator....")
         self.arena = Arena(self.obstacles, 400 + settings.GRID_OFFSET, 400 + settings.GRID_OFFSET, settings.BLOCK_SIZE)
         self.arena.drawStuff(self.env.generateTargetLocation(), self.screen, settings.GREEN)
@@ -47,12 +56,16 @@ class Simulator:
         self.moveCar = pygame.USEREVENT + 0
         pygame.time.set_timer(self.moveCar, 1000)
 
+
+
     def render(self):
         """
         Set up screen
         :return:
-
         """
+        self.text = self.font.render("Command:" + self.commandList[self.commandCounter][1], True, settings.GREEN, settings.BLUE)
+        self.text.get_rect().center = (600,400)
+        self.screen.blit(self.text, self.text.get_rect())
 
 
     def events(self):
@@ -64,10 +77,10 @@ class Simulator:
         for event in pygame.event.get():
             if event.type == self.moveCar:
                 if self.commandCounter < len(self.commandList):
-                    print("working")
-                    self.robot.moveToDo(self.commandList[self.commandCounter], self.screen)
+                    self.robot.moveToDo(self.optimalCoords[self.commandCounter], self.screen)
                     self.commandCounter += 1
                 self.arena.updateGrid(self.robot, self.screen)
+                self.arena.drawStuff(self.env.generateTargetLocation(), self.screen, settings.GREEN)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -77,6 +90,6 @@ class Simulator:
         """run for real"""
         while self.running:
             self.events()
-            #self.render()
+            self.render()
 
 

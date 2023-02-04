@@ -31,8 +31,9 @@ class Astar:
 
         for index, c in enumerate(commandList):
             if self.env.isWalkable(c[0], c[1], 0):
-                if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT:
-                    neighbours.append((c, turnPenalty+100))
+                if index == constants.MOVEMENT.RIGHT.value or index == constants.MOVEMENT.LEFT.value:
+                    "working"
+                    neighbours.append((c, turnPenalty+50))
                 else:
                     neighbours.append((c, timeCost))
         return neighbours
@@ -74,6 +75,7 @@ class Astar:
             for newNode, weight in self.getNeighbours(currentNode):
 
                 newCost = cost[currentNode] + weight
+                print(newCost)
 
                 if newNode not in backtrack or newCost < cost[newNode]:
                     offset += 1
@@ -97,10 +99,14 @@ class Astar:
         while current:
             current = backtrack.get(current, None)
             if current:
-                commands.append(current[2:4])
-
+                commands.append(current)
+        commands.pop()
+        #commands.append(goalNode)
         commands.reverse()
         self.path.extend(commands)
 
     def getPath(self):
         return self.path
+    def getCommandPath(self):
+        commandList = [x[2:4] for x in self.path]
+        return commandList

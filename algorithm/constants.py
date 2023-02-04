@@ -17,7 +17,7 @@ class DIRECTIONINT(Enum):
     BOTTOM = 3
 
 
-class MOVEMENT(Enum):
+class MOVEMENT(IntEnum):
     FORWARD = 0
     REVERSE = 1
     LEFT = 2
@@ -28,6 +28,6 @@ class COST(IntEnum):
     INFINITE_COST = 9999
     MOVE_COST = 10
     MOVE_COST_DIAG = 15
-    TURN_COST = 20
+    TURN_COST = 30
     TURN_COST_DIAG = 10
     WAYPOINT_PENALTY = 1000

@@ -7,6 +7,8 @@ from RRT import RRT
 from algorithm.Entities.Obstacle import Obstacle
 from Astar import Astar
 from algorithm.DataPopulator import getTestObstacles
+
+
 class SimSum(unittest.TestCase):
 
     def testDubins(self):
@@ -63,6 +65,12 @@ class SimSum(unittest.TestCase):
                 print("not okay", image)
 
         print("Astar OK")
+    def testCollision(self):
+
+        test = getTestObstacles()
+        env = StaticEnvironment((200,200), test)
+        testCases = [(0,30), ]
+
 
 
 if __name__ == '__main__':
