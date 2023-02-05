@@ -8,6 +8,11 @@ class DIRECTION(Enum):
     RIGHT = 0
     LEFT = np.pi
     BOTTOM = -(np.pi / 2)
+    NORTHWEST = np.pi - np.pi / 4
+    NORTHEAST = np.pi / 4
+    SOUTHEAST = -(np.pi / 4)
+    SOUTHWEST = -(np.pi - np.pi / 4)
+
 
 
 class DIRECTIONINT(Enum):
@@ -15,6 +20,11 @@ class DIRECTIONINT(Enum):
     RIGHT = 1
     LEFT = 2
     BOTTOM = 3
+    NORTHWEST = 4
+    NORTHEAST = 5
+    SOUTHEAST = 6
+    SOUTHWEST = 7
+
 
 
 class MOVEMENT(IntEnum):
@@ -22,6 +32,8 @@ class MOVEMENT(IntEnum):
     REVERSE = 1
     LEFT = 2
     RIGHT = 3
+    LEFTDIAG = 4
+    RIGHTDIAG = 5
 
 
 class COST(IntEnum):

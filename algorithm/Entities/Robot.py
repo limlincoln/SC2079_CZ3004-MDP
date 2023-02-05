@@ -29,14 +29,13 @@ class Robot:
         :param SCREEN: SCREEN
         :return: None
         """
-        turn = 0
         if self.command == "R":
-            turn = -90
+           # self.image = pygame.transform.rotate(self.image, -90)
+            self.arrow = pygame.transform.rotate(self.arrow, 180)
         elif self.command == "L":
-            turn = 90
+           # self.image = pygame.transform.rotate(self.image, 90)
+            self.arrow = pygame.transform.rotate(self.arrow, -180)
         self.command = 'S'
-        self.image = pygame.transform.rotate(self.image, turn)
-        self.arrow = pygame.transform.rotate(self.arrow, turn)
         pos = (self.x, self.y)
         print(pos)
         self.car_rect.bottomleft = Arena.posConverter(pos)

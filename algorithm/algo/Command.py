@@ -6,6 +6,7 @@ class Command:
         self.pos = pos
         self.commands = []
         self.dirList = [DIRECTION.TOP, DIRECTION.RIGHT, DIRECTION.BOTTOM, DIRECTION.LEFT]
+        self.diaDirList = [DIRECTION.NORTHEAST, DIRECTION.SOUTHEAST, DIRECTION.SOUTHWEST, DIRECTION.NORTHWEST]
 
     def getCommands(self):
         self.moveStraight()
@@ -20,17 +21,24 @@ class Command:
         new pos forward and backward
         """
         if self.pos[2] == DIRECTION.TOP:
-            self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'S'))
-            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'SV'))
+            self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'S'))
+            self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'SV'))
+
         elif self.pos[2] == DIRECTION.LEFT:
-            self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'S'))
-            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'SV'))
+            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'S'))
+            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'SV'))
+
         elif self.pos[2] == DIRECTION.RIGHT:
-            self.commands.append((self.pos[0] + 10, self.pos[1], self.pos[2], 'S'))
-            self.commands.append((self.pos[0] - 10, self.pos[1], self.pos[2], 'SV'))
+            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'S'))
+            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'SV'))
+
+        elif self.pos[2] == DIRECTION.NORTHWEST:
+            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'S'))
+            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'SV'))
+
         else:
-            self.commands.append((self.pos[0], self.pos[1] - 10, self.pos[2], 'S'))
-            self.commands.append((self.pos[0], self.pos[1] + 10, self.pos[2], 'SV'))
+            self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'S'))
+            self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'SV'))
 
     def moveRight(self):
         """
@@ -39,13 +47,13 @@ class Command:
         new pos after moving right
         """
         if self.pos[2] == DIRECTION.TOP:
-            self.commands.append((self.pos[0]+settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2])+1) % 4], 'R'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], 'R'))
         elif self.pos[2] == DIRECTION.LEFT:
-            self.commands.append((self.pos[0]+settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], 'R'))
         elif self.pos[2] == DIRECTION.RIGHT:
-            self.commands.append((self.pos[0]-settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], 'R'))
         else:
-            self.commands.append((self.pos[0]-settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], 'R'))
 
 
 
@@ -57,22 +65,41 @@ class Command:
         """
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append(
-                (self.pos[0]-settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 2) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append(
-                (self.pos[0]+settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]+settings.TURNING_RADIUS, self.pos[1]-settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 2) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append(
-                (self.pos[0]-settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 2) % 4],
                  'L'))
         else:
             self.commands.append(
-                (self.pos[0]+settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]+settings.TURNING_RADIUS, self.pos[1]+settings.TURNING_RADIUS, self.dirList[abs(self.dirList.index(self.pos[2]) - 2) % 4],
                  'L'))
 
 
 
 
 
+"""
+        elif self.pos[2] == DIRECTION.NORTHEAST:
+            self.commands.append(
+                (self.pos[0] + settings.SPEED_FACTOR, self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'S'))
+            self.commands.append(
+                (self.pos[0] - settings.SPEED_FACTOR, self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'SV'))
+
+        elif self.pos[2] == DIRECTION.SOUTHWEST:
+            self.commands.append(
+                (self.pos[0] - settings.SPEED_FACTOR, self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'S'))
+            self.commands.append(
+                (self.pos[0] + settings.SPEED_FACTOR, self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'SV'))
+
+        elif self.pos[2] == DIRECTION.SOUTHEAST:
+            self.commands.append(
+                (self.pos[0] + settings.SPEED_FACTOR, self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'S'))
+            self.commands.append(
+                (self.pos[0] - settings.SPEED_FACTOR, self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'SV'))
+"""

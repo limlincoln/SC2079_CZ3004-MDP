@@ -7,7 +7,7 @@ from RRT import RRT
 from algorithm.Entities.Obstacle import Obstacle
 from Astar import Astar
 from algorithm.DataPopulator import getTestObstacles
-
+from algorithm.simulator import Simulator
 
 class SimSum(unittest.TestCase):
 
@@ -41,11 +41,11 @@ class SimSum(unittest.TestCase):
         rrt = RRT(env)
 
         start = env.randomFreeSpace()
-        end = env.randomFreeSpace()
+        end = env.generateTargetLocationInRads()[1]
 
         rrt.setStart(start)
         rrt.computePath(end, 200, metric='local')
-        rrt.getPath(True)
+        print(rrt.getPath(True))
         print('Static ok')
     def testAstar(self):
         """
@@ -71,6 +71,13 @@ class SimSum(unittest.TestCase):
         env = StaticEnvironment((200,200), test)
         testCases = [(10,70)]
         print(env.isWalkable(testCases[0][0],testCases[0][1]))
+
+    def testSimulator(self):
+        obs = getTestObstacles()
+        sim = Simulator(StaticEnvironment((200, 200), obs), obs, True)
+        sim.init()
+        sim.run()
+
 
 
 

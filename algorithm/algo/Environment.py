@@ -85,3 +85,22 @@ class StaticEnvironment:
 
                 targetLocations.append((ob.pos[0] + 10, ob.pos[1] - 50, DIRECTION.TOP))
         return targetLocations
+
+    def generateTargetLocationInRads(self):
+        """
+        same stuff as the generateTargetLocation but in rads
+        :return:
+        """
+
+        targetLocations = []
+        for ob in self.obstacles:
+            if ob.imageOrientation == "right":
+                targetLocations.append((ob.pos[0] + 50, ob.pos[1] - 10, DIRECTION.LEFT.value))
+            elif ob.imageOrientation == "top":
+
+                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM.value))
+            elif ob.imageOrientation == "left":
+                targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT.value))
+            else:
+                targetLocations.append((ob.pos[0] + 10, ob.pos[1] - 50, DIRECTION.TOP.value))
+        return targetLocations

@@ -7,13 +7,13 @@ from algorithm.Entities.Robot import Robot
 from algorithm.algo.Environment import StaticEnvironment
 from algorithm.constants import DIRECTION
 from algorithm.algo.TSP import NearestNeighbour
-
+from algorithm.algo.Astar import Astar
 class Simulator:
     """
     Main class for the simulator
     """
 
-    def __init__(self, env, obstacles):
+    def __init__(self, env, obstacles, shortestPath):
         self.running = False
         self.commandList = []
         self.screen : pygame.Surface = None
@@ -27,6 +27,7 @@ class Simulator:
         self.text = None
         self.font = None
         self.optimalCoords = None
+        self.shortestPath = shortestPath
     def init(self):
         """
         set up the simulator
@@ -43,10 +44,19 @@ class Simulator:
         self.text = text
         self.text.get_rect().center = (600, 400)
         self.screen.blit(self.text, self.text.get_rect())
-        TSP = NearestNeighbour(self.env, (0,0, DIRECTION.TOP, 'P'))
-        TSP.computeSequence()
-        self.commandList = TSP.getCommandList()
-        self.optimalCoords = TSP.getOptimalWithCoords()
+        if self.shortestPath:
+
+            TSP = Astar(self.env, (0,0, DIRECTION.TOP, 'P'), self.env.generateTargetLocation()[0])
+            TSP.computePath()
+            self.optimalCoords = TSP.getPath()
+            self.commandList = TSP.getCommandPath()
+            print("yo")
+        else:
+            TSP = NearestNeighbour(self.env, (0,0, DIRECTION.TOP, 'P'))
+            TSP.computeSequence()
+            self.commandList = TSP.getCommandList()
+            self.optimalCoords = TSP.getOptimalWithCoords()
+
         pygame.display.set_caption("Starting simulator....")
         self.arena = Arena(self.obstacles, 400 + settings.GRID_OFFSET, 400 + settings.GRID_OFFSET, settings.BLOCK_SIZE)
         self.arena.drawStuff(self.env.generateTargetLocation(), self.screen, settings.GREEN)

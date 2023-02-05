@@ -2,6 +2,7 @@ from algorithm.algo.Environment import StaticEnvironment
 from algorithm.algo.NodeNEdges import Node, Edge
 from algorithm.algo.Dubins import Dubins, dist
 import numpy as np
+from algorithm.constants import DIRECTION
 class RRT:
     def __init__(self, environment : StaticEnvironment, precision=(5, 5, 1)):
         self.environment = environment
@@ -22,10 +23,8 @@ class RRT:
         """
         self.nodes = {}
         self.edges = {}
-        self.nodes[start] = Node(start, 0, 0)
+        self.nodes[start] = Node(start, 0, DIRECTION.TOP.value)
         self.root = start
-
-
 
 
 
