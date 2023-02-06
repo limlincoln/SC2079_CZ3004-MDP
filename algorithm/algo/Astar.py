@@ -31,10 +31,13 @@ class Astar:
 
         for index, c in enumerate(commandList):
             if self.env.isWalkable(c[0], c[1], 0):
-                if index == constants.MOVEMENT.RIGHT.value or index == constants.MOVEMENT.LEFT.value:
-                    neighbours.append((c, turnPenalty+50))
-                elif index == constants.MOVEMENT.REVERSE.value:
+                if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT or \
+                        index == constants.MOVEMENT.REVLEFT or index == constants.MOVEMENT.REVRIGHT:
+                    neighbours.append((c, turnPenalty))
+                elif index == constants.MOVEMENT.REVERSE:
                     neighbours.append((c, timeCost+15))
+                elif index  == constants.MOVEMENT.TURN_O_LEFT or index == constants.MOVEMENT.TURN_O_RIGHT:
+                    neighbours.append((c, turnPenalty * 2))
                 else:
                     neighbours.append((c, timeCost))
         return neighbours

@@ -17,9 +17,9 @@ class Robot:
         self.image = pygame.transform.scale(pygame.image.load("assets/car.png"), (3 * settings.BLOCK_SIZE, 3
                                                                                   * settings.BLOCK_SIZE))
         self.car_rect = self.image.get_rect()
-        self.arrow = pygame.transform.scale(pygame.image.load("assets/icons8-arrow-100.png"), (3 * settings.BLOCK_SIZE,
-                                                                                               3 * settings.BLOCK_SIZE))
-        self.arrow = pygame.transform.rotate(self.arrow, 90)
+        #self.arrow = pygame.transform.scale(pygame.image.load("assets/icons8-arrow-100.png"), (3 * settings.BLOCK_SIZE,
+                                                                                              # 3 * settings.BLOCK_SIZE))
+        #self.arrow = pygame.transform.rotate(self.arrow, 90)
         self.command = "S"
         self.obstacles = ob
 
@@ -30,17 +30,19 @@ class Robot:
         :return: None
         """
         if self.command == "R":
+            pass
            # self.image = pygame.transform.rotate(self.image, -90)
-            self.arrow = pygame.transform.rotate(self.arrow, 180)
+          #  self.arrow = pygame.transform.rotate(self.arrow, 180)
         elif self.command == "L":
+            pass
            # self.image = pygame.transform.rotate(self.image, 90)
-            self.arrow = pygame.transform.rotate(self.arrow, -180)
+           # self.arrow = pygame.transform.rotate(self.arrow, -180)
         self.command = 'S'
         pos = (self.x, self.y)
         print(pos)
         self.car_rect.bottomleft = Arena.posConverter(pos)
         SCREEN.blit(self.image, self.car_rect)
-        SCREEN.blit(self.arrow, self.car_rect)
+       # SCREEN.blit(self.arrow, self.car_rect)
 
     def moveToDo(self, command: tuple, SCREEN):
         """

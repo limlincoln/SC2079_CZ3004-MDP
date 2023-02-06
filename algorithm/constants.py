@@ -32,14 +32,16 @@ class MOVEMENT(IntEnum):
     REVERSE = 1
     LEFT = 2
     RIGHT = 3
-    LEFTDIAG = 4
-    RIGHTDIAG = 5
+    REVRIGHT = 4
+    REVLEFT = 5
+    TURN_O_RIGHT = 6
+    TURN_O_LEFT = 7
 
 
 class COST(IntEnum):
     INFINITE_COST = 9999
     MOVE_COST = 10
     MOVE_COST_DIAG = 15
-    TURN_COST = 30
+    TURN_COST = 999
     TURN_COST_DIAG = 10
     WAYPOINT_PENALTY = 1000

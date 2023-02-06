@@ -13,7 +13,7 @@ from algorithm.constants import MOVEMENT
 
 def main():
     obs = getTestObstacles()
-    sim = Simulator(StaticEnvironment((200,200), obs), obs, True)
+    sim = Simulator(StaticEnvironment((200,200), obs), obs, False)
     sim.init()
     sim.run()
 
