@@ -15,7 +15,7 @@ from config import *
 
 
 # Command
-# cd /home/RP03/Desktop/Python\ Test
+# cd /home/RP03/Desktop/Python\ Test/SC2079_CZ3004-MDP/RPI/Multithreading
 # python server_main_thread.py 
 
 #signal(SIGPIPE,SIG_DFL)

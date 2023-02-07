@@ -21,6 +21,12 @@ from bluetooth_thread import *
 # cd /home/RP03/Desktop/Python\ Test/SC2079_CZ3004-MDP/RPI/Multithreading
 # python main_thread.py 
 
+# Git Command
+# git pull 
+# git add -A
+# git commit -m ""
+# git push
+
 if __name__ == '__main__':
     if not os.path.exists("image_result"):
         os.makedirs("image_result")

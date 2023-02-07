@@ -6,7 +6,7 @@ $Id: rfcomm-server.py 518 2007-08-10 07:20:07Z albert $
 """
 
 # Command
-# cd /home/RP03/Desktop/Python\ Test
+# cd /home/RP03/Desktop/Python\ Test/SC2079_CZ3004-MDP/RPI/Multithreading
 # python bluetooth_thread.py 
 
 # To get uuid
