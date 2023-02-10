@@ -1,15 +1,8 @@
-import sys
-import pygame
-import algorithm.settings as settings
-from algorithm.Entities.arena import Arena
-from algorithm.Entities.Obstacle import Obstacle
-from algorithm.Entities.Robot import Robot
+from algorithm.DataPopulator import getTestObstacles
 from algorithm.algo.Environment import StaticEnvironment
-from algorithm.constants import DIRECTION
-from algorithm.algo.TSP import NearestNeighbour
-from algorithm.simulator import Simulator
-from DataPopulator import getTestObstacles
 from algorithm.constants import MOVEMENT
+from algorithm.simulator import Simulator
+
 
 def main():
     obs = getTestObstacles()

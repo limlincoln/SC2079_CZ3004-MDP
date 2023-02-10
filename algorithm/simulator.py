@@ -24,10 +24,13 @@ class Simulator:
         self.robot = None
         self.commandCounter = 0
         self.moveCar = None
+        self.timer = None
         self.text = None
         self.font = None
         self.optimalCoords = None
         self.shortestPath = shortestPath
+        self.timeCounter = 0
+        self.textTimer = None
     def init(self):
         """
         set up the simulator
@@ -64,8 +67,9 @@ class Simulator:
         self.arena.drawGrid(self.screen)
         self.robot.drawCar(self.screen)
         self.moveCar = pygame.USEREVENT + 0
+        self.timer = pygame.USEREVENT + 1
         pygame.time.set_timer(self.moveCar, 1000)
-
+        pygame.time.set_timer(self.timer, 1000)
 
 
     def render(self):
@@ -80,6 +84,9 @@ class Simulator:
             direction = self.font.render("Direction:" + self.commandList[self.commandCounter][0].name, True, settings.GREEN, settings.BLUE)
             direction.get_rect().center = (600, 200)
             self.screen.blit(direction, (0,50))
+            self.textTimer = self.font.render("Time ( secs):" +str(self.timeCounter), True, settings.GREEN, settings.BLUE)
+            self.textTimer.get_rect().center = (600, 600)
+            self.screen.blit(self.textTimer,(0, 80))
 
     def events(self):
         """
@@ -94,6 +101,9 @@ class Simulator:
                     self.commandCounter += 1
                 self.arena.updateGrid(self.robot, self.screen)
                 self.arena.drawStuff(self.env.generateTargetLocation(), self.screen, settings.GREEN)
+            if event.type == self.timer:
+                self.timeCounter += 1
+
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()

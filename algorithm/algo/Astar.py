@@ -37,11 +37,21 @@ class Astar:
                 elif index == constants.MOVEMENT.REVERSE:
                     neighbours.append((c, timeCost+15))
                 elif index  == constants.MOVEMENT.TURN_O_LEFT or index == constants.MOVEMENT.TURN_O_RIGHT:
-                    neighbours.append((c, turnPenalty * 2))
+                    if self.onTheSpotCheck(self.env, (c[0], c[1]), c[2]):
+                        neighbours.append((c, turnPenalty * 2))
                 else:
                     neighbours.append((c, timeCost))
         return neighbours
 
+    def onTheSpotCheck(self,env: StaticEnvironment, pos, direction):
+        if direction == constants.DIRECTION.TOP:
+            return  env.isWalkable(pos[0], pos[1]-25, 0)
+        elif direction == constants.DIRECTION.RIGHT:
+            return env.isWalkable(pos[0]-25, pos[1], 0)
+        elif direction  == constants.DIRECTION.LEFT:
+            return env.isWalkable(pos[0]+25, pos[1], 0)
+        else:
+            return env.isWalkable(pos[0], pos[1]-25,0)
     def heuristic(self, pos, end):
         """
 
