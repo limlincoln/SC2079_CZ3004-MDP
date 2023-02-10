@@ -16,6 +16,8 @@ from config import *
 from PC_thread import *
 from bluetooth_thread import *
 
+from STM_thread import *
+
 
 # Command
 # cd /home/RP03/Desktop/Python\ Test/SC2079_CZ3004-MDP/RPI/Multithreading
@@ -31,18 +33,49 @@ if __name__ == '__main__':
     if not os.path.exists("image_result"):
         os.makedirs("image_result")
     
+    
     # Create Queue objects for tranferring data among threads
-    img_results = Queue(maxsize=1)
+    img_label = Queue(maxsize=1)
+    img_valid = Queue(maxsize=1)
     shoot_signal = Queue(maxsize=1)
-    PC_close_signal = Queue(maxsize=1)
+    # PC_close_signal = Queue(maxsize=1)
+    STM_msg = Queue(maxsize=1)
+    run_cmd = Queue(maxsize=1)
+    setup_info = Queue(maxsize=1)
+    car_path = Queue(maxsize=1)
     
     # Start threads
-    PC_thread = Connect_PC_Client("PC Thread", img_results, shoot_signal, PC_close_signal)
+    #STM_thread = Connect_STM_Client("STM Listen Thread", STM_msg)
+    #STM_thread.start()
+    PC_thread = Connect_PC_Client("PC Thread", img_label, img_valid, shoot_signal, setup_info, car_path)
     PC_thread.start()
-    BLE_thread = Connect_Android_Client("BLE Thread", UUID, BLE_PORT, shoot_signal)
+    BLE_thread = Connect_Android_Client("BLE Thread", UUID, setup_info, run_cmd, img_label)
     BLE_thread.start()
     time.sleep(5)
     
+    # First, wait for the car path and the run command 
+    while car_path.empty():
+        time.sleep(0.1)
+    car_path_received = car_path.get() # ** data structrue TBD
+    
+    while run_cmd.empty():
+        time.sleep(0.1)
+    run_cmd_received = run_cmd.get()
+    
+    # Start sending commands to STM
+    while True:
+        # Suppose the shoot signal is activated
+        key = input("Press Enter to take a picture ...")
+        shoot_signal.put(0)
+    
+        # If image recognition is successful, send more commands to STM
+        is_img_valid = img_valid.get()
+        while not is_img_valid: # If nothing detected, let the car move a bit and take another picture
+            time.sleep(0.5)
+            shoot_signal.put(0)
+            is_img_valid = img_valid.get()
+    
+    '''
     # show current img recog results
     for i in range(3):
         while img_results.empty():
@@ -50,10 +83,11 @@ if __name__ == '__main__':
         res = img_results.get()
         print("Image Rec Results:", res)
     PC_close_signal.put(1)
-    
+    '''
     # Wait for threads to end
     PC_thread.join()
     BLE_thread.join()
+    #STM_thread.join()
     
     
     
