@@ -24,7 +24,7 @@ class NearestNeighbour:
         """
         permutations = list(itertools.permutations(self.targetLocations))
         costList = []
-        for perm in permutations:
+        for perm in permutations[:5]:
             commandPath, path = self.findPath(list(perm))
 
             if commandPath:
