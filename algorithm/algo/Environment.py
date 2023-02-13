@@ -51,8 +51,6 @@ class StaticEnvironment:
                 return False
         return True
 
-
-
     def randomFreeSpace(self):
         x = np.random.rand()*self.dimensions[0]
         y = np.random.rand()*self.dimensions[1]

@@ -35,10 +35,6 @@ class Command:
             self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'S'))
             self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'SV'))
 
-        elif self.pos[2] == DIRECTION.NORTHWEST:
-            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'S'))
-            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'SV'))
-
         else:
             self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'S'))
             self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'SV'))
@@ -50,7 +46,7 @@ class Command:
         new pos after moving right
         """
         if self.pos[2] == DIRECTION.TOP:
-            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
         elif self.pos[2] == DIRECTION.RIGHT:
@@ -120,11 +116,11 @@ class Command:
 
     def turnOntheSpot(self):
         self.commands.append((
-            self.pos[0],self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) + 1) % 4]
+            self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) + 1) % 4]
         , 'OR'))
 
         self.commands.append((
-            self.pos[0],self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4]
+            self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4]
         , "OL"))
 
 

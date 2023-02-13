@@ -24,15 +24,23 @@ class NearestNeighbour:
         """
         permutations = list(itertools.permutations(self.targetLocations))
         costList = []
-        for perm in permutations[:5]:
-            commandPath, path = self.findPath(list(perm))
+        lowestDistance = 999999
+        for perm in permutations:
+            distance = 0
+            for i in range(len(perm)-1):
+                distance += self.euclideanDistance(perm[i], perm[i+1])
 
-            if commandPath:
-                cost = self.calculateCost(commandPath)
+            if distance <= lowestDistance:
+                print(distance)
+                lowestDistance = distance
+                commandPath, path = self.findPath(list(perm))
+                if commandPath:
+                    cost = self.calculateCost(commandPath)
+                else:
+                    cost = 9999999
+                costList.append((commandPath, path, cost))
             else:
-                cost = 9999999
-
-            costList.append((commandPath, path, cost))
+                continue
         optimalPath = min(costList, key=lambda tup: tup[2])
         print("Optimal path" , optimalPath[0])
         print("coords", optimalPath[1])
