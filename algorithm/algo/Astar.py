@@ -36,9 +36,9 @@ class Astar:
                     neighbours.append((c, turnPenalty))
                 elif index == constants.MOVEMENT.REVERSE:
                     neighbours.append((c, timeCost+15))
-                elif index  == constants.MOVEMENT.TURN_O_LEFT or index == constants.MOVEMENT.TURN_O_RIGHT:
+                elif index == constants.MOVEMENT.TURN_O_LEFT or index == constants.MOVEMENT.TURN_O_RIGHT:
                     if self.onTheSpotCheck(self.env, (c[0], c[1]), c[2]):
-                        neighbours.append((c, turnPenalty * 2))
+                        neighbours.append((c, turnPenalty * 3))
                 else:
                     neighbours.append((c, timeCost))
         return neighbours
@@ -126,3 +126,7 @@ class Astar:
     def getCommandPath(self):
         commandList = [x[2:4] for x in self.path]
         return commandList
+
+    def getSTMCommands(self):
+        STMCommands = [x[3] for x in self.path]
+        return STMCommands

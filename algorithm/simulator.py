@@ -53,12 +53,12 @@ class Simulator:
             TSP.computePath()
             self.optimalCoords = TSP.getPath()
             self.commandList = TSP.getCommandPath()
-            print("yo")
         else:
             TSP = NearestNeighbour(self.env, (0,0, DIRECTION.TOP, 'P'))
             TSP.computeSequence()
             self.commandList = TSP.getCommandList()
             self.optimalCoords = TSP.getOptimalWithCoords()
+            print(TSP.getSTMCommands(self.optimalCoords))
 
         pygame.display.set_caption("Starting simulator....")
         self.arena = Arena(self.obstacles, 400 + settings.GRID_OFFSET, 400 + settings.GRID_OFFSET, settings.BLOCK_SIZE)
@@ -100,10 +100,12 @@ class Simulator:
                     if self.robot.command is None:
                         self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
                     elif self.robot.command.tick == 0:
-                        self.robot.moveToDo(self.optimalCoords[self.commandCounter])
+
                         self.commandCounter += 1
                         if self.commandCounter <= len(self.commandList) - 1:
                             self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
+                if self.commandCounter <= len(self.commandList) - 1:
+                    self.robot.moveToDo(self.optimalCoords[self.commandCounter])
                 print(self.robot.command.tick)
                 self.robot.command.yoloTick()
                 self.arena.updateGrid(self.robot, self.screen)

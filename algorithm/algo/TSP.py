@@ -89,6 +89,8 @@ class NearestNeighbour:
                 cost += 10
             elif command[1] == 'RR' or command[1] == 'RL':
                 cost += 8
+            elif command[1] == '3P':
+                cost += 10
         return cost
 
     def convertToCommands(self, path):
@@ -105,6 +107,11 @@ class NearestNeighbour:
             prev = x[1]
 
         return commandList
+
+    def getSTMCommands(self, path):
+        STMCommands = [x[3] for x in path]
+        return STMCommands
+
 
 
 
