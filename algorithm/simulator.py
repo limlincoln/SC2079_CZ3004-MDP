@@ -77,7 +77,7 @@ class Simulator:
         Set up screen
         :return:
         """
-        if len(self.commandList) > 0:
+        if len(self.commandList) > 0 and self.commandCounter <= len(self.commandList)-1:
             self.text = self.font.render("Command:" + self.commandList[self.commandCounter][1], True, settings.GREEN, settings.BLUE)
             self.text.get_rect().center = (600,400)
             self.screen.blit(self.text, self.text.get_rect())
@@ -96,9 +96,16 @@ class Simulator:
 
         for event in pygame.event.get():
             if event.type == self.moveCar:
-                if self.commandCounter < len(self.commandList)-1:
-                    self.robot.moveToDo(self.optimalCoords[self.commandCounter], self.screen)
-                    self.commandCounter += 1
+                if self.commandCounter <= len(self.commandList)-1:
+                    if self.robot.command is None:
+                        self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
+                    elif self.robot.command.tick == 0:
+                        self.robot.moveToDo(self.optimalCoords[self.commandCounter])
+                        self.commandCounter += 1
+                        if self.commandCounter <= len(self.commandList) - 1:
+                            self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
+                print(self.robot.command.tick)
+                self.robot.command.yoloTick()
                 self.arena.updateGrid(self.robot, self.screen)
                 self.arena.drawStuff(self.env.generateTargetLocation(), self.screen, settings.GREEN)
             if event.type == self.timer:
@@ -114,5 +121,6 @@ class Simulator:
         while self.running:
             self.events()
             self.render()
+            self.clock.tick(30)
 
 

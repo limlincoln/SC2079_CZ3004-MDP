@@ -84,11 +84,11 @@ class NearestNeighbour:
             if command[1] == 'S' or command[1] == 'SV':
                 cost += 1
             elif command[1] == 'R' or command[1] == 'L':
-                cost += 5
+                cost += 8
             elif command[1] == 'OL' or command[1] == 'OR':
                 cost += 10
             elif command[1] == 'RR' or command[1] == 'RL':
-                cost += 5
+                cost += 8
         return cost
 
     def convertToCommands(self, path):

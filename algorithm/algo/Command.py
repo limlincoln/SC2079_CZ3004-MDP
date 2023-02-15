@@ -64,11 +64,11 @@ class Command:
         """
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append(
-                (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append(
-                (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
+                (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append(
@@ -79,8 +79,8 @@ class Command:
                 (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
                  'L'))
 
-
     def faceRightReverse(self):
+
         """
         90 degrees full lock reverse
         :return:
@@ -122,6 +122,25 @@ class Command:
         self.commands.append((
             self.pos[0], self.pos[1], self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4]
         , "OL"))
+
+    def threePointTurn(self):
+        if self.pos[2] == DIRECTION.TOP:
+            self.commands.append((
+                self.pos[0],self.pos[1] - 90, self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], '3P'
+            ))
+        elif self.pos[2] == DIRECTION.RIGHT:
+            self.commands.append((
+                self.pos[0] - 90, self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], '3P'
+            ))
+        elif self.pos[2] == DIRECTION.LEFT:
+            self.commands.append((
+                self.pos[0] + 90, self.pos[1], self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], '3P'
+            ))
+        elif self.pos[2] == DIRECTION.BOTTOM:
+            self.commands.append((
+                self.pos[0], self.pos[1] + 90, self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], '3P'
+            ))
+
 
 
 

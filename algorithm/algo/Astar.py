@@ -45,10 +45,10 @@ class Astar:
 
     def onTheSpotCheck(self,env: StaticEnvironment, pos, direction):
         if direction == constants.DIRECTION.TOP:
-            return  env.isWalkable(pos[0], pos[1]-25, 0)
+            return env.isWalkable(pos[0], pos[1]-25, 0)
         elif direction == constants.DIRECTION.RIGHT:
             return env.isWalkable(pos[0]-25, pos[1], 0)
-        elif direction  == constants.DIRECTION.LEFT:
+        elif direction == constants.DIRECTION.LEFT:
             return env.isWalkable(pos[0]+25, pos[1], 0)
         else:
             return env.isWalkable(pos[0], pos[1]-25,0)
