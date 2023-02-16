@@ -4,6 +4,12 @@ Move command:
 
 
 
+Obstacle info:
+(created by Android)
+(received by PC)
+"Obstacle: #, Col: #, Row: #"
+"Obstacle: #, Facing: N/S/W/E"
+
 
 Complete path object:
 (created by PC)
