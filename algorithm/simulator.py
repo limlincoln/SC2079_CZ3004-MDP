@@ -115,8 +115,7 @@ class Simulator:
                             self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
                 if self.commandCounter <= len(self.commandList) - 1:
                     self.robot.moveToDo(self.optimalCoords[self.commandCounter])
-                print(self.robot.command.tick)
-                if self.robot.command.tick > 0:
+                if self.robot.command is not None and  self.robot.command.tick > 0:
                     self.robot.command.yoloTick()
                 self.arena.updateGrid(self.robot, self.screen)
                 self.arena.drawStuff(self.env.generateTargetLocation(), self.screen, settings.GREEN)
