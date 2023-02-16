@@ -3,6 +3,8 @@ from algorithm.algo.Command import Command
 from algorithm.algo.Environment import StaticEnvironment
 from algorithm.algo.Dubins import dist
 from queue import PriorityQueue
+
+
 class Astar:
     def __init__(self, env: StaticEnvironment, start, end):
         """
@@ -18,7 +20,7 @@ class Astar:
     def getNeighbours(self, pos):
         """
         Get next position relative to pos
-        a fix distance of 5 when travelling straight
+        a fix distance of 10 when travelling straight
         robot will always make a 90 degrees turn
         :param pos: tuple (x,y,direction in rads)
         :return: list[nodes]
@@ -44,6 +46,14 @@ class Astar:
         return neighbours
 
     def onTheSpotCheck(self,env: StaticEnvironment, pos, direction):
+        """
+        additional check for movment that requires reversing/turning
+        :param env: StaticEnvironment
+        :param pos: tuple
+        :param direction: Enum
+        :return: bool
+        true if walkable
+        """
         if direction == constants.DIRECTION.TOP:
             return env.isWalkable(pos[0], pos[1]-25, 0)
         elif direction == constants.DIRECTION.RIGHT:
@@ -103,7 +113,6 @@ class Astar:
 
 
 
-
     def extractCommands(self, backtrack, goalNode):
         """
         Extract dem commands to get to destination
@@ -122,11 +131,23 @@ class Astar:
         self.path.extend(commands)
 
     def getPath(self):
+        """
+        get the complete tuple path
+        :return: list(tuple)
+        """
         return self.path
     def getCommandPath(self):
+        """
+        get the parth with the direction and command
+        :return: list(tuple)
+        """
         commandList = [x[2:4] for x in self.path]
         return commandList
 
     def getSTMCommands(self):
+        """
+        get minimal version required to transmit to STM
+        :return: list(string)
+        """
         STMCommands = [x[3] for x in self.path]
         return STMCommands

@@ -6,7 +6,7 @@ from algorithm.constants import DIRECTION
 class RRT:
     def __init__(self, environment : StaticEnvironment, precision=(5, 5, 1)):
         self.environment = environment
-        self.targetLocations = self.environment.generateTargetLocation()
+        self.targetLocations = self.environment.getTargetLocation()
         self.nodes = {}
         self.edges = {}
         self.localPlanner = Dubins(25, 1)

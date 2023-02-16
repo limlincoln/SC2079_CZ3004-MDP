@@ -30,13 +30,13 @@ class Arena:
             self.drawInvisibleObstacle(obstacle,SCREEN, (0, 100, 255))
 
     def drawBorder(self, obstacle,  SCREEN, COLOUR, ob):
-        if obstacle.imageOrientation == "top":
+        if obstacle.imageOrientation == "N":
             pygame.draw.line(SCREEN, COLOUR, ob.topleft, ob.topright, 2)
-        elif obstacle.imageOrientation == "right":
+        elif obstacle.imageOrientation == "E":
             pygame.draw.line(SCREEN, COLOUR, ob.topright, ob.bottomright, 2)
-        elif obstacle.imageOrientation == "bottom":
+        elif obstacle.imageOrientation == "S":
             pygame.draw.line(SCREEN, COLOUR, ob.bottomleft, ob.bottomright, 2)
-        elif obstacle.imageOrientation == "left":
+        elif obstacle.imageOrientation == "W":
             pygame.draw.line(SCREEN, COLOUR, ob.topleft, ob.bottomleft, 2)
 
     def drawInvisibleObstacle(self, obstacle: Obstacle, SCREEN, COLOUR):

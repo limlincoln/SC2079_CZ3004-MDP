@@ -55,7 +55,7 @@ class SimSum(unittest.TestCase):
 
         test = getTestObstacles()
         env = StaticEnvironment((200, 200), test)
-        for image in env.generateTargetLocation():
+        for image in env.getTargetLocation():
             aStar = Astar(env, (0,0, DIRECTION.TOP, 'P'), image)
             aStar.computePath()
             path = aStar.getPath()

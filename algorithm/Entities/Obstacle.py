@@ -2,7 +2,8 @@ import algorithm.settings as settings
 
 
 class Obstacle:
-    def __init__(self, pos, imageOrientation, dimension):
+    def __init__(self, pos, imageOrientation, dimension, ObId):
+        self.ObId = ObId
         self.pos = pos
         self.imageOrientation = imageOrientation
         self.dimension = dimension

@@ -8,7 +8,7 @@ def main():
     obs = DataPopulator.getTestObstacles()
     obs1 = DataPopulator.getTestObstacles1()
     obs2 = DataPopulator.getTestObstacles2()
-    sim = Simulator(StaticEnvironment((200,200), obs1), obs1, False)
+    sim = Simulator(StaticEnvironment((200, 200), obs), obs, False)
     sim.init()
     sim.run()
 
@@ -16,7 +16,6 @@ def main():
 
 
 if __name__ == '__main__':
-    print(MOVEMENT.RIGHT.value)
     main()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

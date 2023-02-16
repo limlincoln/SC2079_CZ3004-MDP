@@ -38,9 +38,9 @@ class Robot:
             self.arrow = pygame.transform.rotate(self.arrow, -(
                     radiansToDegrees(self.oldOrientation) - radiansToDegrees(self.orientation)))
         self.oldOrientation = self.orientation
-        pos = (self.x, self.y)
-        print(pos)
-        self.car_rect.bottomleft = Arena.posConverter(pos)
+        self.pos = (self.x, self.y)
+        print(self.pos)
+        self.car_rect.bottomleft = Arena.posConverter(self.pos)
         SCREEN.blit(self.image, self.car_rect)
         SCREEN.blit(self.arrow, self.car_rect)
 

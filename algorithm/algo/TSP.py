@@ -1,15 +1,13 @@
 from algorithm.algo.Environment import StaticEnvironment
 import itertools
 from collections import deque
-from algorithm.constants import DIRECTION
-import numpy as np
 from algorithm.algo.Astar import Astar
 
 
 class NearestNeighbour:
     def __init__(self, env: StaticEnvironment, start):
         self.env = env
-        self.targetLocations = self.env.generateTargetLocation()
+        self.targetLocations = self.env.getTargetLocation()
         self.sequence = tuple()
         self.commands = deque()
         self.start = start
@@ -29,33 +27,33 @@ class NearestNeighbour:
             distance = 0
             for i in range(len(perm)-1):
                 distance += self.euclideanDistance(perm[i], perm[i+1])
-
             if distance <= lowestDistance:
                 print(distance)
                 lowestDistance = distance
-                commandPath, path = self.findPath(list(perm))
-                if commandPath:
-                    cost = self.calculateCost(commandPath)
-                else:
-                    cost = 9999999
-                costList.append((commandPath, path, cost))
+                stmPath, path = self.findPath(list(perm))
+                cost = self.calculateCost(stmPath)
+                costList.append((stmPath, path, cost))
             else:
                 continue
         optimalPath = min(costList, key=lambda tup: tup[2])
-        print("Optimal path" , optimalPath[0])
+        print("Stm path", optimalPath[0])
         print("coords", optimalPath[1])
         self.commandList = list(optimalPath[0])
         self.optimalPathWithCoords = optimalPath[1]
 
-
-
     def euclideanDistance(self, start, end):
+
         return ((end[0]-start[0])**2 + (end[1]-start[1])**2)**0.5
 
 
     def findPath(self, targetLocations: list):
+        """
+
+        :param targetLocations: list[tuple]
+        :return: stmPath and path
+        """
         path = []
-        commandPath = []
+        stmPath = []
         start = self.start
         counter = 0
         for ob in targetLocations:
@@ -66,31 +64,34 @@ class NearestNeighbour:
                 break
             newPath = aStar.getPath()
             path.extend(newPath)
-            cPath = aStar.getCommandPath()
-            commandPath.extend(cPath)
+            cPath = aStar.getSTMCommands()
+            stmPath.append((self.env.obID[self.env.getTargetLocation().index(ob)], cPath))
             start = next
             counter += 1
             """
             """
-        if counter != 5:
+        if counter != len(targetLocations):
             print("Path is incomplete!!!")
-            path = []
-            commandPath = []
-        return commandPath, path
+            # path = []
+            # stmPath = []
+        return stmPath, path
 
     def calculateCost(self, path: list[tuple]):
         cost = 0
-        for command in path:
-            if command[1] == 'S' or command[1] == 'SV':
-                cost += 1
-            elif command[1] == 'R' or command[1] == 'L':
-                cost += 8
-            elif command[1] == 'OL' or command[1] == 'OR':
-                cost += 10
-            elif command[1] == 'RR' or command[1] == 'RL':
-                cost += 8
-            elif command[1] == '3P':
-                cost += 10
+        diff = len(self.env.obID) - len(path)
+        cost += (999 * diff)
+        for tup in path:
+            for command in tup[1]:
+                if command == 'S' or command == 'SV':
+                    cost += 1
+                elif command == 'R' or command == 'L':
+                    cost += 8
+                elif command == 'OL' or command == 'OR':
+                    cost += 10
+                elif command == 'RR' or command == 'RL':
+                    cost += 8
+                elif command == '3P':
+                    cost += 10
         return cost
 
     def convertToCommands(self, path):
