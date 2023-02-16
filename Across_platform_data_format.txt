@@ -1,0 +1,22 @@
+Move command: 
+(created by PC, Android, or RPi)
+(received by STM)
+
+
+
+
+Complete path object:
+(created by PC)
+(received by RPi)
+
+
+
+Calculate path command:
+(created by Android)
+(received by RPi & PC)
+
+
+
+Start robot command:
+(created by Android)
+(received by RPi)
