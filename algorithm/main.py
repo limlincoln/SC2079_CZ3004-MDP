@@ -8,7 +8,7 @@ def main():
     obs = DataPopulator.getTestObstacles()
     obs1 = DataPopulator.getTestObstacles1()
     obs2 = DataPopulator.getTestObstacles2()
-    sim = Simulator(StaticEnvironment((200,200), obs2), obs2, False)
+    sim = Simulator(StaticEnvironment((200,200), obs1), obs1, False)
     sim.init()
     sim.run()
 

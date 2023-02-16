@@ -2,6 +2,7 @@ import pygame
 from algorithm import settings
 from algorithm.Entities.Rectangle import Rectangle
 from algorithm.Entities.Obstacle import Obstacle
+from itertools import groupby
 """
 Represents the navigational area (default: 20x20 grid of 10x10cm grid cells)
 """
@@ -74,4 +75,7 @@ class Arena:
                             (settings.GRID_Y_OFFSET - (pos[1] // settings.GRID_SCALE_FACTOR) * settings.BLOCK_SIZE) + \
                             settings.GRID_OFFSET
 
+    @staticmethod
+    def drawPath(path: list):
+        pass
 

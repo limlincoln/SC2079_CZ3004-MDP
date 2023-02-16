@@ -31,6 +31,7 @@ class Simulator:
         self.shortestPath = shortestPath
         self.timeCounter = 0
         self.textTimer = None
+        self.pause = False
     def init(self):
         """
         set up the simulator
@@ -95,27 +96,38 @@ class Simulator:
         """
 
         for event in pygame.event.get():
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_p:
+                    self.pause = not self.pause
+                elif event.key == pygame.K_LEFT and self.pause and self.commandCounter > 0:
+                    self.commandCounter -= 1
+                elif event.key == pygame.K_RIGHT and self.pause and self.commandCounter <= len(self.commandList) - 1:
+                    self.commandCounter += 1
+
             if event.type == self.moveCar:
                 if self.commandCounter <= len(self.commandList)-1:
                     if self.robot.command is None:
                         self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
-                    elif self.robot.command.tick == 0:
-
+                    elif self.robot.command.tick == 0 and not self.pause:
                         self.commandCounter += 1
                         if self.commandCounter <= len(self.commandList) - 1:
                             self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
                 if self.commandCounter <= len(self.commandList) - 1:
                     self.robot.moveToDo(self.optimalCoords[self.commandCounter])
                 print(self.robot.command.tick)
-                self.robot.command.yoloTick()
+                if self.robot.command.tick > 0:
+                    self.robot.command.yoloTick()
                 self.arena.updateGrid(self.robot, self.screen)
                 self.arena.drawStuff(self.env.generateTargetLocation(), self.screen, settings.GREEN)
-            if event.type == self.timer:
+
+            if event.type == self.timer and not self.pause:
                 self.timeCounter += 1
 
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
         pygame.display.update()
 
     def run(self):
