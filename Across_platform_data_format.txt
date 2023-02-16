@@ -20,3 +20,8 @@ Calculate path command:
 Start robot command:
 (created by Android)
 (received by RPi)
+
+
+Robot stop signal:
+(created by STM)
+(received by RPi)
