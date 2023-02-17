@@ -28,7 +28,7 @@ Start robot command:
 (received by RPi)
 "START ROBOT"
 
-Robot stop signal:
+Robot stop signal: "stopped"
 (created by STM)
 (received by RPi)
 
