@@ -8,7 +8,7 @@ import time
 import io
 import zlib
 # from signal import signal, SIGPIPE, SIG_DFL
-import picamera
+#import picamera
 import numpy as np
 
 
@@ -29,8 +29,8 @@ class Connect_PC_Client(threading.Thread):
         self.host_name = socket.gethostname()
         self.host_ip = socket.gethostbyname(self.host_name)
         print('RPi Wifi HOST IP:', self.host_ip)
-        self.port = 10050
-        self.socket_address = ('192.168.3.3', self.port)
+        self.port = 10051
+        self.socket_address = ('192.168.1.115', self.port)
         print('RPi Wifi Server Socket created')
         # bind the socket to the host.
         # The values passed to bind() depend on the address family of the socket
