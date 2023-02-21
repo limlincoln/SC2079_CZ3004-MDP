@@ -42,6 +42,11 @@ class Client:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def process_single_img(self, result_list):
+        """
+        Main method for image Recognition
+        :param result_list: image
+        :return:
+        """
         box_list = []
         box_position = []
         for box in result_list[0][0].boxes:
@@ -201,6 +206,7 @@ class Client:
             self.socket.sendall(message)
             print("Results sent:")
             print(self.final_result)
+            #self.close()
             # client_socket.close()
             # break
             # key = cv2.waitKey(10) # -1 will be returned if no key is pressed
@@ -235,6 +241,7 @@ class Client:
         cv2.destoryAllWindows()
 
 
+
     def run(self):
         """
         Start the server
@@ -244,5 +251,4 @@ class Client:
         self.get_obstacles()
         self.path_calculation()
         self.receive_image()
-        self.close()
         self.display_images()
