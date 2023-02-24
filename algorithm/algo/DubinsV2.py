@@ -3,6 +3,7 @@ import math
 import numpy as np
 from algorithm.algo.Environment import AdvancedEnvironment
 
+
 class DubinsV2:
     def __init__(self, radius, velocity, env: AdvancedEnvironment):
         """
@@ -28,7 +29,7 @@ class DubinsV2:
                    self.rsr(start, end, center_0_right, center_1_right),
                    self.rsl(start, end, center_0_right, center_1_left),
                    self.lsr(start, end, center_0_left, center_1_right),
-                   self.rlr(start, end,center_0_right,center_1_right),
+                   self.rlr(start, end, center_0_right, center_1_right),
                    self.lrl(start, end, center_0_left, center_1_left)]
         return options
 
@@ -43,13 +44,13 @@ class DubinsV2:
         loopPath = paths.copy()
         print(loopPath)
         for path in loopPath:
-            points = self.generatePathCoords(start,end, path, 1)
+            points = self.generatePathCoords(start, end, path, 1)
             for point in points:
                 if not self.env.isWalkable(point):
                     print("yoooo")
                     paths.pop(paths.index(path))
                     break
-        best = min(paths, key = lambda x: x[0])
+        best = min(paths, key=lambda x: x[0])
         commands = self.path_converter(best, end)
         coords = self.generatePathCoords(start, end, best, 1)
         return commands, coords
@@ -62,17 +63,17 @@ class DubinsV2:
         """
         command = None
         if path[4] == 'LSL':
-            command = (path[1]/self.velocity, path[2]/self.velocity, path[3]/self.velocity, 'lsl'), end
+            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'lsl'), end
         elif path[4] == 'RSR':
-            command = (path[1]/self.velocity, path[2]/self.velocity, path[3]/self.velocity, 'rsr'), end
+            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'rsr'), end
         elif path[4] == 'RSL':
-            command = (path[1]/self.velocity, path[2]/self.velocity, path[3]/self.velocity, 'rsl'), end
+            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'rsl'), end
         elif path[4] == 'LSR':
-            command = (path[1]/self.velocity, path[2]/self.velocity, path[3]/self.velocity, 'lsr'), end
+            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'lsr'), end
         elif path[4] == 'RLR':
             command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'rlr'), end
         elif path[4] == 'LRL':
-            command = (path[1]/self.velocity, path[2]/self.velocity, path[3]/self.velocity, 'lrl'), end
+            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'lrl'), end
         return command
 
     def lsl(self, start, end, p1, p2):
@@ -92,12 +93,12 @@ class DubinsV2:
         vector2 = (vector1[1], -vector1[0])
 
         # finding the tangent points to the straight path
-        pt1 = (p1[0] + (self.radius/straight)*vector2[0], p1[1] + (self.radius/straight)*vector2[1])
+        pt1 = (p1[0] + (self.radius / straight) * vector2[0], p1[1] + (self.radius / straight) * vector2[1])
         pt2 = (pt1[0] + vector1[0], pt1[1] + vector1[1])
-        #find the arc length
+        # find the arc length
         arc1 = self.findArcLength(pt1, p1, start, 'L')
         arc2 = self.findArcLength(end, p2, pt2, 'L')
-        total_len = straight+arc1 + arc2
+        total_len = straight + arc1 + arc2
         return total_len, straight, arc1, arc2, 'LSL', [pt1, pt2]
 
     def rsr(self, start, end, p1, p2):
@@ -138,17 +139,18 @@ class DubinsV2:
         dist = self.distCenter(p1, p2)
         try:
 
-            straight = np.sqrt(np.square(dist) - np.square(2*self.radius))
-            delta = np.arccos((dist)/(2*self.radius))
+            straight = np.sqrt(np.square(dist) - np.square(2 * self.radius))
+            delta = np.arccos((dist) / (2 * self.radius))
         except:
             return
 
         vector1 = (p2[0] - p1[0], p2[1] - p1[1])
-        vector2 = (vector1[0] * np.cos(delta) - vector1[1] * np.sin(delta), vector1[0] * np.sin(delta) + vector1[1] * np.cos(delta) )
+        vector2 = (vector1[0] * np.cos(delta) - vector1[1] * np.sin(delta),
+                   vector1[0] * np.sin(delta) + vector1[1] * np.cos(delta))
         vector3 = -vector2[0], -vector2[1]
 
-        pt1 = p1[0] + (self.radius/dist) * vector2[0], p1[1] + (self.radius/dist) * vector2[1]
-        pt2 = p2[0] + (self.radius/dist) * vector3[0], p2[1] + (self.radius/dist) * vector3[1]
+        pt1 = p1[0] + (self.radius / dist) * vector2[0], p1[1] + (self.radius / dist) * vector2[1]
+        pt2 = p2[0] + (self.radius / dist) * vector3[0], p2[1] + (self.radius / dist) * vector3[1]
 
         arc1 = self.findArcLength(pt1, p1, start, 'R')
         arc2 = self.findArcLength(end, p2, pt2, 'L')
@@ -219,38 +221,38 @@ class DubinsV2:
         :return: tuple ( straight dist, first turn distance, last turn distance )
         """
 
-        #dist between p1 and p2
+        # dist between p1 and p2
 
-        dist = self.distCenter(p1,p2)
+        dist = self.distCenter(p1, p2)
 
-        #find middle point of the p1 and p2
+        # find middle point of the p1 and p2
 
-        q = (p1[0]+p2[0])/2, (p1[1]+p2[1])/2
+        q = (p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2
 
-        #dist between p1 and p3 is 2r
+        # dist between p1 and p3 is 2r
 
-        vector1 = p2[0]-p1[0], p2[1] - p2[1]
+        vector1 = p2[0] - p1[0], p2[1] - p2[1]
 
         # rotate clockwise for this one
 
-        vector2 = p2[1]-p1[1], p1[0]-p2[0]
+        vector2 = p2[1] - p1[1], p1[0] - p2[0]
 
-        #dist between q3 to q
-        dist1 = np.sqrt(np.square(2*self.radius) + np.square(dist/2))
+        # dist between q3 to q
+        dist1 = np.sqrt(np.square(2 * self.radius) + np.square(dist / 2))
 
-        p3 = q[0] + (dist1/dist)*vector2[0], q[1] + (dist1/dist)*vector2[1]
+        p3 = q[0] + (dist1 / dist) * vector2[0], q[1] + (dist1 / dist) * vector2[1]
 
-        pt1 = (p3+p1)/2
-        pt2 = (p2+p3)/2
-        if 2*self.radius < dist > 4*self.radius:
+        pt1 = (p3 + p1) / 2
+        pt2 = (p2 + p3) / 2
+        if 2 * self.radius < dist > 4 * self.radius:
             return 999, 999, 999
-        arc1 = self.findArcLength(pt1,p1,start, 'R')
-        arc2 = self.findArcLength(pt2,p3,pt1, 'L')
-        arc3 = self.findArcLength(end,p2,pt2, 'R')
+        arc1 = self.findArcLength(pt1, p1, start, 'R')
+        arc2 = self.findArcLength(pt2, p3, pt1, 'L')
+        arc3 = self.findArcLength(end, p2, pt2, 'R')
         total_len = arc3 + arc1 + arc2
-        return total_len, arc1, arc2, arc3 , 'RLR', [pt1, pt2, p3]
+        return total_len, arc1, arc2, arc3, 'RLR', [pt1, pt2, p3]
 
-    def lrl(self,start, end, p1, p2):
+    def lrl(self, start, end, p1, p2):
         """
         right then left right
         :param start: tuple (x,y,theta) at the center of the car
@@ -277,21 +279,19 @@ class DubinsV2:
         vector2 = p2[1] - p1[1], p1[0] - p2[0]
 
         # dist between q3 to q
-        dist1 = np.sqrt(np.square(2 * self.radius)+ np.square(dist / 2))
+        dist1 = np.sqrt(np.square(2 * self.radius) + np.square(dist / 2))
 
         p3 = q[0] + (dist1 / dist) * vector2[0], q[1] + (dist1 / dist) * vector2[1]
 
         pt1 = (p3 + p1) / 2
         pt2 = (p2 + p3) / 2
-        if 2*self.radius < dist > 4*self.radius:
+        if 2 * self.radius < dist > 4 * self.radius:
             return 999, 999, 999
         arc1 = self.findArcLength(pt1, p1, start, 'L')
         arc2 = self.findArcLength(pt2, p3, pt1, 'R')
         arc3 = self.findArcLength(end, p2, pt2, 'L')
         total_len = arc3 + arc1 + arc2
         return total_len, arc1, arc2, arc3, 'LRL', [pt1, pt2, p3]
-
-
 
     def findCenter(self, point, side):
         """
@@ -332,20 +332,20 @@ class DubinsV2:
 
         alpha = math.atan2(vector2[1], vector2[0]) - math.atan2(vector1[1], vector1[0])
         if alpha < 0 and turn == 'L':
-            alpha = alpha + 2*np.pi
+            alpha = alpha + 2 * np.pi
         elif alpha > 0 and turn == 'R':
-            alpha = alpha - 2*np.pi
+            alpha = alpha - 2 * np.pi
 
         return abs(alpha * self.radius)
 
-    def generatePathCoords(self,start, end, path, interval = 0.5):
+    def generatePathCoords(self, start, end, path, interval=0.5):
         """
         Generate the coords in discrete time steps to ensure validity of the path
         :param command:
         :param interval: time in secs (default to 0.5secs)
         :return: list[tuple]
         """
-        type : str = path[4]
+        type: str = path[4]
         total = path[0]
         if type == 'lrl' or type == 'rlr':
             return self.generateCurve(start, end, path, interval)
@@ -366,7 +366,7 @@ class DubinsV2:
             if x < path[2]:
                 points.append(self.circleArc(start, -1 if turns[0] == 'R' else 1, center_0, x))
             elif x > total - path[3]:
-                points.append(self.circleArc(end,  -1 if turns[2] == 'R' else 1, center_1, x))
+                points.append(self.circleArc(end, -1 if turns[2] == 'R' else 1, center_1, x))
             else:
                 coeff = (x - path[2]) / dist_straight
                 points.append((coeff * fin) + ((1 - coeff) * ini))
@@ -374,8 +374,7 @@ class DubinsV2:
 
         return np.array(points)
 
-
-    def generateCurve(self,start, end, path, interval):
+    def generateCurve(self, start, end, path, interval):
         total = path[0]
         turns = path[4]
         center_0 = self.findCenter(start, turns[0])
@@ -384,19 +383,15 @@ class DubinsV2:
         points = []
         for x in np.arange(0, total, interval):
             if x < path[1]:
-                points.append(self.circleArc(start, -1 if turns[0] == 'R' else 1, center_0,x))
+                points.append(self.circleArc(start, -1 if turns[0] == 'R' else 1, center_0, x))
             elif x > total - path[2]:
-                points.append(self.circleArc(end, -1 if turns[0] == 'R' else 1, center_2, x-total))
+                points.append(self.circleArc(end, -1 if turns[0] == 'R' else 1, center_2, x - total))
             else:
-                points.append(self.circleArc(path[5][0], -1 if turns[0] == 'R' else 1, center_1, x-path[1]/self.radius))
+                points.append(
+                    self.circleArc(path[5][0], -1 if turns[0] == 'R' else 1, center_1, x - path[1] / self.radius))
         points.append(end[:2])
 
         return np.array(points)
-
-
-
-
-
 
     def circleArc(self, reference, beta, center, x):
         """
@@ -414,14 +409,9 @@ class DubinsV2:
         vect = np.array([np.cos(angle), np.sin(angle)])
         return center + self.radius * vect
 
-
     def calculateCoords(self, pos, delta, type):
         assert type in 'RSL'
-        new_X = pos[0] + delta*np.cos(pos[2])
-        new_Y = pos[1] + delta*np.sin(pos[2])
-        new_orientation = pos[2] + delta/self.radius
+        new_X = pos[0] + delta * np.cos(pos[2])
+        new_Y = pos[1] + delta * np.sin(pos[2])
+        new_orientation = pos[2] + delta / self.radius
         return new_X, new_Y, new_orientation
-
-
-
-
