@@ -50,8 +50,8 @@ class SimSum(unittest.TestCase):
 
     def testEnvironment(self):
         env = AdvancedEnvironment((200,200), getTestObstacles())
-        dubins = DubinsV2(28, 10, env)
-        path = dubins.compute_best((60,60, DIRECTION.TOP.value), (105, 105, DIRECTION.LEFT.value))
+        tsp = NearestNeighbour(env, (15,15, DIRECTION.TOP.value))
+        path = tsp.computeSequence()
         print(path)
 
 if __name__ == '__main__':

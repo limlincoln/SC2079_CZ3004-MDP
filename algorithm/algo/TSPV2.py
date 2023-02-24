@@ -1,3 +1,5 @@
+import traceback
+
 from algorithm.algo.Environment import AdvancedEnvironment
 import itertools
 from algorithm.algo.DubinsV2 import DubinsV2
@@ -51,9 +53,12 @@ class NearestNeighbour:
 
         for ob in targetLocations:
             try:
-                path = HybridAstar(self.env, self.dubins, start, ob, False)
-                print(path)
-            except:
+                hstar = HybridAstar(self.env, self.dubins, start, ob, False)
+                next = hstar.solve()
+                print(next)
+                path = hstar.path
+            except Exception as e:
+                print(traceback.format_exc())
                 print("no path")
                 break
             complete_path.append(path)

@@ -23,7 +23,7 @@ class HybridAstar:
         frontier = PriorityQueue()
         backtrack = dict()
         cost = dict()
-        goalNode : Node= Node(self.goal, 0, 0)
+        goalNode : Node = Node(self.goal, 0, 0)
         startNode : Node = Node(self.start, 0, 0)
 
         offset = 0
@@ -36,18 +36,18 @@ class HybridAstar:
 
             priority, _, currentNode = frontier.get()
             if currentNode.pos == goalNode.pos:
+                print("called")
                 self.extract_path(backtrack, currentNode, startNode)
                 return currentNode
-
             for newNode in self.get_neighbours(currentNode):
                 newCost = cost[currentNode] + newNode.cost
                 if newNode not in backtrack or newCost < cost[newNode]:
                     cost[newNode] = newCost
-                    offset +=1
+                    offset += 1
                     priority = newCost + self.heuristic(newNode.pos, goalNode.pos)
                     backtrack[newNode] = currentNode
                     frontier.put((priority, offset, newNode))
-
+        print('yo')
         return None
 
 
@@ -67,7 +67,9 @@ class HybridAstar:
                             'S': (pos, 0, 10, 0),
                             'v': (pos, 0, -10, 0.1)}
         for key in available_moves:
+
             move = available_moves[key]
+            print(move)
             cost = move[3]
             new_pos = self.nextPos(move[0], move[1], move[2])
             if self.env.isWalkable(new_pos):
@@ -97,10 +99,8 @@ class HybridAstar:
 
 
 
-
-
     def nextPos(self, pos, change, v):
-        new_angle = pos[3] + (v/self.dubins.radius) * np.tan(change)
+        new_angle = pos[2] + (v/self.dubins.radius) * np.tan(change)
         new_x = pos[0] + v*np.cos(new_angle)
         new_y = pos[1] + v*np.sin(new_angle)
 
@@ -123,4 +123,5 @@ class HybridAstar:
             current = backtrack[current]
         path.append(startNode)
         path.reverse()
-        self.path  = path
+        self.path = path
+        print(path)

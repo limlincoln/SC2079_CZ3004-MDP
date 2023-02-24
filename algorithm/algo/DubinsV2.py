@@ -136,9 +136,12 @@ class DubinsV2:
         """
 
         dist = self.distCenter(p1, p2)
+        try:
 
-        straight = np.sqrt(-np.square(dist) + np.square(2*self.radius))
-        delta = np.arccos((dist)/(2*self.radius))
+            straight = np.sqrt(np.square(dist) - np.square(2*self.radius))
+            delta = np.arccos((dist)/(2*self.radius))
+        except:
+            return
 
         vector1 = (p2[0] - p1[0], p2[1] - p1[1])
         vector2 = (vector1[0] * np.cos(delta) - vector1[1] * np.sin(delta), vector1[0] * np.sin(delta) + vector1[1] * np.cos(delta) )
