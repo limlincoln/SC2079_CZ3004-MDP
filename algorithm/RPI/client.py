@@ -14,12 +14,15 @@ from ultralytics import YOLO
 from algorithm.algo.TSP import NearestNeighbour
 from algorithm.algo.Environment import StaticEnvironment
 from algorithm.Entities.Obstacle import Obstacle
-
+import re as re
+import algorithm.settings as settings
+from algorithm.constants import DIRECTION
 
 class Client:
     """
     Client used to connect to RPI server and receive data for image recognition
     """
+
     def __init__(self, address, port):
         """
         Constructor for Client
@@ -31,7 +34,7 @@ class Client:
         self.port = port
         self.TSP = None
         self.env = None
-        self.ObList = []
+        self.ObList = {}
         self.final_result = []
         self.class_label = config.CLASS_LABEL
         self.class_dcp = config.CLASS_DCP
@@ -40,6 +43,10 @@ class Client:
         self.s_index = self.class_label.index("S")
         self.g_index = self.class_label.index("G")
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        path = "result_img"
+        if not os.path.exists(path):
+            os.makedirs(path)
 
     def process_single_img(self, result_list):
         """
@@ -82,8 +89,9 @@ class Client:
         :return:
         """
         try:
-            print("Attempting to connect to " + self.address+"....")
+            print("Attempting to connect to " + self.address + "....")
             self.socket.connect((self.address, self.port))
+            print("Connected")
         except:
             print("Error Connecting")
 
@@ -92,40 +100,56 @@ class Client:
         Listen to server for Obstacle input
         :return:
         """
+        print("yoo")
         while True:
-            data = self.socket.recv(4*1024)
+            print("testest")
+            data = self.socket.recv(4 * 1024)
             if not data:
                 continue
             s = data.decode('UTF-8').strip()
             print("Received from RPi:", s)
-            ob: (tuple, str, str, str) = self.obstacle_string_converter(s)
-            self.ObList.append(Obstacle(ob[0], ob[1], ob[2], ob[3]))
             if s == "path":
                 break
+            self.obstacle_string_converter(s)
         return
 
-    def obstacle_string_converter(self, s):
+    def obstacle_string_converter(self, s: str):
         """
         converts string to useable tuple for Obstacle object instantiation
         :param s: string
         :return: tuple
         """
-        #TBD since the format is unknown atm
-        pos = ()
-        image_orientation = ''
-        dimension = ()
-        obId = ''
-        return pos, image_orientation, dimension, obId
+        s_to_list = s.split(',')
+        values = re.findall(r'\d+', s)
+        if len(s_to_list) == 3:
+            if self.ObList.get(values[0]) is None:
+                self.ObList[values[0]] = [(int(values[1])*10,int(values[2])*10), None, (settings.BLOCK_SIZE, settings.BLOCK_SIZE), values[0]]
+            else:
+                self.ObList[values[0]][0] = (int(values[1])*10, int(values[2])*10)
+        else:
+            direction  = re.findall(r'\b[A-Z]+(?:\s+[A-Z]+)*\b', s_to_list[1])
+            if self.ObList.get(values[0]) is None:
+                self.ObList[values[0]] = [None, direction[0], (settings.BLOCK_SIZE, settings.BLOCK_SIZE), values[0]]
+            else:
+                self.ObList[values[0]][1] = direction[0]
+
 
     def path_calculation(self):
         """
         Calculate Path using algorithm
         :return:
         """
-        self.env = StaticEnvironment((200, 200), self.ObList)
-        self.TSP = NearestNeighbour(self.env, (0, 0))
-        self.TSP.computeSequence()
 
+        list_of_ob_objects :list(Obstacle) = []
+        print(self.ObList)
+        for key in self.ObList:
+            values = self.ObList[key]
+            print(values)
+            list_of_ob_objects.append(Obstacle(values[0], values[1], values[2], values[3]))
+        print(list_of_ob_objects)
+        self.env = StaticEnvironment((200, 200), list_of_ob_objects)
+        self.TSP = NearestNeighbour(self.env, (0, 0, DIRECTION.TOP, "P"))
+        self.TSP.computeSequence()
         return self.TSP.getCommandList()
 
     def send_path(self):
@@ -135,7 +159,7 @@ class Client:
         """
         path = self.path_calculation()
         a = pickle.dumps(path)
-        message = struct.pack(">L", len(a))+a
+        message = struct.pack(">L", len(a)) + a
         self.socket.sendall(message)
         print("Car Path Sent")
 
@@ -153,28 +177,33 @@ class Client:
 
             # Receive stream frames
             result_list = []
-            for i in range(1):
-                print('Waiting for img', i)
-                while len(data) < payload_size:
-                    packet = self.socket.recv(4 * 1024)
-                    if not packet: break
-                    data += packet
-                # t1 = time.time()
-                packed_msg_size = data[:payload_size]
-                data = data[payload_size:]
-                msg_size = struct.unpack(">L", packed_msg_size)[0]
-                while len(data) < msg_size:
-                    data += self.socket.recv(4 * 1024)
-                frame_data = data[:msg_size]
-                data = data[msg_size:]
-                frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-                frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-                resized_frame = cv2.resize(frame, (640, 640))
-                # cv2.imwrite('image_T_'+str(21)+'.jpg', resized_frame)
-                # t2 = time.time()
-                # print("Time taken to receive the image:", t2-t1)
-                results = self.model.predict(show=False, source=resized_frame, save=False, save_txt=False, device="cpu")
-                result_list.append(results)
+
+            print('Waiting for img ...')
+            while len(data) < payload_size:
+                packet = self.socket.recv(4 * 1024)
+                if not packet: break
+                data += packet
+            # t1 = time.time()
+            packed_msg_size = data[:payload_size]
+            data = data[payload_size:]
+            msg_size = struct.unpack(">L", packed_msg_size)[0]
+            while len(data) < msg_size:
+                data += self.socket.recv(4 * 1024)
+            frame_data = data[:msg_size]
+            data = data[msg_size:]
+            frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
+            if frame == "all finished":
+                break
+            obs_id = frame[0]
+            frame = frame[1]
+            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
+            resized_frame = cv2.resize(frame, (640, 640))
+            # cv2.imwrite('image_T_'+str(21)+'.jpg', resized_frame)
+            # t2 = time.time()
+            # print("Time taken to receive the image:", t2-t1)
+            results = self.model.predict(show=False, source=resized_frame, save=False, save_txt=False, device="cpu")
+            result_list.append(results)
+
             # process single image
             res = self.process_single_img(result_list)
             if res == -1:
@@ -196,7 +225,7 @@ class Client:
                 cv2.rectangle(frame, (tx + 5, ty - 25), (tx + 170, ty + 25), (255, 255, 255), -1)
                 cv2.putText(frame, text1, (tx + 5, ty), 0, 0.8, (0, 255, 0), 1)
                 cv2.putText(frame, text2, (tx + 5, ty + 20), 0, 0.8, (0, 255, 0), 1)
-                cv2.imwrite('image' + str(1) + '.jpg', frame)
+                cv2.imwrite('./result_img/image' + str(obs_id) + '.jpg', frame)
                 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
                 result, frame = cv2.imencode('.jpg', frame, encode_param)
                 self.final_result = [frame, self.class_dcp[res[1]]]
@@ -206,7 +235,6 @@ class Client:
             self.socket.sendall(message)
             print("Results sent:")
             print(self.final_result)
-            #self.close()
             # client_socket.close()
             # break
             # key = cv2.waitKey(10) # -1 will be returned if no key is pressed
@@ -227,8 +255,9 @@ class Client:
         """
         col_list = []
         row_list = []
-        for i in range(len(self.ObList)):
-            image = cv2.imread("image"+str(i+1)+".jpg")
+        # for i in range(len(self.ObList)):
+        for img_path in glob.glob("./result_img/*.jpg"):
+            image = cv2.imread(img_path)
             col_list.append(image)
             if len(col_list) % 3 == 0 and len(col_list) != 0:
                 row = np.hstack(tuple(col_list))
@@ -239,8 +268,6 @@ class Client:
         cv2.imshow("Stitched Image", stacked_image)
         cv2.waitKey('A')
         cv2.destoryAllWindows()
-
-
 
     def run(self):
         """

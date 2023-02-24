@@ -1,9 +1,14 @@
 import numpy as np
+
+
 def ortho(pos):
     return np.array((-pos[1], pos[0]))
 
+
 def dist(a,b):
     return ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
+
+
 class Dubins:
     """
     Class implementing a Dubins path planner with a constant turn radius.
