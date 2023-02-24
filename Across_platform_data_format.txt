@@ -20,15 +20,15 @@ Complete path object:
 Calculate path command:
 (created by Android)
 (received by RPi & PC)
-"CALCULATE"
+"path"
 
 
 Start robot command:
 (created by Android)
 (received by RPi)
-"START ROBOT"
+"run"
 
-Robot stop signal: "stopped"
+Robot stop signal: "Stop"
 (created by STM)
 (received by RPi)
 
