@@ -31,7 +31,11 @@ class DubinsV2:
                    self.lsr(start, end, center_0_left, center_1_right),
                    self.rlr(start, end, center_0_right, center_1_right),
                    self.lrl(start, end, center_0_left, center_1_left)]
-        return options
+        copy = options.copy()
+        for option in options:
+            if np.isnan(option[0]) or option[0] == 999:
+                copy.pop(copy.index(option))
+        return copy
 
     def compute_best(self, start, end):
         """
@@ -42,14 +46,14 @@ class DubinsV2:
         """
         paths = self.computeAllPath(start, end)
         loopPath = paths.copy()
-        print(loopPath)
         for path in loopPath:
-            points = self.generatePathCoords(start, end, path, 1)
+            points = self.generatePathCoords(start, end, path, 10)
             for point in points:
                 if not self.env.isWalkable(point):
-                    print("yoooo")
                     paths.pop(paths.index(path))
                     break
+        if not paths:
+            return None
         best = min(paths, key=lambda x: x[0])
         commands = self.path_converter(best, end)
         coords = self.generatePathCoords(start, end, best, 1)
@@ -137,12 +141,10 @@ class DubinsV2:
         """
 
         dist = self.distCenter(p1, p2)
-        try:
-
-            straight = np.sqrt(np.square(dist) - np.square(2 * self.radius))
-            delta = np.arccos((dist) / (2 * self.radius))
-        except:
-            return
+        if dist < self.radius:
+            return (999, 999, 999)
+        straight = np.sqrt(np.square(dist) - np.square(2 * self.radius))
+        delta = np.arccos((2 * self.radius) / dist)
 
         vector1 = (p2[0] - p1[0], p2[1] - p1[1])
         vector2 = (vector1[0] * np.cos(delta) - vector1[1] * np.sin(delta),
@@ -168,6 +170,8 @@ class DubinsV2:
         """
 
         dist = self.distCenter(p1, p2)
+        if dist < self.radius:
+            return (999, 999, 999)
         straight = np.sqrt(np.square(dist) - np.square(2 * self.radius))
         delta = np.arccos((2 * self.radius) / dist)
 
@@ -195,7 +199,10 @@ class DubinsV2:
         """
 
         dist = self.distCenter(p1, p2)
+        if dist < self.radius:
+            return (999, 999, 999)
         straight = np.sqrt(np.square(dist) - np.square(2 * self.radius))
+
         delta = np.arccos((2 * self.radius) / dist)
 
         vector1 = (p2[0] - p1[0], p2[1] - p1[1])

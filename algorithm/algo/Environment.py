@@ -7,7 +7,6 @@ import numpy as np
 from algorithm.constants import DIRECTION
 from algorithm.Entities.RectRobot import RectRobot
 from algorithm.HelperFunctions import radiansToDegrees
-import collision as cs
 from algorithm.Entities.VirtualRect import VirtualRect
 class StaticEnvironment:
     """
@@ -91,13 +90,13 @@ class StaticEnvironment:
 
         for ob in self.obstacles:
             if ob.imageOrientation == "E":
-                targetLocations.append((ob.pos[0] + 50, ob.pos[1] - 10, DIRECTION.LEFT))
+                targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 5, DIRECTION.LEFT))
             elif ob.imageOrientation == "N":
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM))
+                targetLocations.append((ob.pos[0] - 5, ob.pos[1] + 40, DIRECTION.BOTTOM))
             elif ob.imageOrientation == "W":
-                targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT))
+                targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 5, DIRECTION.RIGHT))
             else:
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 50, DIRECTION.TOP))
+                targetLocations.append((ob.pos[0] - 5, ob.pos[1] - 40, DIRECTION.TOP))
             self.obID.append(ob.ObId)
         return targetLocations
 
@@ -110,14 +109,14 @@ class StaticEnvironment:
         targetLocations = []
         for ob in self.obstacles:
             if ob.imageOrientation == "right":
-                targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 10, DIRECTION.LEFT.value))
+                targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 5, DIRECTION.LEFT.value))
             elif ob.imageOrientation == "top":
 
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 40, DIRECTION.BOTTOM.value))
+                targetLocations.append((ob.pos[0] - 5, ob.pos[1] + 40, DIRECTION.BOTTOM.value))
             elif ob.imageOrientation == "left":
-                targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 10, DIRECTION.RIGHT.value))
+                targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 5, DIRECTION.RIGHT.value))
             else:
-                targetLocations.append((ob.pos[0] + 10, ob.pos[1] - 40, DIRECTION.TOP.value))
+                targetLocations.append((ob.pos[0] + 5, ob.pos[1] - 40, DIRECTION.TOP.value))
         return targetLocations
 
 
@@ -125,7 +124,6 @@ class AdvancedEnvironment:
     def __init__(self, dimensions, obstacles: list[Obstacle]):
         self.dimensions = dimensions
         self.obstacles = obstacles
-        self.collisionPoints = self.generateCollisionPoints(self.obstacles)
         self.targets = self.generateTargetLocationsInRads(self.obstacles)
         self.virtualObstacles = self.generateVirtualObstacles(self.obstacles)
 
@@ -134,13 +132,13 @@ class AdvancedEnvironment:
         targetLocations = []
         for ob in obstacles:
             if ob.imageOrientation == 'E':
-                targetLocations.append((ob.pos[0] + 40, ob.pos[1] + 5, DIRECTION.LEFT.value, ob.ObId))
+                targetLocations.append((ob.pos[0] + 45, ob.pos[1] + 5, DIRECTION.LEFT.value, ob.ObId))
             elif ob.imageOrientation == 'N':
-                targetLocations.append((ob.pos[0] + 5, ob.pos[1] + 40, DIRECTION.BOTTOM.value, ob.ObId))
+                targetLocations.append((ob.pos[0] + 5, ob.pos[1] + 45, DIRECTION.BOTTOM.value, ob.ObId))
             elif ob.imageOrientation == 'W':
-                targetLocations.append((ob.pos[0] - 40, ob.pos[1] + 5, DIRECTION.RIGHT.value, ob.ObId))
+                targetLocations.append((ob.pos[0] - 45, ob.pos[1] + 5, DIRECTION.RIGHT.value, ob.ObId))
             else:
-                targetLocations.append((ob.pos[0] + 5, ob.pos[1] - 40, DIRECTION.TOP.value, ob.ObId))
+                targetLocations.append((ob.pos[0] + 5, ob.pos[1] - 45, DIRECTION.TOP.value, ob.ObId))
         return targetLocations
 
     def generateVirtualObstacles(self, obstacles: list[Obstacle]):
@@ -169,65 +167,7 @@ class AdvancedEnvironment:
             if ob.isCollided(robotPos):
                 return False
         return True
-    def generateCollisionPoints(self, obstacles):
-        """
-                for ob in obstacles:
-            rect = pygame.Rect(ob.pos, (10,10))
-            rect.bottomleft = ob.pos
-            pivot = pygame.math.Vector2(ob.pos)
-            p0 = pygame.math.Vector2(rect.topleft) +pivot
-            p1 = pygame.math.Vector2(rect.topright) + pivot
-            p2 = pygame.math.Vector2(rect.bottomright) + pivot
-            p3 = pygame.math.Vector2(rect.bottomleft) + pivot
-            self.collisionPoints.append([p0,p1,p2,p3])
-        :param obstacles:
-        :return:
-        """
-        collision_list = []
-        for ob in obstacles:
-            vectors = self.generateVectors(ob.pos, 'O')
-            center = cs.Vector(ob.pos[0], ob.pos[1])
-            polygon = cs.Poly(center, vectors)
-            collision_list.append(polygon)
-        return collision_list
 
-    def generateVectors(self, pos, type):
-        """
-        Unused atm
-        :param pos:
-        :param type:
-        :return:
-        """
-        assert type in 'RO'
-        if type == 'O':
-            p0 = cs.Vector(pos[0]-15, pos[1]-15)
-            p1 = cs.Vector(pos[0]-15, pos[1]+25)
-            p2 = cs.Vector(pos[0]+25, pos[1]-15)
-            p3 = cs.Vector(pos[0]+25, pos[1]+15)
-        elif type == 'R':
-            print("test R")
-            p0 = cs.Vector(pos[0]-15, pos[1]-15)
-            p1 = cs.Vector(pos[0]-15, pos[1]+15)
-            p2 = cs.Vector(pos[0]+15, pos[1]-15)
-            p3 = cs.Vector(pos[0]+15, pos[1]+15)
-        return [p0,p1,p2,p3]
-    def collisionCheck(self, pos):
-        """
-        Unused atm
-        :param pos:
-        :return:
-        """
-
-        angle = pos[2]
-        vectors = self.generateVectors((pos[0], pos[1]), 'R')
-        center = cs.Vector(pos[0], pos[1])
-        polygon = cs.Poly(center, vectors, angle)
-        print(polygon.aabb)
-        for ob in self.collisionPoints:
-            print(ob.aabb)
-            if cs.collide(ob, polygon):
-                return False
-        return True
 
     def randomFreeSpace(self):
         x = np.random.rand() * self.dimensions[0]
