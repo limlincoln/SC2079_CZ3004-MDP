@@ -32,6 +32,7 @@ class HybridAstar:
         goalNode: Node = Node(self.goal, [], 0, [])
         startNode: Node = Node(self.start, [], 0, [])
         offset = 0
+
         frontier.put((0, offset, startNode))
         cost[startNode] = 0
         backtrack[startNode] = None
@@ -61,13 +62,20 @@ class HybridAstar:
 
         moves = []
         pos = node.pos
-        moves.extend(self.motionsCommands(pos))
+        moves.extend(self.motionCommandsDiscrete(pos))
         path = self.dubins.compute_best(pos, self.goal)
         if path:
             moves.append(Node(path[0][1], path[0][0], 1, path[1]))
         return moves
 
     def nextPos(self, pos, v, steeringAngle):
+        """
+        Get the next position in continuous step
+        :param pos:
+        :param v:
+        :param steeringAngle:
+        :return:
+        """
         new_x = pos[0] + v * np.cos(pos[2])
         new_y = pos[1] + v * np.sin(pos[2])
         new_angle = basic_angle(pos[2] + v*np.tan(steeringAngle))
@@ -109,6 +117,29 @@ class HybridAstar:
                 moves.append(Node(new_pos, key, cost, []))
         return moves
 
+    def motionCommandsDiscrete(self, pos):
+        moves = []
+        available_moves = {'L': (pos, np.pi, 10, 5),
+                           'R': (pos, -np.pi, 10, 5),
+                           'Z': (pos, np.pi, -10, 20),
+                           'X': (pos, -np.pi, -10, 20),
+                           'S': (pos, 0, 10, 2),
+                           'v': (pos, 0, -10, 10)}
+        for key in available_moves:
+            move = available_moves[key]
+            cost = move[3]
+            new_pos = self.nextPosDiscrete(move[0], move[2], move[1])
+            if self.env.isWalkable(new_pos):
+                moves.append(Node(new_pos, key, cost, []))
+        return moves
+
     def rounding(self, pos):
 
         return np.round(pos[0]), np.round(pos[1]), np.round(pos[2], 6)
+
+    def nextPosDiscrete(self, pos, v, angle):
+        new_x = pos[0] + v*np.cos(pos[2]-angle)
+        new_y = pos[0] + v*np.sin(pos[2]-angle)
+        new_angle = basic_angle(pos[2]-angle)
+
+        return round(new_x) , round(new_y), new_angle
