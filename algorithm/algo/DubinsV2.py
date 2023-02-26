@@ -188,35 +188,7 @@ class DubinsV2:
         total_len = straight + arc1 + arc2
         return total_len, straight, arc1, arc2, 'LSR', [pt1, pt2]
 
-    def lsl(self, start, end, p1, p2):
-        """
-        left turn then straight then left turn again
-        :param start: tuple (x,y,theta) at the center of the car
-        :param end: tuple (x,y,theta) at the center of the car
-        :param p1: tuple (x,y) turning circle at the start
-        :param p2: tuple (x,y) turning circle at the end
-        :return: tuple ( straight dist, first turn distance, last turn distance )
-        """
 
-        dist = self.distCenter(p1, p2)
-        if dist < self.radius:
-            return (999, 999, 999)
-        straight = np.sqrt(np.square(dist) - np.square(2 * self.radius))
-
-        delta = np.arccos((2 * self.radius) / dist)
-
-        vector1 = (p2[0] - p1[0], p2[1] - p1[1])
-        vector2 = (vector1[0] * np.cos(delta) - vector1[1] * np.sin(delta),
-                   vector1[0] * np.sin(delta) + vector1[1] * np.cos(delta))
-        vector3 = -vector2[0], -vector2[1]
-
-        pt1 = p1[0] + (self.radius / dist) * vector2[0], p1[1] + (self.radius / dist) * vector2[1]
-        pt2 = p2[0] + (self.radius / dist) * vector3[0], p2[1] + (self.radius / dist) * vector3[1]
-
-        arc1 = self.findArcLength(pt1, p1, start, 'L')
-        arc2 = self.findArcLength(end, p2, pt2, 'L')
-        total_len = straight + arc1 + arc2
-        return total_len, straight, arc1, arc2, 'LSL', [pt1, pt2]
 
     def rlr(self, start, end, p1, p2):
         """
