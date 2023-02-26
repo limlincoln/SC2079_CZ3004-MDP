@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 
 from algorithm.algo.Environment import AdvancedEnvironment
@@ -7,11 +9,11 @@ import algorithm.settings as settings
 from algorithm.HelperFunctions import basic_angle
 class Node:
 
-    def __init__(self, pos, moves, cost):
+    def __init__(self, pos, moves, cost, path):
         self.pos = pos
         self.moves = moves
         self.cost = cost
-
+        self.path = path
 
 class HybridAstar:
     def __init__(self, env: AdvancedEnvironment, dubins: DubinsV2, start, goal, reverse):
@@ -23,22 +25,22 @@ class HybridAstar:
         self.L = 1
 
     def solve(self):
+        clock = time.perf_counter()
         frontier = PriorityQueue()
         backtrack = dict()
         cost = dict()
-        goalNode: Node = Node(self.goal, [], 0)
-        startNode: Node = Node(self.start, [], 0)
-
+        goalNode: Node = Node(self.goal, [], 0, [])
+        startNode: Node = Node(self.start, [], 0, [])
         offset = 0
-
         frontier.put((0, offset, startNode))
         cost[startNode] = 0
         backtrack[startNode] = None
         while not frontier.empty():
+            if time.perf_counter() - clock > 20:
+                print("inifinite loop break")
+                return None
             priority, _, currentNode = frontier.get()
-            path = self.dubins.compute_best(currentNode.pos, self.goal)
-            if path:
-                print(path)
+            print(currentNode.pos)
             if self.rounding(currentNode.pos) == self.rounding(goalNode.pos):
                 self.extract_path(backtrack, currentNode, startNode)
                 return currentNode
@@ -60,6 +62,9 @@ class HybridAstar:
         moves = []
         pos = node.pos
         moves.extend(self.motionsCommands(pos))
+        path = self.dubins.compute_best(pos, self.goal)
+        if path:
+            moves.append(Node(path[0][1], path[0][0], 1, path[1]))
         return moves
 
     def nextPos(self, pos, v, steeringAngle):
@@ -68,7 +73,7 @@ class HybridAstar:
         new_angle = basic_angle(pos[2] + v*np.tan(steeringAngle))
         return new_x, new_y, new_angle
 
-    def extract_path(self, backtrack, goalNode, startNode):
+    def extract_path(self, backtrack, goalNode, startNode, dubinsNode = None):
         """
 
         :param startNode: Node
@@ -101,7 +106,7 @@ class HybridAstar:
             cost = move[3]
             new_pos = self.nextPos(move[0], move[2], move[1])
             if self.env.isWalkable(new_pos):
-                moves.append(Node(new_pos, key, cost))
+                moves.append(Node(new_pos, key, cost, []))
         return moves
 
     def rounding(self, pos):
