@@ -8,6 +8,9 @@ from queue import PriorityQueue
 import algorithm.settings as settings
 from algorithm.HelperFunctions import basic_angle
 from algorithm.constants import DIRECTION
+from algorithm.algo.CommandV2 import CommandV2
+
+
 class Node:
 
     def __init__(self, pos, moves, cost, path):
@@ -15,6 +18,7 @@ class Node:
         self.moves = moves
         self.cost = cost
         self.path = path
+
 
 class HybridAstar:
     def __init__(self, env: AdvancedEnvironment, dubins: DubinsV2, start, goal, reverse):
@@ -24,7 +28,6 @@ class HybridAstar:
         self.dubins = dubins
         self.path = []
         self.L = 1
-        self.dirList = [DIRECTION.TOP.value, DIRECTION.LEFT.value, DIRECTION.BOTTOM.value, DIRECTION.RIGHT.value]
         self.precision = (5, 5, 1)
 
     def solve(self):
@@ -73,10 +76,14 @@ class HybridAstar:
     def generateState(self, pos, t, delta):
         points = []
         current = pos
-        for x in np.arange(0, (2*np.pi*self.dubins.radius)/4, delta):
+        length = (2 * np.pi * self.dubins.radius) / 4
+        if t == 'S' or t == 'Z':
+            length = 10
+        for x in np.arange(0, length, delta):
             current = self.nextPos(current, t, delta)
             points.append(current)
-        return points, current
+        final_pos = self.generateEndState(pos, t)
+        return points, final_pos
 
     def nextPos(self, pos, type, delta):
         """
@@ -113,7 +120,7 @@ class HybridAstar:
             new_orientation = basic_angle(pos[2] - delta / self.dubins.radius)
         return new_X, new_Y, new_orientation
 
-    def extract_path(self, backtrack, goalNode, startNode, dubinsNode = None):
+    def extract_path(self, backtrack, goalNode, startNode, dubinsNode=None):
         """
 
         :param startNode: Node
@@ -128,10 +135,9 @@ class HybridAstar:
         while current != startNode:
             path.append(current)
             current = backtrack[current]
-        path.append(startNode)
+        #path.append(startNode)
         path.reverse()
         self.path = path
-
 
     def motionsCommands(self, pos):
         moves = []
@@ -142,12 +148,15 @@ class HybridAstar:
                            'S': (pos, 10, 2),
                            'RL': (pos, -10, 20)}
         for key in available_moves:
+            add = True
             move = available_moves[key]
             points, final_pos = self.generateState(move[0], key, 0.5)
             for point in points:
                 if not self.env.isWalkable(point):
+                    add = False
                     break
-            moves.append(Node(final_pos, key, move[2], points))
+            if add:
+                moves.append(Node(final_pos, key, move[2], points))
         return moves
 
     def motionCommandsDiscrete(self, pos):
@@ -171,15 +180,31 @@ class HybridAstar:
         return np.round(pos[0]), np.round(pos[1]), np.round(pos[2], 6)
 
     def nextPosDiscrete(self, pos, v, angle):
-        new_x = pos[0] + v*np.cos(pos[2]-angle)
-        new_y = pos[0] + v*np.sin(pos[2]-angle)
-        new_angle = basic_angle(pos[2]-angle)
+        new_x = pos[0] + v * np.cos(pos[2] - angle)
+        new_y = pos[0] + v * np.sin(pos[2] - angle)
+        new_angle = basic_angle(pos[2] - angle)
 
-        return round(new_x) , round(new_y), new_angle
+        return round(new_x), round(new_y), new_angle
 
-    def in_goal_region(self,pos):
+    def in_goal_region(self, pos):
         for i, value in enumerate(pos):
             if i <= 2:
                 if abs(self.goal[i] - value) > self.precision[i]:
                     return False
         return True
+
+    def generateEndState(self, pos, t):
+        command = CommandV2(pos, self.dubins.radius, 10)
+
+        if t == 'S':
+            return command.moveStraight()
+        elif t == 'Z':
+            return command.moveRevese()
+        elif t == "R":
+            return command.moveRight()
+        elif t == 'L':
+            return command.moveLeft()
+        elif t == 'RL':
+            return command.faceLeftReverse()
+        elif t == 'RR':
+            return command.faceRightReverse()

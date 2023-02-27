@@ -14,17 +14,20 @@ from algorithm.algo.TSPV2 import NearestNeighbour
 from algorithm.algo.HStar import HybridAstar
 from algorithm.algo.RRT import RRT
 from algorithm.HelperFunctions import basic_angle
+
 def sampleTSP(dubins, env, start):
     for options in env.targets:
         print(dubins.compute_best(start, options))
         start = options
 
 def sampleHstarTSP( start, env, dubins):
+    path = []
     for options in env.targets:
         hstar = HybridAstar(env, dubins, start, options, True)
-        path = hstar.solve()
-        print(path.moves)
+        hstar.solve()
+        path.append(hstar.path)
         start = options
+    return path
 
 class SimSum(unittest.TestCase):
 
@@ -41,8 +44,17 @@ class SimSum(unittest.TestCase):
        # sampleTSP(dubins, env, (15, 15, DIRECTION.TOP.value))
     def testHstar(self):
         env = AdvancedEnvironment((200,200), getTestObstacles())
-        dubins = DubinsV2(26, 10, env)
-        sampleHstarTSP((15,15, DIRECTION.TOP.value), env, dubins)
+        dubins = DubinsV2(28, 10, env)
+        path = sampleHstarTSP((15,15, DIRECTION.TOP.value), env, dubins)
+        coords  = {}
+        for index , node  in enumerate(path):
+            coords[index] = node
+
+        points = []
+        for path in coords:
+            points.extend([x.path for x in coords[path]])
+        print(points[0])
+        dubins.plot(points)
     def testRRT(self):
         env = AdvancedEnvironment((200,200), getTestObstacles())
         dubins = DubinsV2(26,10,env)
@@ -60,7 +72,7 @@ class SimSum(unittest.TestCase):
         start = (15,15,DIRECTION.TOP.value)
         end = env.targets[4]
         path = dubins.compute_best(start,end)
-        dubins.plot(path[1])
+        dubins.plot(path)
 
     def testFailedObstacle(self):
         env = AdvancedEnvironment((200, 200), getTestObstacles())
@@ -98,6 +110,12 @@ class SimSum(unittest.TestCase):
         dubins = DubinsV2(28, 10, env)
         print(points[-1])
         dubins.plot(points)
+
+    def testTSP(self):
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
+        tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
+        path = tsp.computeSequence()
+        print(path)
 
 
 

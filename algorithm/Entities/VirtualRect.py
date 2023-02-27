@@ -12,10 +12,10 @@ class VirtualRect:
         Class representing virtual obstacle that the robot cannot move to.
         :param ob: Obstacle
         """
-        self.pos = (ob.pos[0] - 15, ob.pos[1] + 25)
-        self.length = 40
+        self.pos = (ob.pos[0] - 10, ob.pos[1] + 20)
+        self.length = 30
         self.polygon = geometry.box(self.pos[0], self.pos[1] - self.length, self.pos[0] + self.length, self.pos[1])
-        self.center = (self.pos[0] + 20, self.pos[1] - 20)
+        self.center = (self.pos[0] + 15, self.pos[1] - 15)
 
     def isCollided(self, robotPos):
         """

@@ -10,7 +10,7 @@ class NearestNeighbour:
         self.env = env
         self.start = start
         self.targetLocations = env.targets
-        self.dubins = DubinsV2(25, 10, self.env)
+        self.dubins = DubinsV2(28, 10, self.env)
     def computeSequence(self):
         """
         returns the sequence of vertices to visit with minimum cost
