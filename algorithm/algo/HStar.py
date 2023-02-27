@@ -41,7 +41,6 @@ class HybridAstar:
                 print("inifinite loop break")
                 return None
             priority, _, currentNode = frontier.get()
-            print(currentNode.pos)
             if self.rounding(currentNode.pos) == self.rounding(goalNode.pos):
                 self.extract_path(backtrack, currentNode, startNode)
                 return currentNode

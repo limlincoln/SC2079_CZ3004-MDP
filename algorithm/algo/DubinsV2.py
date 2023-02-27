@@ -51,6 +51,7 @@ class DubinsV2:
             for point in points:
                 if not self.env.isWalkable(point):
                     paths.pop(paths.index(path))
+                    print(path[4])
                     break
         if not paths:
             return None
@@ -58,6 +59,14 @@ class DubinsV2:
         commands = self.path_converter(best, end)
         coords = self.generatePathCoords(start, end, best, 1)
         return commands, coords
+
+    def collision_check(self, path, start, end):
+        points = self.generatePathCoords(start, end, path, 1)
+        for point in points:
+            if not self.env.isWalkable(point):
+                return False
+
+        return True
 
     def path_converter(self, path, end):
         """
@@ -67,13 +76,13 @@ class DubinsV2:
         """
         command = None
         if path[4] == 'LSL':
-            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'lsl'), end
+            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'lsl'), end
         elif path[4] == 'RSR':
-            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'rsr'), end
+            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'rsr'), end
         elif path[4] == 'RSL':
-            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'rsl'), end
+            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'rsl'), end
         elif path[4] == 'LSR':
-            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'lsr'), end
+            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'lsr'), end
         elif path[4] == 'RLR':
             command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'rlr'), end
         elif path[4] == 'LRL':

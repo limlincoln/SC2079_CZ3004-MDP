@@ -228,7 +228,7 @@ class Client:
                 cv2.imwrite('./result_img/image' + str(obs_id) + '.jpg', frame)
                 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
                 result, frame = cv2.imencode('.jpg', frame, encode_param)
-                self.final_result = [frame, self.class_dcp[res[1]]]
+                self.final_result = [self.class_id[res[1]], self.class_dcp[res[1]]]
             # send result
             a = pickle.dumps(self.final_result)
             message = struct.pack(">L", len(a)) + a
