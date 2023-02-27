@@ -8,6 +8,7 @@ from algorithm.constants import DIRECTION
 from algorithm.Entities.RectRobot import RectRobot
 from algorithm.HelperFunctions import radiansToDegrees
 from algorithm.Entities.VirtualRect import VirtualRect
+import shapely as sp
 class StaticEnvironment:
     """
 
@@ -90,13 +91,13 @@ class StaticEnvironment:
 
         for ob in self.obstacles:
             if ob.imageOrientation == "E":
-                targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 5, DIRECTION.LEFT))
+                targetLocations.append((ob.pos[0] + 50, ob.pos[1] - 10, DIRECTION.LEFT))
             elif ob.imageOrientation == "N":
-                targetLocations.append((ob.pos[0] - 5, ob.pos[1] + 40, DIRECTION.BOTTOM))
+                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM))
             elif ob.imageOrientation == "W":
-                targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 5, DIRECTION.RIGHT))
+                targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT))
             else:
-                targetLocations.append((ob.pos[0] - 5, ob.pos[1] - 40, DIRECTION.TOP))
+                targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 50, DIRECTION.TOP))
             self.obID.append(ob.ObId)
         return targetLocations
 
@@ -126,7 +127,7 @@ class AdvancedEnvironment:
         self.obstacles = obstacles
         self.targets = self.generateTargetLocationsInRads(self.obstacles)
         self.virtualObstacles = self.generateVirtualObstacles(self.obstacles)
-
+        self.KDtree = KDTree([obs.center for obs in self.virtualObstacles])
     def generateTargetLocationsInRads(self, obstacles):
 
         targetLocations = []
@@ -164,10 +165,9 @@ class AdvancedEnvironment:
             return False
 
         for ob in self.virtualObstacles:
-            if ob.isCollided(robotPos):
+            if ob.collides(robotPos):
                 return False
         return True
-
 
     def randomFreeSpace(self):
         x = np.random.rand() * self.dimensions[0]
@@ -189,4 +189,3 @@ class AdvancedEnvironment:
         p3 = (pygame.math.Vector2(rect.bottomleft) - pivot).rotate(angle) + pivot
         
         """
-

@@ -13,7 +13,7 @@ import numpy as np
 from algorithm.algo.TSPV2 import NearestNeighbour
 from algorithm.algo.HStar import HybridAstar
 from algorithm.algo.RRT import RRT
-import numpy as pi
+from algorithm.HelperFunctions import basic_angle
 def sampleTSP(dubins, env, start):
     for options in env.targets:
         print(dubins.compute_best(start, options))
@@ -42,7 +42,7 @@ class SimSum(unittest.TestCase):
     def testHstar(self):
         env = AdvancedEnvironment((200,200), getTestObstacles())
         dubins = DubinsV2(26, 10, env)
-        sampleHstarTSP((15,15,DIRECTION.TOP.value), env, dubins)
+        sampleHstarTSP((15,15, DIRECTION.TOP.value), env, dubins)
     def testRRT(self):
         env = AdvancedEnvironment((200,200), getTestObstacles())
         dubins = DubinsV2(26,10,env)
@@ -57,10 +57,49 @@ class SimSum(unittest.TestCase):
     def testOneObstacle(self):
         env = AdvancedEnvironment((200, 200), getTestObstacles())
         dubins = DubinsV2(26,10,env)
-        astar = HybridAstar(env,dubins, (15,15,DIRECTION.TOP.value), env.targets[0], True)
-        astar.solve()
-        path = dubins.computeAllPath((15,15,DIRECTION.TOP.value), env.targets[0])
-        print(path)
+        start = (15,15,DIRECTION.TOP.value)
+        end = env.targets[4]
+        path = dubins.compute_best(start,end)
+        dubins.plot(path[1])
+
+    def testFailedObstacle(self):
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
+        dubins = DubinsV2(26,10,env)
+        start = (15,15,DIRECTION.TOP.value)
+        end = env.targets[2]
+        path = dubins.computeAllPath(start, end)
+        coords = dubins.generatePathCoords(start, end, path[1])
+        dubins.plot(coords)
+
+    def testContinousValue(self):
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
+        def newPos(pos, type, delta):
+            assert type in 'RSL'
+            if type == "S":
+                new_X = pos[0] + delta * np.cos(pos[2])
+                new_Y = pos[1] + delta * np.sin(pos[2])
+                new_orientation = pos[2]
+            elif type == "R":
+                new_X = pos[0] + delta * np.cos(pos[2])
+                new_Y = pos[1] + delta * np.sin(pos[2])
+                new_orientation = basic_angle(pos[2] - delta / 25)
+            elif type == "L":
+                new_X = pos[0] + delta * np.cos(pos[2])
+                new_Y = pos[1] + delta * np.sin(pos[2])
+                new_orientation = basic_angle(pos[2] + delta / 25)
+            return new_X, new_Y, new_orientation
+        length = 40
+        start = (50, 60, DIRECTION.TOP.value)
+        points = []
+        current = start
+        for x in np.arange(0, length, 0.5):
+            current = newPos(current, 'R', 0.5)
+            points.append(current)
+        dubins = DubinsV2(28, 10, env)
+        print(points[-1])
+        dubins.plot(points)
+
+
 
 if __name__ == '__main__':
     unittest.main()

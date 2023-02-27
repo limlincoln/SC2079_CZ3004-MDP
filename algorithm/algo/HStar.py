@@ -7,6 +7,7 @@ from algorithm.algo.DubinsV2 import DubinsV2
 from queue import PriorityQueue
 import algorithm.settings as settings
 from algorithm.HelperFunctions import basic_angle
+from algorithm.constants import DIRECTION
 class Node:
 
     def __init__(self, pos, moves, cost, path):
@@ -23,6 +24,8 @@ class HybridAstar:
         self.dubins = dubins
         self.path = []
         self.L = 1
+        self.dirList = [DIRECTION.TOP.value, DIRECTION.LEFT.value, DIRECTION.BOTTOM.value, DIRECTION.RIGHT.value]
+        self.precision = (5, 5, 1)
 
     def solve(self):
         clock = time.perf_counter()
@@ -37,11 +40,11 @@ class HybridAstar:
         cost[startNode] = 0
         backtrack[startNode] = None
         while not frontier.empty():
-            if time.perf_counter() - clock > 20:
+            if time.perf_counter() - clock > 30:
                 print("inifinite loop break")
                 return None
             priority, _, currentNode = frontier.get()
-            if self.rounding(currentNode.pos) == self.rounding(goalNode.pos):
+            if self.in_goal_region(currentNode.pos):
                 self.extract_path(backtrack, currentNode, startNode)
                 return currentNode
             for newNode in self.get_neighbours(currentNode):
@@ -61,13 +64,21 @@ class HybridAstar:
 
         moves = []
         pos = node.pos
-        moves.extend(self.motionCommandsDiscrete(pos))
+        moves.extend(self.motionsCommands(pos))
         path = self.dubins.compute_best(pos, self.goal)
         if path:
             moves.append(Node(path[0][1], path[0][0], 1, path[1]))
         return moves
 
-    def nextPos(self, pos, v, steeringAngle):
+    def generateState(self, pos, t, delta):
+        points = []
+        current = pos
+        for x in np.arange(0, (2*np.pi*self.dubins.radius)/4, delta):
+            current = self.nextPos(current, t, delta)
+            points.append(current)
+        return points, current
+
+    def nextPos(self, pos, type, delta):
         """
         Get the next position in continuous step
         :param pos:
@@ -75,10 +86,32 @@ class HybridAstar:
         :param steeringAngle:
         :return:
         """
-        new_x = pos[0] + v * np.cos(pos[2])
-        new_y = pos[1] + v * np.sin(pos[2])
-        new_angle = basic_angle(pos[2] + v*np.tan(steeringAngle))
-        return new_x, new_y, new_angle
+
+        if type == "S":
+            new_X = pos[0] + delta * np.cos(pos[2])
+            new_Y = pos[1] + delta * np.sin(pos[2])
+            new_orientation = pos[2]
+        elif type == "R":
+            new_X = pos[0] + delta * np.cos(pos[2])
+            new_Y = pos[1] + delta * np.sin(pos[2])
+            new_orientation = basic_angle(pos[2] - delta / self.dubins.radius)
+        elif type == "L":
+            new_X = pos[0] + delta * np.cos(pos[2])
+            new_Y = pos[1] + delta * np.sin(pos[2])
+            new_orientation = basic_angle(pos[2] + delta / self.dubins.radius)
+        elif type == "Z":
+            new_X = pos[0] - delta * np.cos(pos[2])
+            new_Y = pos[1] - delta * np.sin(pos[2])
+            new_orientation = pos[2]
+        elif type == "RR":
+            new_X = pos[0] - delta * np.cos(pos[2])
+            new_Y = pos[1] - delta * np.sin(pos[2])
+            new_orientation = basic_angle(pos[2] + delta / self.dubins.radius)
+        elif type == "RL":
+            new_X = pos[0] - delta * np.cos(pos[2])
+            new_Y = pos[1] - delta * np.sin(pos[2])
+            new_orientation = basic_angle(pos[2] - delta / self.dubins.radius)
+        return new_X, new_Y, new_orientation
 
     def extract_path(self, backtrack, goalNode, startNode, dubinsNode = None):
         """
@@ -102,18 +135,19 @@ class HybridAstar:
 
     def motionsCommands(self, pos):
         moves = []
-        available_moves = {'L': (pos, settings.MAX_STEERING_ANGLE, 10, 5),
-                           'R': (pos, -settings.MAX_STEERING_ANGLE, 10, 5),
-                           'Z': (pos, settings.MAX_STEERING_ANGLE, -10, 20),
-                           'X': (pos, -settings.MAX_STEERING_ANGLE, -10, 20),
-                           'S': (pos, 0, 10, 2),
-                           'v': (pos, 0, -10, 10)}
+        available_moves = {'L': (pos, 10, 10),
+                           'R': (pos, 10, 10),
+                           'Z': (pos, -10, 15),
+                           'RR': (pos, -10, 20),
+                           'S': (pos, 10, 2),
+                           'RL': (pos, -10, 20)}
         for key in available_moves:
             move = available_moves[key]
-            cost = move[3]
-            new_pos = self.nextPos(move[0], move[2], move[1])
-            if self.env.isWalkable(new_pos):
-                moves.append(Node(new_pos, key, cost, []))
+            points, final_pos = self.generateState(move[0], key, 0.5)
+            for point in points:
+                if not self.env.isWalkable(point):
+                    break
+            moves.append(Node(final_pos, key, move[2], points))
         return moves
 
     def motionCommandsDiscrete(self, pos):
@@ -142,3 +176,10 @@ class HybridAstar:
         new_angle = basic_angle(pos[2]-angle)
 
         return round(new_x) , round(new_y), new_angle
+
+    def in_goal_region(self,pos):
+        for i, value in enumerate(pos):
+            if i <= 2:
+                if abs(self.goal[i] - value) > self.precision[i]:
+                    return False
+        return True

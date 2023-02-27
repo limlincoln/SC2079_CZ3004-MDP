@@ -1,4 +1,5 @@
 from algorithm.Entities.Obstacle import Obstacle
+from shapely import geometry
 
 
 class VirtualRect:
@@ -13,6 +14,8 @@ class VirtualRect:
         """
         self.pos = (ob.pos[0] - 15, ob.pos[1] + 25)
         self.length = 40
+        self.polygon = geometry.box(self.pos[0], self.pos[1] - self.length, self.pos[0] + self.length, self.pos[1])
+        self.center = (self.pos[0] + 20, self.pos[1] - 20)
 
     def isCollided(self, robotPos):
         """
@@ -26,3 +29,11 @@ class VirtualRect:
             return True
 
         return False
+
+    def collides(self, pos):
+        """
+        check if collide with given point
+        :param pos:
+        :return:
+        """
+        return self.polygon.contains(geometry.Point(pos[0], pos[1]))

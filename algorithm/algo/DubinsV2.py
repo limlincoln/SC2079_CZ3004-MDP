@@ -2,7 +2,9 @@ import math
 
 import numpy as np
 from algorithm.algo.Environment import AdvancedEnvironment
-
+import matplotlib.pyplot as plt
+import matplotlib
+from algorithm.HelperFunctions import basic_angle
 
 class DubinsV2:
     def __init__(self, radius, velocity, env: AdvancedEnvironment):
@@ -47,11 +49,10 @@ class DubinsV2:
         paths = self.computeAllPath(start, end)
         loopPath = paths.copy()
         for path in loopPath:
-            points = self.generatePathCoords(start, end, path, 10)
+            points = self.generatePathCoords(start, end, path, 0.5)
             for point in points:
                 if not self.env.isWalkable(point):
                     paths.pop(paths.index(path))
-                    print(path[4])
                     break
         if not paths:
             return None
@@ -65,7 +66,6 @@ class DubinsV2:
         for point in points:
             if not self.env.isWalkable(point):
                 return False
-
         return True
 
     def path_converter(self, path, end):
@@ -335,7 +335,7 @@ class DubinsV2:
         """
         type: str = path[4]
         total = path[0]
-        if type == 'lrl' or type == 'rlr':
+        if type == 'RLR' or type == 'LRL':
             return self.generateCurve(start, end, path, interval)
         turns = [*type]
         center_0 = self.findCenter(start, turns[0])
@@ -350,40 +350,48 @@ class DubinsV2:
         else:
             fin = np.array(end[:2])
         dist_straight = self.distCenter(ini, fin)
+        current = start
         for x in np.arange(0, total, interval):
             if x < path[2]:
-                points.append(self.circleArc(start, -1 if turns[0] == 'R' else 1, center_0, x))
+                current = self.calculateCoords(current, interval, turns[0])
+                points.append(current)
             elif x > total - path[3]:
-                points.append(self.circleArc(end, -1 if turns[2] == 'R' else 1, center_1, x))
+                current = self.calculateCoords(current, interval, turns[2])
+                points.append(current)
             else:
-                coeff = (x - path[2]) / dist_straight
-                points.append((coeff * fin) + ((1 - coeff) * ini))
-        points.append(end[:2])
-
+                current = self.calculateCoords(current, interval, turns[1])
+                points.append(current)
+        points.append(end[:3])
         return np.array(points)
 
     def generateCurve(self, start, end, path, interval):
         total = path[0]
         turns = path[4]
+        turns = [*turns]
         center_0 = self.findCenter(start, turns[0])
         center_2 = self.findCenter(end, turns[2])
         center_1 = path[5][2]
         points = []
+        current = start
         for x in np.arange(0, total, interval):
             if x < path[1]:
-                points.append(self.circleArc(start, -1 if turns[0] == 'R' else 1, center_0, x))
-            elif x > total - path[2]:
-                points.append(self.circleArc(end, -1 if turns[0] == 'R' else 1, center_2, x - total))
+                current = self.calculateCoords(current, interval, turns[0])
+                points.append(current)
+            elif x > total - path[3]:
+                current = self.calculateCoords(current, interval, turns[2])
+                points.append(current)
             else:
-                points.append(
-                    self.circleArc(path[5][0], -1 if turns[0] == 'R' else 1, center_1, x - path[1] / self.radius))
-        points.append(end[:2])
-
+                current = self.calculateCoords(current, interval, turns[1])
+                points.append(current)
+        points.append(end[:3])
         return np.array(points)
+        
+        
+
 
     def circleArc(self, reference, beta, center, x):
-        """
 
+        """
         :param reference: float
             Angular starting point, in rads
         :param beta: float
@@ -399,7 +407,29 @@ class DubinsV2:
 
     def calculateCoords(self, pos, delta, type):
         assert type in 'RSL'
-        new_X = pos[0] + delta * np.cos(pos[2])
-        new_Y = pos[1] + delta * np.sin(pos[2])
-        new_orientation = pos[2] + delta / self.radius
-        return new_X, new_Y, new_orientation
+
+        if type == "S":
+            new_X = pos[0] + delta * np.cos(pos[2])
+            new_Y = pos[1] + delta * np.sin(pos[2])
+            new_orientation = pos[2]
+        elif type == "R":
+            new_X = pos[0] + delta * np.cos(pos[2])
+            new_Y = pos[1] + delta * np.sin(pos[2])
+            new_orientation = basic_angle(pos[2] - delta / self.radius)
+        elif type == "L":
+            new_X = pos[0] + delta * np.cos(pos[2])
+            new_Y = pos[1] + delta * np.sin(pos[2])
+            new_orientation = basic_angle(pos[2] + delta / self.radius)
+
+        return np.array([new_X, new_Y, new_orientation])
+
+    def plot(self, path):
+        matplotlib.use('TkAgg')
+        x = np.array([x[0] for x in path])
+        y = np.array([y[1] for y in path])
+        plt.scatter(x,y)
+        for obs in self.env.virtualObstacles:
+            x, y = obs.polygon.exterior.xy
+            plt.plot(x, y)
+        plt.show()
+
