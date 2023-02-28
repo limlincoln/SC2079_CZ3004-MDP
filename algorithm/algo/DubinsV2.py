@@ -76,17 +76,17 @@ class DubinsV2:
         """
         command = None
         if path[4] == 'LSL':
-            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'lsl'), end
+            command = ("l"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.velocity, 4)), 'lsl'), end
         elif path[4] == 'RSR':
-            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'rsr'), end
+            command = ("r"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.velocity, 4)), 'rsr'), end
         elif path[4] == 'RSL':
-            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'rsl'), end
+            command = ("r"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.velocity, 4)), 'rsl'), end
         elif path[4] == 'LSR':
-            command = (path[2] / self.velocity, path[1] / self.velocity, path[3] / self.velocity, 'lsr'), end
+            command = ("l"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.velocity, 4)), 'lsr'), end
         elif path[4] == 'RLR':
-            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'rlr'), end
+            command = ("r"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[2] / self.velocity, 4)), "r"+str(np.round(path[3] / self.velocity, 4)), 'rlr'), end
         elif path[4] == 'LRL':
-            command = (path[1] / self.velocity, path[2] / self.velocity, path[3] / self.velocity, 'lrl'), end
+            command = ("l"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[2] / self.velocity, 4)), "l"+str(np.round(path[3] / self.velocity, 4)), 'lrl'), end
         return command
 
     def lsl(self, start, end, p1, p2):

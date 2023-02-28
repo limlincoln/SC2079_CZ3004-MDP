@@ -43,7 +43,7 @@ class HybridAstar:
         cost[startNode] = 0
         backtrack[startNode] = None
         while not frontier.empty():
-            if time.perf_counter() - clock > 30:
+            if time.perf_counter() - clock > 5:
                 print("inifinite loop break")
                 return None
             priority, _, currentNode = frontier.get()

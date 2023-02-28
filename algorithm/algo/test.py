@@ -115,7 +115,25 @@ class SimSum(unittest.TestCase):
         env = AdvancedEnvironment((200, 200), getTestObstacles())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
         path = tsp.computeSequence()
-        print(path)
+        pathString = []
+        for oneOb in path[0]:
+            key = oneOb[-1].pos[3]
+            tempString= ""
+            for index , node in enumerate(oneOb):
+                trail = ","
+                if type(node.moves) == tuple:
+                    for i, dubinsTuple in enumerate(node.moves[:3]):
+                        if i == len(node.moves[:3])-1 and index == len(oneOb) - 1:
+                            trail = ""
+                        tempString += dubinsTuple + trail
+                else:
+                    if index == len(oneOb) - 1:
+                        trail = ""
+                    tempString += str(node.moves) + trail
+            pathString.append((key, tempString))
+
+        print(pathString)
+        # (ObstacleID, "s3.012,s1.204")
 
 
 

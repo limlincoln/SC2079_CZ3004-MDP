@@ -11,8 +11,9 @@ import numpy as np
 
 import algorithm.RPI.clientConfig as config
 from ultralytics import YOLO
-from algorithm.algo.TSP import NearestNeighbour
-from algorithm.algo.Environment import StaticEnvironment
+#from algorithm.algo.TSP import NearestNeighbour
+from algorithm.algo.TSPV2 import NearestNeighbour
+from algorithm.algo.Environment import StaticEnvironment, AdvancedEnvironment
 from algorithm.Entities.Obstacle import Obstacle
 import re as re
 import algorithm.settings as settings
@@ -152,13 +153,26 @@ class Client:
         self.TSP.computeSequence()
         return self.TSP.getCommandList()
 
+    def path_calculation(self):
+        list_of_ob_objects: list(Obstacle) = []
+        print(self.ObList)
+        for key in self.ObList:
+            values = self.ObList[key]
+            print(values)
+            list_of_ob_objects.append(Obstacle(values[0], values[1], values[2], values[3]))
+        print(list_of_ob_objects)
+        self.env = AdvancedEnvironment((200, 200), list_of_ob_objects)
+        self.TSP = NearestNeighbour(self.env, (15,15,DIRECTION.TOP.value))
+        path = self.TSP.computeSequence()
+        return path
     def send_path(self):
         """
         Send path to server
         :return:
         """
         path = self.path_calculation()
-        a = pickle.dumps(path)
+        string = self.convertToPath(path)
+        a = pickle.dumps(string)
         message = struct.pack(">L", len(a)) + a
         self.socket.sendall(message)
         print("Car Path Sent")
@@ -268,6 +282,27 @@ class Client:
         cv2.imshow("Stitched Image", stacked_image)
         cv2.waitKey('A')
         cv2.destoryAllWindows()
+
+
+    def convertToPath(self, path):
+
+        pathString = []
+        for oneOb in path[0]:
+            key = oneOb[-1].pos[3]
+            tempString= ""
+            for index , node in enumerate(oneOb):
+                trail = ","
+                if type(node.moves) == tuple:
+                    for i, dubinsTuple in enumerate(node.moves[:3]):
+                        if i == len(node.moves[:3])-1 and index == len(oneOb) - 1:
+                            trail = ""
+                        tempString += dubinsTuple + trail
+                else:
+                    if index == len(oneOb) - 1:
+                        trail = ""
+                    tempString += str(node.moves) + trail
+            pathString.append((key, tempString))
+        return pathString
 
     def run(self):
         """

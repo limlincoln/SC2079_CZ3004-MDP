@@ -28,14 +28,12 @@ class NearestNeighbour:
             if distance <= lowestDistance:
                 lowestDistance = distance
                 path = self.findPath(perm)
-                choice.append(path)
+                if path:
+                    choice.append(path)
         if choice:
             cost_list = []
-            for option in choice:
-                cost = 0
-                for node in option:
-                    cost += node.cost
-                cost_list.append(cost)
+            for path in choice:
+                cost_list.append(path[1])
             optimalPath = choice[cost_list.index(min(cost_list, key=lambda x: x))]
         return optimalPath
 
@@ -55,12 +53,16 @@ class NearestNeighbour:
 
         counter = 0
         start = self.start
-
+        cost = 0
         for ob in targetLocations:
             try:
                 hstar = HybridAstar(self.env, self.dubins, start, ob, False)
                 next = hstar.solve()
+                if next == None:
+                    return None
                 path = hstar.path
+                for node in path:
+                    cost += node.cost
             except Exception as e:
                 print(traceback.format_exc())
                 print("no path")
@@ -72,7 +74,7 @@ class NearestNeighbour:
         if counter != len(targetLocations):
             print("path is incomplete!!")
 
-        return complete_path
+        return complete_path, cost
 
 
 
