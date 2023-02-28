@@ -39,16 +39,14 @@ from Hstar:
 
 Sample Usage:
 ```
-dubins = DubinsV2(28,10,env)
 path = hstar.solve()
 coords = []
 for node in path:
   coords.append([node.path])
-dubins.plot(coords)
+hstar.dubins.plot(coords)
 ```
 from TSP:
 ```
-dubins = DubinsV2(28,10,env)
 path = tsp.computeSequence[0]
 coords = []
 
@@ -58,6 +56,6 @@ for ob in path:
       ob_coords.extend(node.path)
    coords.append(ob_coords)
 
-dubins.plot(coords)
+tsp.dubins.plot(coords)
    
 ```
