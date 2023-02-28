@@ -52,7 +52,7 @@ Sample Usage:
 path = hstar.path
 coords = []
 for node in path:
-  coords.append([node.path])
+  coords.append(node.path)
 hstar.dubins.plot(coords)
 ```
 from TSP:
