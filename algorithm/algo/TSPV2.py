@@ -11,6 +11,7 @@ class NearestNeighbour:
         self.start = start
         self.targetLocations = env.targets
         self.dubins = DubinsV2(28, 10, self.env)
+
     def computeSequence(self):
         """
         returns the sequence of vertices to visit with minimum cost
@@ -18,18 +19,17 @@ class NearestNeighbour:
         sequence of verticles with their pos
         """
         permutations = list(itertools.permutations(self.targetLocations))
-        lowestDistance = 9999999
         choice = []
         optimalPath = []
+        perm_cost_list = []
         for perm in permutations:
-            distance = 0
-            for i in range(len(perm)-1):
-                distance += self.euclideanDistance(perm[i], perm[i+1])
-            if distance <= lowestDistance:
-                lowestDistance = distance
-                path = self.findPath(perm)
-                if path:
-                    choice.append(path)
+            perm_cost_list.append(self.distance_for_sequence(perm))
+        min_cost_sequence = sorted(perm_cost_list, key=lambda x: x[1], reverse=True)[:15]
+
+        for perm in min_cost_sequence:
+            path = self.findPath(perm[0])
+            if path:
+                choice.append(path)
         if choice:
             cost_list = []
             for path in choice:
@@ -68,14 +68,17 @@ class NearestNeighbour:
                 print("no path")
                 break
             complete_path.append(path)
-            start = next.pos
             counter += 1
+            start = next.pos
 
         if counter != len(targetLocations):
             print("path is incomplete!!")
 
         return complete_path, cost
 
+    def distance_for_sequence(self, sequence):
+        distance = 0
+        for i in range(len(sequence) - 1):
+            distance += self.euclideanDistance(sequence[i], sequence[i + 1])
 
-
-
+        return sequence, distance

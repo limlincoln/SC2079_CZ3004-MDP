@@ -7,5 +7,5 @@ CLASS_DCP = ["one", "two", "three", "four", "five", "six", "seven", "eight", "ni
             "Alphabet Y", "Alphabet Z"]
 CLASS_ID = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, -1, 22, 23, 37, 24, 25, 26, 27, 39, 38, 28, 40, 29, \
             30, 36, 31, 32, 33, 34, 35]
-IMAGE_WIDTH_CENTER = 320/2
+IMAGE_WIDTH_CENTER = 640/2
 IMAGE_HEIGHT_CHANGE_RATIO = 320/240

@@ -21,7 +21,7 @@ def startRpiClient():
 
 
 if __name__ == '__main__':
-    main()
-   # startRpiClient()
+    #main()
+   startRpiClient()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

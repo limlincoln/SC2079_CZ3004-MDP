@@ -31,6 +31,10 @@ class HybridAstar:
         self.precision = (5, 5, 1)
 
     def solve(self):
+        """
+        main algo
+        :return:
+        """
         clock = time.perf_counter()
         frontier = PriorityQueue()
         backtrack = dict()
@@ -64,6 +68,11 @@ class HybridAstar:
         return self.dubins.distCenter(start, end)
 
     def get_neighbours(self, node: Node):
+        """
+        Get neighbouring states
+        :param node:
+        :return:
+        """
 
         moves = []
         pos = node.pos
@@ -76,7 +85,7 @@ class HybridAstar:
     def generateState(self, pos, t, delta):
         points = []
         current = pos
-        length = (2 * np.pi * self.dubins.radius) / 4
+        length = (2 * np.pi * 20) / 4
         if t == 'S' or t == 'Z':
             length = 10
         for x in np.arange(0, length, delta):
@@ -101,11 +110,11 @@ class HybridAstar:
         elif type == "R":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
-            new_orientation = basic_angle(pos[2] - delta / self.dubins.radius)
+            new_orientation = basic_angle(pos[2] - delta / 20)
         elif type == "L":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
-            new_orientation = basic_angle(pos[2] + delta / self.dubins.radius)
+            new_orientation = basic_angle(pos[2] + delta / 20)
         elif type == "Z":
             new_X = pos[0] - delta * np.cos(pos[2])
             new_Y = pos[1] - delta * np.sin(pos[2])
@@ -113,11 +122,11 @@ class HybridAstar:
         elif type == "RR":
             new_X = pos[0] - delta * np.cos(pos[2])
             new_Y = pos[1] - delta * np.sin(pos[2])
-            new_orientation = basic_angle(pos[2] + delta / self.dubins.radius)
+            new_orientation = basic_angle(pos[2] + delta / 20)
         elif type == "RL":
             new_X = pos[0] - delta * np.cos(pos[2])
             new_Y = pos[1] - delta * np.sin(pos[2])
-            new_orientation = basic_angle(pos[2] - delta / self.dubins.radius)
+            new_orientation = basic_angle(pos[2] - delta / 20)
         return new_X, new_Y, new_orientation
 
     def extract_path(self, backtrack, goalNode, startNode, dubinsNode=None):
@@ -159,22 +168,6 @@ class HybridAstar:
                 moves.append(Node(final_pos, key, move[2], points))
         return moves
 
-    def motionCommandsDiscrete(self, pos):
-        moves = []
-        available_moves = {'L': (pos, np.pi, 10, 5),
-                           'R': (pos, -np.pi, 10, 5),
-                           'Z': (pos, np.pi, -10, 20),
-                           'X': (pos, -np.pi, -10, 20),
-                           'S': (pos, 0, 10, 2),
-                           'v': (pos, 0, -10, 10)}
-        for key in available_moves:
-            move = available_moves[key]
-            cost = move[3]
-            new_pos = self.nextPosDiscrete(move[0], move[2], move[1])
-            if self.env.isWalkable(new_pos):
-                moves.append(Node(new_pos, key, cost, []))
-        return moves
-
     def rounding(self, pos):
 
         return np.round(pos[0]), np.round(pos[1]), np.round(pos[2], 6)
@@ -194,8 +187,7 @@ class HybridAstar:
         return True
 
     def generateEndState(self, pos, t):
-        command = CommandV2(pos, self.dubins.radius, 10)
-
+        command = CommandV2(pos, 20, 10)
         if t == 'S':
             return command.moveStraight()
         elif t == 'Z':

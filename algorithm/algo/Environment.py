@@ -122,9 +122,10 @@ class StaticEnvironment:
 
 
 class AdvancedEnvironment:
-    def __init__(self, dimensions, obstacles: list[Obstacle]):
+    def __init__(self, dimensions, obstacles: list[Obstacle], task=1):
         self.dimensions = dimensions
         self.obstacles = obstacles
+        self.task = task
         self.targets = self.generateTargetLocationsInRads(self.obstacles)
         self.virtualObstacles = self.generateVirtualObstacles(self.obstacles)
         self.KDtree = KDTree([obs.center for obs in self.virtualObstacles])
@@ -150,8 +151,12 @@ class AdvancedEnvironment:
         """
         list = []
         for ob in obstacles:
-            virutalOb = VirtualRect(ob)
-            list.append(virutalOb)
+            if self.task == 1:
+                virutalOb = VirtualRect(ob)
+                list.append(virutalOb)
+            elif self.task == 2:
+                virutalOb = VirtualRect(ob, 2)
+                list.append(virutalOb)
 
         return list
 

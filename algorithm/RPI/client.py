@@ -70,6 +70,7 @@ class Client:
             # remove "S" and "G" if multiple letters are detected
             for i in reversed(range(len(box_list))):
                 box = box_list[i]
+                print(box.cls.tolist())
                 cls_idx = int(box.cls.tolist()[0])
                 if cls_idx == self.s_index or cls_idx == self.g_index:
                     box_list.pop(i)
@@ -109,7 +110,7 @@ class Client:
                 continue
             s = data.decode('UTF-8').strip()
             print("Received from RPi:", s)
-            if s == "path":
+            if s == "run":
                 break
             self.obstacle_string_converter(s)
         return
@@ -153,7 +154,7 @@ class Client:
         self.TSP.computeSequence()
         return self.TSP.getCommandList()
 
-    def path_calculation(self):
+    def path_calculationV2(self):
         list_of_ob_objects: list(Obstacle) = []
         print(self.ObList)
         for key in self.ObList:
@@ -170,8 +171,9 @@ class Client:
         Send path to server
         :return:
         """
-        path = self.path_calculation()
-        string = self.convertToPath(path)
+        #path = self.path_calculation()
+        #string = self.convertToPath(path)
+        string = [('1', "f,f,r,f,l"), ('2', "b,b,r")]
         a = pickle.dumps(string)
         message = struct.pack(">L", len(a)) + a
         self.socket.sendall(message)
@@ -311,6 +313,8 @@ class Client:
         """
         self.connect()
         self.get_obstacles()
-        self.path_calculation()
+        #self.path_calculationV2()
+        self.send_path()
         self.receive_image()
         self.display_images()
+        self.close()

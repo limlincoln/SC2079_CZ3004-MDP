@@ -428,7 +428,7 @@ class DubinsV2:
         for c in path:
             x = np.array([x[0] for x in c])
             y = np.array([y[1] for y in c])
-            plt.scatter(x,y)
+            plt.scatter(x, y)
         for obs in self.env.virtualObstacles:
             x, y = obs.polygon.exterior.xy
             plt.plot(x, y)
