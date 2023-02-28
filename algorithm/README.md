@@ -45,8 +45,7 @@ coords = []
 for node in path:
   coords.append([node.path])
 dubins.plot(coords)
-'''
-
+```
 from TSP:
 ```
 dubins = DubinsV2(28,10,env)
