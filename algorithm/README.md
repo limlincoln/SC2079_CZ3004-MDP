@@ -1,6 +1,15 @@
 Dependencies: pygame 2.0.1 (SDL 2.0.14, Python 3.9.7)
 
+Setting Up Obstacles:
 
+Sample Usage:
+
+```
+ob_list = []
+
+# Obstacle((pos), 'Facing', (box_sizing), 'ObId))
+ob_list.append(Obstacle( (10,10), 'N', (40,40), '1')) 
+```
 
 Running HStar:
 + Parameters/Objects needed : Advanced Environment, DubinsV2
