@@ -131,7 +131,6 @@ class HybridAstar:
 
     def extract_path(self, backtrack, goalNode, startNode, dubinsNode=None):
         """
-
         :param startNode: Node
         :param backtrack: dist
         :param goalNode: Node
@@ -200,3 +199,4 @@ class HybridAstar:
             return command.faceLeftReverse()
         elif t == 'RR':
             return command.faceRightReverse()
+
