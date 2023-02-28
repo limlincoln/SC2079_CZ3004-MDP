@@ -22,12 +22,13 @@ from algorithm.algo.DubinsV2 import DubinsV2
 from algorithm.algo.HStar import HybridAstar
 from algorithm.constants import DIRECTION
 
-env = AdvancedEnvironment((200, 200), [getTestObstacles()])
+env = AdvancedEnvironment((200, 200), getTestObstacles())
 dubins = DubinsV2(radius=28, velocity=10, env=env)
 start = (15,15,DIRECTION.TOP.value)
-hstar = HybridAstar(env,dubins,start,end=env.targets[0],reverse=True)
+hstar = HybridAstar(env,dubins,start,goal=env.targets[0],reverse=True)
 // nodes of the path is return if found else None
-path = hstar.solve() 
+next = hstar.solve()
+path = hstar.path
 ```
 
 Running TSPV2:
@@ -48,7 +49,7 @@ from Hstar:
 
 Sample Usage:
 ```
-path = hstar.solve()
+path = hstar.path
 coords = []
 for node in path:
   coords.append([node.path])
