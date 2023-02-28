@@ -124,7 +124,7 @@ class SimSum(unittest.TestCase):
 
         dubins.plot(coord_list)
 
-    def testTSP(self):
+    def testTSPForRPI(self):
         env = AdvancedEnvironment((200, 200), getTestObstacles2())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
         path = tsp.computeSequence()
@@ -149,6 +149,17 @@ class SimSum(unittest.TestCase):
         print(pathString)
         # (ObstacleID, "s3.012,s1.204")
 
+    def testTSPPlot(self):
+        env = AdvancedEnvironment((200, 200), getTestObstacles2())
+        tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
+        path = tsp.computeSequence()[0]
+        coords = []
+        for ob in path:
+            ob_coords = []
+            for node in ob:
+                ob_coords.extend(node.path)
+            coords.append(ob_coords)
+        tsp.dubins.plot(coords)
 
 
 
