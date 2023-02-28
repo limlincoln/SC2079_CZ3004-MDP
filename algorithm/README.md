@@ -46,6 +46,8 @@ for node in path:
 hstar.dubins.plot(coords)
 ```
 from TSP:
+
+Sample Usage:
 ```
 path = tsp.computeSequence[0]
 coords = []
