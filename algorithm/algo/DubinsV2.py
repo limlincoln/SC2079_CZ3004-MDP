@@ -219,14 +219,14 @@ class DubinsV2:
 
         # dist between p1 and p3 is 2r
 
-        vector1 = p2[0] - p1[0], p2[1] - p2[1]
+        vector1 = p2[0] - p1[0], p2[1] - p1[1]
 
         # rotate clockwise for this one
 
-        vector2 = p2[1] - p1[1], p1[0] - p2[0]
+        vector2 = -vector1[1], vector1[0]
 
         # dist between q3 to q
-        dist1 = np.sqrt(np.square(2 * self.radius) + np.square(dist / 2))
+        dist1 = np.sqrt(np.square(2 * self.radius) - np.square(dist / 2))
 
         p3 = q[0] + (dist1 / dist) * vector2[0], q[1] + (dist1 / dist) * vector2[1]
 
@@ -260,14 +260,14 @@ class DubinsV2:
 
         # dist between p1 and p3 is 2r
 
-        vector1 = p2[0] - p1[0], p2[1] - p2[1]
+        vector1 = p2[0] - p1[0], p2[1] - p1[1]
 
         # rotate clockwise for this one
 
         vector2 = p2[1] - p1[1], p1[0] - p2[0]
 
         # dist between q3 to q
-        dist1 = np.sqrt(np.square(2 * self.radius) + np.square(dist / 2))
+        dist1 = np.sqrt(np.square(2 * self.radius) - np.square(dist / 2))
 
         p3 = q[0] + (dist1 / dist) * vector2[0], q[1] + (dist1 / dist) * vector2[1]
 
