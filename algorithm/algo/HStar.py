@@ -28,7 +28,7 @@ class HybridAstar:
         self.dubins = dubins
         self.path = []
         self.L = 1
-        self.precision = (5, 5, 1)
+        self.precision = (2, 2, 1)
 
     def solve(self):
         """
@@ -47,7 +47,7 @@ class HybridAstar:
         cost[startNode] = 0
         backtrack[startNode] = None
         while not frontier.empty():
-            if time.perf_counter() - clock > 5:
+            if time.perf_counter() - clock > len(self.env.targets):
                 print("inifinite loop break")
                 return None
             priority, _, currentNode = frontier.get()
@@ -149,12 +149,12 @@ class HybridAstar:
 
     def motionsCommands(self, pos):
         moves = []
-        available_moves = {'L': (pos, 10, 10),
-                           'R': (pos, 10, 10),
-                           'Z': (pos, -10, 15),
-                           'RR': (pos, -10, 20),
-                           'S': (pos, 10, 2),
-                           'RL': (pos, -10, 20)}
+        available_moves = {'L': (pos, 10, 20),
+                           'R': (pos, 10, 20),
+                           'Z': (pos, -10, 25),
+                           'RR': (pos, -10, 30),
+                           'S': (pos, 10, 10),
+                           'RL': (pos, -10, 30)}
         for key in available_moves:
             add = True
             move = available_moves[key]

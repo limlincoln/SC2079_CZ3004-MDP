@@ -1,4 +1,5 @@
 import re
+import time
 import unittest
 import algorithm.settings as settings
 from algorithm.constants import DIRECTION
@@ -6,7 +7,7 @@ from algorithm.algo.Dubins import Dubins
 from algorithm.algo.Environment import StaticEnvironment, AdvancedEnvironment
 from algorithm.Entities.Obstacle import Obstacle
 from Astar import Astar
-from algorithm.DataPopulator import getTestObstacles, getTestObstacles1, getTestObstacles2
+from algorithm.DataPopulator import getTestObstacles, getTestObstacles1, getTestObstacles2, getTestObstacles3
 from algorithm.simulator import Simulator
 from algorithm.algo.DubinsV2 import DubinsV2
 import numpy as np
@@ -125,12 +126,13 @@ class SimSum(unittest.TestCase):
         dubins.plot(coord_list)
 
     def testTSPForRPI(self):
-        env = AdvancedEnvironment((200, 200), getTestObstacles2())
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
-        path = tsp.computeSequence()
+        path = tsp.computeSequence()[0]
         print(path)
         pathString = []
-        for oneOb in path[0]:
+        for oneOb in path:
+            print(oneOb)
             key = oneOb[-1].pos[3]
             tempString = ""
             for index , node in enumerate(oneOb):
@@ -150,9 +152,13 @@ class SimSum(unittest.TestCase):
         # (ObstacleID, "s3.012,s1.204")
 
     def testTSPPlot(self):
-        env = AdvancedEnvironment((200, 200), getTestObstacles2())
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
+        clock = time.perf_counter()
         path = tsp.computeSequence()[0]
+        end = time.perf_counter()
+
+        print("time taken to calculate path:", end-clock)
         coords = []
         for ob in path:
             ob_coords = []
@@ -161,6 +167,51 @@ class SimSum(unittest.TestCase):
             coords.append(ob_coords)
         tsp.dubins.plot(coords)
 
+
+    def testtesttest(self):
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
+        dubins = DubinsV2(28, 10, env)
+        start = (15, 15, DIRECTION.TOP.value)
+        hstar = HybridAstar(env, dubins, start, env.targets[0], reverse=True)
+        hstar.solve()
+        path = hstar.path
+        print(path)
+        temp = []
+
+        for node in path:
+            coords = node.path
+            temp.append(coords)
+
+        dubins.plot(temp)
+
+
+    def test(self):
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
+        dubins = DubinsV2(28,10,env)
+        start = (15, 15, DIRECTION.TOP.value)
+        hstar = HybridAstar(env, dubins, start, env.targets[0], reverse=True)
+        points, final = hstar.generateState((50, 50, DIRECTION.RIGHT.value), 'RR', 0.5)
+        print(final)
+        print(points[-1])
+        points2, final = hstar.generateState(final, 'RL', 0.5)
+        print(final)
+        print(points2[-1])
+        dubins.plot([points, points2])
+
+
+    def testDubinsCurves(self):
+        env = AdvancedEnvironment((200,200), getTestObstacles())
+        dubins = DubinsV2(28,10,env)
+        start = (15,15,DIRECTION.TOP.value)
+        options = dubins.computeAllPath(start, env.targets[0])
+        coords_list = []
+        option = options[3]
+        path = dubins.generatePathCoords(start, env.targets[0], option)
+        print(option[4])
+
+        coords_list.append(path)
+
+        dubins.plot(coords_list)
 
 
 if __name__ == '__main__':

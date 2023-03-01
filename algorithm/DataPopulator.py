@@ -31,3 +31,18 @@ def getTestObstacles2():
 
     ]
     return test
+
+
+
+def getTestObstacles3():
+    test = [
+        Obstacle((10, 110), "S", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '8'),
+        Obstacle((70, 60), "S", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '6'),
+        Obstacle((120, 0), "N", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '7'),
+        Obstacle((180, 30), "W", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '1'),
+        Obstacle((120, 90), "E", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '4'),
+        Obstacle((140, 180), "S", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '5'),
+        Obstacle((180, 130), "W", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '2'),
+        Obstacle((60, 160), "S", (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '3'),
+    ]
+    return test

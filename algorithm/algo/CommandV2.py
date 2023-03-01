@@ -32,25 +32,25 @@ class CommandV2:
         :return:
         new pos forward and backward
         """
-        if self.pos[2] == DIRECTION.TOP:
+        if self.pos[2] == DIRECTION.TOP.value:
             return self.pos[0], self.pos[1] + self.straight, self.pos[2]
 
-        elif self.pos[2] == DIRECTION.LEFT:
+        elif self.pos[2] == DIRECTION.LEFT.value:
             return self.pos[0] - self.straight, self.pos[1], self.pos[2]
 
-        elif self.pos[2] == DIRECTION.RIGHT:
+        elif self.pos[2] == DIRECTION.RIGHT.value:
             return self.pos[0] + self.straight, self.pos[1], self.pos[2]
         else:
             return self.pos[0], self.pos[1] - self.straight, self.pos[2]
 
     def moveRevese(self):
-        if self.pos[2] == DIRECTION.TOP:
+        if self.pos[2] == DIRECTION.TOP.value:
             return self.pos[0], self.pos[1] - self.straight, self.pos[2]
 
-        elif self.pos[2] == DIRECTION.LEFT:
+        elif self.pos[2] == DIRECTION.LEFT.value:
             return self.pos[0] + self.straight, self.pos[1], self.pos[2]
 
-        elif self.pos[2] == DIRECTION.RIGHT:
+        elif self.pos[2] == DIRECTION.RIGHT.value:
             return self.pos[0] - self.straight, self.pos[1], self.pos[2]
         else:
             return self.pos[0], self.pos[1] + self.straight, self.pos[2]
@@ -61,13 +61,13 @@ class CommandV2:
         :return:
         new pos after moving right
         """
-        if self.pos[2] == DIRECTION.TOP:
+        if self.pos[2] == DIRECTION.TOP.value:
             return self.pos[0] + self.radius, self.pos[1] + self.radius, self.dirList[
                 (self.dirList.index(self.pos[2]) + 1) % 4]
-        elif self.pos[2] == DIRECTION.LEFT:
+        elif self.pos[2] == DIRECTION.LEFT.value:
             return self.pos[0] - self.radius, self.pos[1] + self.radius, self.dirList[
                 (self.dirList.index(self.pos[2]) + 1) % 4]
-        elif self.pos[2] == DIRECTION.RIGHT:
+        elif self.pos[2] == DIRECTION.RIGHT.value:
             return self.pos[0] + self.radius, self.pos[1] - self.radius, self.dirList[
                 (self.dirList.index(self.pos[2]) + 1) % 4]
         else:
@@ -80,15 +80,15 @@ class CommandV2:
         :return:
         new pos after moving left
         """
-        if self.pos[2] == DIRECTION.TOP:
+        if self.pos[2] == DIRECTION.TOP.value:
 
             return self.pos[0] - self.radius, self.pos[1] + self.radius, self.dirList[
                 self.dirList.index(self.pos[2]) - 1]
-        elif self.pos[2] == DIRECTION.LEFT:
+        elif self.pos[2] == DIRECTION.LEFT.value:
 
             return self.pos[0] - self.radius, self.pos[1] - self.radius, self.dirList[
                 abs(self.dirList.index(self.pos[2]) - 1) % 4]
-        elif self.pos[2] == DIRECTION.RIGHT:
+        elif self.pos[2] == DIRECTION.RIGHT.value:
             return self.pos[0] + self.radius, self.pos[1] + self.radius, self.dirList[
                 abs(self.dirList.index(self.pos[2]) - 1) % 4]
         else:
@@ -103,18 +103,18 @@ class CommandV2:
         commands based on the current direction
         """
 
-        if self.pos[2] == DIRECTION.TOP:
-            return self.pos[0] - self.radius, self.pos[1] - self.radius, self.dirList[
-                (self.dirList.index(self.pos[2]) + 1) % 4]
-        elif self.pos[2] == DIRECTION.LEFT:
+        if self.pos[2] == DIRECTION.TOP.value:
             return self.pos[0] + self.radius, self.pos[1] - self.radius, self.dirList[
-                (self.dirList.index(self.pos[2]) + 1) % 4]
-        elif self.pos[2] == DIRECTION.RIGHT:
-            return self.pos[0] - self.radius, self.pos[1] + self.radius, self.dirList[
-                (self.dirList.index(self.pos[2]) + 1) % 4]
-        else:
+                self.dirList.index(self.pos[2]) - 1]
+        elif self.pos[2] == DIRECTION.LEFT.value:
             return self.pos[0] + self.radius, self.pos[1] + self.radius, self.dirList[
-                (self.dirList.index(self.pos[2]) + 1) % 4]
+                abs(self.dirList.index(self.pos[2]) - 1) % 4]
+        elif self.pos[2] == DIRECTION.RIGHT.value:
+            return self.pos[0] - self.radius, self.pos[1] - self.radius, self.dirList[
+                abs(self.dirList.index(self.pos[2]) - 1) % 4]
+        else:
+            return self.pos[0] - self.radius, self.pos[1] + self.radius, self.dirList[
+                abs(self.dirList.index(self.pos[2]) - 1) % 4]
 
     def faceLeftReverse(self):
         """
@@ -123,19 +123,18 @@ class CommandV2:
         commands based on the current direction
         """
 
-        if self.pos[2] == DIRECTION.TOP:
-            return self.pos[0] + self.radius, self.pos[1] - self.radius, self.dirList[
-                self.dirList.index(self.pos[2]) - 1]
-
-        elif self.pos[2] == DIRECTION.LEFT:
-            return self.pos[0] + self.radius, self.pos[1] + self.radius, self.dirList[
-                abs(self.dirList.index(self.pos[2]) - 1) % 4]
-
-        elif self.pos[2] == DIRECTION.RIGHT:
-
+        if self.pos[2] == DIRECTION.TOP.value:
             return self.pos[0] - self.radius, self.pos[1] - self.radius, self.dirList[
-                abs(self.dirList.index(self.pos[2]) - 1) % 4]
-        else:
+                (self.dirList.index(self.pos[2]) + 1) % 4]
+
+        elif self.pos[2] == DIRECTION.LEFT.value:
+            return self.pos[0] + self.radius, self.pos[1] - self.radius, self.dirList[
+                (self.dirList.index(self.pos[2]) + 1) % 4]
+
+        elif self.pos[2] == DIRECTION.RIGHT.value:
 
             return self.pos[0] - self.radius, self.pos[1] + self.radius, self.dirList[
-                abs(self.dirList.index(self.pos[2]) - 1) % 4]
+                (self.dirList.index(self.pos[2]) + 1) % 4]
+        else:
+            return self.pos[0] + self.radius, self.pos[1] + self.radius, self.dirList[
+                (self.dirList.index(self.pos[2]) + 1) % 4]

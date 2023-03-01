@@ -76,17 +76,17 @@ class DubinsV2:
         """
         command = None
         if path[4] == 'LSL':
-            command = ("l"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.velocity, 4)), 'lsl'), end
+            command = ("l"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.radius, 4)), 'lsl'), end
         elif path[4] == 'RSR':
-            command = ("r"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.velocity, 4)), 'rsr'), end
+            command = ("r"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.radius, 4)), 'rsr'), end
         elif path[4] == 'RSL':
-            command = ("r"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.velocity, 4)), 'rsl'), end
+            command = ("r"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.radius, 4)), 'rsl'), end
         elif path[4] == 'LSR':
-            command = ("l"+str(np.round(path[2] / self.velocity, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.velocity, 4)), 'lsr'), end
+            command = ("l"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.radius, 4)), 'lsr'), end
         elif path[4] == 'RLR':
-            command = ("r"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[2] / self.velocity, 4)), "r"+str(np.round(path[3] / self.velocity, 4)), 'rlr'), end
+            command = ("r"+str(np.round(path[1] / self.radius, 4)), "l"+str(np.round(path[2] / self.radius, 4)), "r"+str(np.round(path[3] / self.radius, 4)), 'rlr'), end
         elif path[4] == 'LRL':
-            command = ("l"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[2] / self.velocity, 4)), "l"+str(np.round(path[3] / self.velocity, 4)), 'lrl'), end
+            command = ("l"+str(np.round(path[1] / self.radius, 4)), "r"+str(np.round(path[2] / self.radius, 4)), "l"+str(np.round(path[3] / self.radius, 4)), 'lrl'), end
         return command
 
     def lsl(self, start, end, p1, p2):
@@ -183,7 +183,7 @@ class DubinsV2:
             return (999, 999, 999)
         straight = np.sqrt(np.square(dist) - np.square(2 * self.radius))
         delta = np.arccos((2 * self.radius) / dist)
-
+        delta = 2*np.pi - delta
         vector1 = (p2[0] - p1[0], p2[1] - p1[1])
         vector2 = (vector1[0] * np.cos(delta) - vector1[1] * np.sin(delta),
                    vector1[0] * np.sin(delta) + vector1[1] * np.cos(delta))

@@ -1,3 +1,4 @@
+import time
 import traceback
 
 from algorithm.algo.Environment import AdvancedEnvironment
@@ -24,12 +25,14 @@ class NearestNeighbour:
         perm_cost_list = []
         for perm in permutations:
             perm_cost_list.append(self.distance_for_sequence(perm))
-        min_cost_sequence = sorted(perm_cost_list, key=lambda x: x[1], reverse=True)[:15]
-
+        min_cost_sequence = sorted(perm_cost_list, key=lambda x: x[1], reverse=False)[:15]
+        clock = time.perf_counter()
         for perm in min_cost_sequence:
             path = self.findPath(perm[0])
             if path:
                 choice.append(path)
+                if time.perf_counter() - clock > 15:
+                    break
         if choice:
             cost_list = []
             for path in choice:
