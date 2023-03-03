@@ -1,10 +1,12 @@
 import pygame
 
 from algorithm import settings
+
 from algorithm.Entities.arena import Arena
 from algorithm.constants import DIRECTION
 from algorithm.HelperFunctions import radiansToDegrees
 from algorithm.Entities.STMCommand import STMCommand
+
 
 
 class Robot:
@@ -23,6 +25,7 @@ class Robot:
         self.arrow = pygame.transform.scale(pygame.image.load("assets/icons8-arrow-100.png"), (3 * settings.BLOCK_SIZE,
                                                                                                3 * settings.BLOCK_SIZE))
         self.arrow = pygame.transform.rotate(self.arrow, 90)
+
         self.command = None
         self.obstacles = ob
 
@@ -45,11 +48,26 @@ class Robot:
         SCREEN.blit(self.arrow, self.car_rect)
 
     def moveToDo(self, command: tuple):
+        turn = 0
+        if self.command == "R":
+            turn = 90
+        elif self.command == "L":
+            turn = -90
+
+        self.image = pygame.transform.rotate(self.image, turn)
+        self.arrow = pygame.transform.rotate(self.arrow, turn)
+        pos = (self.x, self.y)
+        self.car_rect.bottomleft = Arena.posConverter(pos)
+        SCREEN.blit(self.image, self.car_rect)
+        SCREEN.blit(self.arrow, self.car_rect)
+
+    def moveToDo(self, command, SCREEN):
         """
         To Set pos of the car to the next location ready for display
         :param command: tuple (direction, command)
         :return:
         """
+
         self.x = command[0]
         self.y = command[1]
         self.orientation = command[2]
@@ -57,7 +75,7 @@ class Robot:
     def setCurrentCommand(self, command):
         self.command = STMCommand(command)
         self.command.setTick()
-        """
+        self.command = command[1]
         # if the car is going straight or reverse
         if self.command == 'S':
             if command[0] == DIRECTION.TOP:
@@ -117,5 +135,4 @@ class Robot:
                 self.y -= 20
 
         
-        
-        """
+

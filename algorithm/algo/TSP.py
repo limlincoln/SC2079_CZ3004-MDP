@@ -1,3 +1,4 @@
+
 from algorithm.algo.Environment import StaticEnvironment
 import itertools
 from collections import deque
@@ -123,3 +124,4 @@ class NearestNeighbour:
 
     def getCommandList(self):
         return self.commandList
+

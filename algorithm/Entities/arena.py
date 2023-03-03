@@ -3,6 +3,7 @@ from algorithm import settings
 from algorithm.Entities.Rectangle import Rectangle
 from algorithm.Entities.Obstacle import Obstacle
 from itertools import groupby
+
 """
 Represents the navigational area (default: 20x20 grid of 10x10cm grid cells)
 """
@@ -26,8 +27,10 @@ class Arena:
             ob.bottomleft = obstacle.gridPosition
             self.obList.append(ob)
             pygame.draw.rect(SCREEN, settings.GREEN, ob)
+
             self.drawBorder(obstacle, SCREEN, RED, ob)
             self.drawInvisibleObstacle(obstacle,SCREEN, (0, 100, 255))
+
 
     def drawBorder(self, obstacle,  SCREEN, COLOUR, ob):
         if obstacle.imageOrientation == "N":
@@ -38,6 +41,7 @@ class Arena:
             pygame.draw.line(SCREEN, COLOUR, ob.bottomleft, ob.bottomright, 2)
         elif obstacle.imageOrientation == "W":
             pygame.draw.line(SCREEN, COLOUR, ob.topleft, ob.bottomleft, 2)
+
 
     def drawInvisibleObstacle(self, obstacle: Obstacle, SCREEN, COLOUR):
         newRect = Rectangle(obstacle.pos, 'O')
@@ -52,10 +56,17 @@ class Arena:
         for s in stuff:
             pygame.draw.circle(SCREEN, COLOUR, self.posConverter(s), 20)
 
+
+    def drawStuff(self, stuff: list[tuple], SCREEN, COLOUR):
+        for s in stuff:
+            print(s)
+            pygame.draw.circle(SCREEN, COLOUR, self.posConverter(s), 20)
+
     def updateGrid(self, robot, SCREEN):
         SCREEN.fill((0,0,0))
         self.drawGrid(SCREEN)
         robot.drawCar(SCREEN)
+
         self.robotCollisionRect(robot,SCREEN, (0, 100, 255))
 
 
@@ -74,6 +85,7 @@ class Arena:
         return (pos[0] // settings.GRID_SCALE_FACTOR) * settings.BLOCK_SIZE + settings.GRID_OFFSET, \
                             (settings.GRID_Y_OFFSET - (pos[1] // settings.GRID_SCALE_FACTOR) * settings.BLOCK_SIZE) + \
                             settings.GRID_OFFSET
+
 
     @staticmethod
     def drawPath(path: list):

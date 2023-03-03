@@ -1,3 +1,4 @@
+
 import algorithm.constants as constants
 from algorithm.algo.Command import Command
 from algorithm.algo.Environment import StaticEnvironment
@@ -20,7 +21,9 @@ class Astar:
     def getNeighbours(self, pos):
         """
         Get next position relative to pos
+
         a fix distance of 10 when travelling straight
+
         robot will always make a 90 degrees turn
         :param pos: tuple (x,y,direction in rads)
         :return: list[nodes]
@@ -32,6 +35,7 @@ class Astar:
         timeCost = constants.COST.MOVE_COST
 
         for index, c in enumerate(commandList):
+
             if self.env.isWalkable(c[0], c[1], 0):
                 if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT or \
                         index == constants.MOVEMENT.REVLEFT or index == constants.MOVEMENT.REVRIGHT:
@@ -44,6 +48,7 @@ class Astar:
                 else:
                     neighbours.append((c, timeCost))
         return neighbours
+
 
     def onTheSpotCheck(self,env: StaticEnvironment, pos, direction):
         """
@@ -62,6 +67,7 @@ class Astar:
             return env.isWalkable(pos[0]+25, pos[1], 0)
         else:
             return env.isWalkable(pos[0], pos[1]-25,0)
+
     def heuristic(self, pos, end):
         """
 
@@ -94,6 +100,7 @@ class Astar:
         while not frontier.empty():
 
             priority, _, currentNode = frontier.get()
+
             if currentNode[:3] == goalNode[:3]:
                 self.extractCommands(backtrack, currentNode)
                 return currentNode
@@ -123,14 +130,17 @@ class Astar:
         """
         commands = []
         current = goalNode
+
         while current != self.start:
             commands.append(current)
             current = backtrack[current]
         commands.append(self.start)
+
         commands.reverse()
         self.path.extend(commands)
 
     def getPath(self):
+
         """
         get the complete tuple path
         :return: list(tuple)
@@ -151,3 +161,4 @@ class Astar:
         """
         STMCommands = [x[3] for x in self.path]
         return STMCommands
+

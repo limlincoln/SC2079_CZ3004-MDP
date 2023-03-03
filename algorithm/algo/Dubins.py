@@ -22,13 +22,14 @@ class Dubins:
         self.radius = radius
         self.pointSeparation = pointSeparation
 
-
     def computeAllPath(self, start, end, sort=False):
+
         """
         computes all the possible dubin's path and return them, in the form of a list of tuples reprensenting each option.
         :param start: tuple
             starting configuration of robot in form (x,y, directions in rad)
         :param end: tuple
+
             ending configurations of robot in form (x,y, directions in rad)
         :param sort: bool
             sort in decreasing order if needed
@@ -51,11 +52,13 @@ class Dubins:
             options.sort(key=lambda x: x[0])
         return options
 
+
     def dubinsPath(self, start, end):
         """
         Computes all the possible Dubin's path and returns the sequence of points representing the shortest option.
         :param start: tuple
             starting configuration of the robot in the form of (x,y,direction in rads)
+
         :param end: tuple
             starting configuration of the robot in the form of (x,y, direction in rads)
         :return:
@@ -65,14 +68,14 @@ class Dubins:
         options = self.computeAllPath(start, end)
         dubinsPath, straight = min(options, key=lambda x: x[0])[1:]
         return self.generatePoints(start, end, dubinsPath, straight)
-
-
     def generatePoints(self, start, end, dubinsPath, straight):
+
         """
 
         :param start: tuple
             start configuration of the robot in the form of (x,y, direction in rads)
         :param end: tuple
+
             end configuration of the robot in the form of (x,y, direction in rads)
         :param dubinsPath: tuple
             contains the following:
@@ -122,6 +125,7 @@ class Dubins:
 
         :param start: tuple
             start configuration of the robot in the form (x,y,direction in rads)
+
         :param end: tuple
             end configuration of the robot in the form (x,y, direction in rads)
         :param center_0: tuple
@@ -132,7 +136,6 @@ class Dubins:
         totalLength : float ( distance of this path)
         (betaStart, betaend, straightDistance): tuple
             the dubins paths with the angle of first turn, the angle of the last turn and the length of the straight segment.
-
         straight: bool
             to indicate whether this path contain any straight part.
 
@@ -256,8 +259,8 @@ class Dubins:
         :return:
         totalLength : float ( distance of this path)
         (betaStart, betaend, straightDistance): tuple
-            the dubins paths with the angle of first turn, the angle of the last turn and the length of the straight segment.
 
+            the dubins paths with the angle of first turn, the angle of the last turn and the length of the straight segment.
         straight: bool
             to indicate whether this path contain any straight part.
 
@@ -275,6 +278,7 @@ class Dubins:
                 (beta_0, beta_1, 2*np.pi-gamma),
                 False)
 
+
     def findCenter(self, point, side):
         """
 
@@ -290,11 +294,13 @@ class Dubins:
         return np.array((point[0] + np.cos(angle)*self.radius,
                          point[1] + np.sin(angle)*self.radius))
     def generatePointsStraight(self, start, end, path):
+
         """
 
         :param start: tuple
             start configuration of the robot in form (x,y, directions in psi)
         :param end:
+
             end configuration of the robot in form (x,y, directions in psi)
         :param path: tuple
             The computed dubins path, a tuple containing:
@@ -342,6 +348,7 @@ class Dubins:
         :param start: tuple
             Start configuration of robot in the form (x,y, directions in rads).
         :param end:
+
             End configuration of robot in the form (x,y, directions in rads).
         :param path: tuple
             The computed dubins path consists of the following:

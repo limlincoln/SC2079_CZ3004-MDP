@@ -1,0 +1,53 @@
+Move command: 
+(created by PC, Android, or RPi)
+(received by STM)
+
+
+
+Obstacle info:
+(created by Android)
+(received by PC)
+"Obstacle: #, Col: #, Row: #"         (1-8), (0-19)
+"Obstacle: #, Facing: N/S/W/E"
+
+
+Complete path object:
+(created by PC)
+(received by RPi)
+
+
+
+Calculate path command:
+(created by Android)
+(received by RPi & PC)
+"path"
+
+
+Start robot command:
+(created by Android)
+(received by RPi)
+"run"
+
+Robot stop signal: "Stop"
+(created by STM)
+(received by RPi)
+
+
+Status to display on android:
+(created by    )
+(received by Android)
+"STATUS, ____ "
+
+
+Robot position:
+(received by Android)
+"ROBOT, (col), (row), (facing)"                 e.g. "ROBOT, 3, 7, S"
+
+
+Obstacle Target:
+(received by Android)
+"TARGET, (original obstacle), (target ID)"      e.g. "TARGET, 4, 10"
+
+
+Robot movement (when controlled by app - for checklist):
+"f/sr/sl/r"

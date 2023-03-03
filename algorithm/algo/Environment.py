@@ -1,3 +1,4 @@
+
 import pygame
 
 from algorithm.Entities.Rectangle import Rectangle
@@ -9,10 +10,12 @@ from algorithm.Entities.RectRobot import RectRobot
 from algorithm.HelperFunctions import radiansToDegrees
 from algorithm.Entities.VirtualRect import VirtualRect
 import shapely as sp
+
 class StaticEnvironment:
     """
 
     """
+
 
     def __init__(self, dimensions, obstacles: list[Obstacle]):
         self.dimensions = dimensions
@@ -21,6 +24,7 @@ class StaticEnvironment:
         self.kdtree = KDTree([obs.pos for obs in self.obstacles])
         self.obID = []
         self.targetLocations = self.generateTargeLocations()
+
 
     def isWalkable(self, x, y, time=0):
         """
@@ -44,7 +48,9 @@ class StaticEnvironment:
                 return False
         return True
 
+
     def isWalkableV2(self, x, y, time=0):
+
         """
         testing
         :param x:
@@ -52,9 +58,11 @@ class StaticEnvironment:
         :param time:
         :return:
         """
+
         if x < 0 or x > (self.dimensions[0] - 30) or y < 0 or (y > self.dimensions[1] - 30):
             return False
         robotRect = RectRobot((x, y))
+
         for obstacle in self.obstacles:
             if robotRect.isCollided(obstacle):
                 return False
@@ -73,6 +81,7 @@ class StaticEnvironment:
         return [self.obstacles[index] for index in self.kdtree.query((x, y), nbObstacles)[1]]
 
     def getTargetLocation(self):
+
         """
         get all the configurations that the robot needs to visit
         :param obstacles: List[Obstacles]
@@ -194,3 +203,4 @@ class AdvancedEnvironment:
         p3 = (pygame.math.Vector2(rect.bottomleft) - pivot).rotate(angle) + pivot
         
         """
+

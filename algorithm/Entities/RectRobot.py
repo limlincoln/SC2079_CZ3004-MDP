@@ -1,5 +1,6 @@
 import pygame
 
+
 import algorithm.settings as settings
 
 

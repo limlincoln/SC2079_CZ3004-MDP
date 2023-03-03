@@ -13,6 +13,7 @@ class Rectangle:
             self.y = pos[1] + 25
             self.length = 30
 
+
     def isCollided(self, rec2):
         """
         Check if two rectangles are collided

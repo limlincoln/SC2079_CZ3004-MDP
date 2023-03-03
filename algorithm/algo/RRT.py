@@ -1,3 +1,4 @@
+
 from algorithm.algo.Environment import AdvancedEnvironment
 import numpy as np
 from algorithm.algo.DubinsV2 import DubinsV2
@@ -138,3 +139,4 @@ class RRT:
         for child in self.nodes[node].destination_list:
             total += 1 + self.children_count(child)
         return total
+

@@ -1,3 +1,4 @@
+
 import DataPopulator
 from algorithm.algo.Environment import StaticEnvironment
 from algorithm.constants import MOVEMENT
@@ -18,7 +19,6 @@ def main():
 def startRpiClient():
     client = Client("192.168.3.3", 10050)
     client.run()
-
 
 if __name__ == '__main__':
     #main()

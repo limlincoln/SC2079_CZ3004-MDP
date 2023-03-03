@@ -1,10 +1,13 @@
+
 from algorithm.constants import DIRECTION
 import settings
+
 
 class Command:
     def __init__(self, pos):
         self.pos = pos
         self.commands = []
+
         # needed to find the next direction
         self.dirList = [DIRECTION.TOP, DIRECTION.RIGHT, DIRECTION.BOTTOM, DIRECTION.LEFT]
         # future use
@@ -30,6 +33,7 @@ class Command:
         new pos forward and backward
         """
         if self.pos[2] == DIRECTION.TOP:
+
             self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'S'))
             self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'SV'))
 
@@ -59,6 +63,7 @@ class Command:
             self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
         else:
             self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+
 
 
 
@@ -152,15 +157,6 @@ class Command:
             self.commands.append((
                 self.pos[0], self.pos[1] + 90, self.dirList[(self.dirList.index(self.pos[2]) + 2) % 4], '3P'
             ))
-
-
-
-
-
-
-
-
-"""
         elif self.pos[2] == DIRECTION.NORTHEAST:
             self.commands.append(
                 (self.pos[0] + settings.SPEED_FACTOR, self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'S'))
@@ -178,4 +174,3 @@ class Command:
                 (self.pos[0] + settings.SPEED_FACTOR, self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'S'))
             self.commands.append(
                 (self.pos[0] - settings.SPEED_FACTOR, self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'SV'))
-"""
