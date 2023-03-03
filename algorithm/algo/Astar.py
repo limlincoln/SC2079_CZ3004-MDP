@@ -1,8 +1,11 @@
-import constants
-from algo.Command import Command
-from algo.Environment import StaticEnvironment
-from algo.Dubins import dist
+
+import algorithm.constants as constants
+from algorithm.algo.Command import Command
+from algorithm.algo.Environment import StaticEnvironment
+from algorithm.algo.Dubins import dist
 from queue import PriorityQueue
+
+
 class Astar:
     def __init__(self, env: StaticEnvironment, start, end):
         """
@@ -18,7 +21,9 @@ class Astar:
     def getNeighbours(self, pos):
         """
         Get next position relative to pos
-        a fix distance of 5 when travelling straight
+
+        a fix distance of 10 when travelling straight
+
         robot will always make a 90 degrees turn
         :param pos: tuple (x,y,direction in rads)
         :return: list[nodes]
@@ -30,12 +35,38 @@ class Astar:
         timeCost = constants.COST.MOVE_COST
 
         for index, c in enumerate(commandList):
-            if self.env.isWalkableV2(c[0], c[1], 0):
-                if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT:
-                    neighbours.append((c, turnPenalty+100))
+
+            if self.env.isWalkable(c[0], c[1], 0):
+                if index == constants.MOVEMENT.RIGHT or index == constants.MOVEMENT.LEFT or \
+                        index == constants.MOVEMENT.REVLEFT or index == constants.MOVEMENT.REVRIGHT:
+                    neighbours.append((c, turnPenalty))
+                elif index == constants.MOVEMENT.REVERSE:
+                    neighbours.append((c, timeCost+15))
+                elif index == constants.MOVEMENT.TURN_O_LEFT or index == constants.MOVEMENT.TURN_O_RIGHT:
+                    if self.onTheSpotCheck(self.env, (c[0], c[1]), c[2]):
+                        neighbours.append((c, turnPenalty * 3))
                 else:
                     neighbours.append((c, timeCost))
         return neighbours
+
+
+    def onTheSpotCheck(self,env: StaticEnvironment, pos, direction):
+        """
+        additional check for movment that requires reversing/turning
+        :param env: StaticEnvironment
+        :param pos: tuple
+        :param direction: Enum
+        :return: bool
+        true if walkable
+        """
+        if direction == constants.DIRECTION.TOP:
+            return env.isWalkable(pos[0], pos[1]-25, 0)
+        elif direction == constants.DIRECTION.RIGHT:
+            return env.isWalkable(pos[0]-25, pos[1], 0)
+        elif direction == constants.DIRECTION.LEFT:
+            return env.isWalkable(pos[0]+25, pos[1], 0)
+        else:
+            return env.isWalkable(pos[0], pos[1]-25,0)
 
     def heuristic(self, pos, end):
         """
@@ -52,6 +83,7 @@ class Astar:
         """
         YOLO A star attempt
         :return:
+
         """
         frontier = PriorityQueue()
         backtrack = dict()
@@ -66,23 +98,27 @@ class Astar:
         backtrack[startNode] = None
 
         while not frontier.empty():
+
             priority, _, currentNode = frontier.get()
-            print(currentNode[:3])
+
             if currentNode[:3] == goalNode[:3]:
                 self.extractCommands(backtrack, currentNode)
                 return currentNode
 
             for newNode, weight in self.getNeighbours(currentNode):
+
                 newCost = cost[currentNode] + weight
 
                 if newNode not in backtrack or newCost < cost[newNode]:
+                    cost[newNode] = newCost
                     offset += 1
                     priority = newCost + self.heuristic((newNode[0], newNode[1]), (goalNode[0], goalNode[1]))
                     backtrack[newNode] = currentNode
                     frontier.put((priority, offset, newNode))
-                    cost[newNode] = newCost
 
         return None
+
+
 
     def extractCommands(self, backtrack, goalNode):
         """
@@ -94,12 +130,35 @@ class Astar:
         """
         commands = []
         current = goalNode
-        while current:
-            current = backtrack.get(current, None)
-            if current:
-                commands.append(current[2:4])
+
+        while current != self.start:
+            commands.append(current)
+            current = backtrack[current]
+        commands.append(self.start)
+
         commands.reverse()
         self.path.extend(commands)
 
     def getPath(self):
+
+        """
+        get the complete tuple path
+        :return: list(tuple)
+        """
         return self.path
+    def getCommandPath(self):
+        """
+        get the parth with the direction and command
+        :return: list(tuple)
+        """
+        commandList = [x[2:4] for x in self.path]
+        return commandList
+
+    def getSTMCommands(self):
+        """
+        get minimal version required to transmit to STM
+        :return: list(string)
+        """
+        STMCommands = [x[3] for x in self.path]
+        return STMCommands
+

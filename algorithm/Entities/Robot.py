@@ -1,8 +1,12 @@
 import pygame
 
 from algorithm import settings
-from Entities.arena import Arena
-from constants import DIRECTION
+
+from algorithm.Entities.arena import Arena
+from algorithm.constants import DIRECTION
+from algorithm.HelperFunctions import radiansToDegrees
+from algorithm.Entities.STMCommand import STMCommand
+
 
 
 class Robot:
@@ -13,6 +17,7 @@ class Robot:
         self.height = 300
         self.width = 300
         self.orientation = DIRECTION.TOP
+        self.oldOrientation = self.orientation
         self.orientationList = [DIRECTION.TOP, DIRECTION.RIGHT, DIRECTION.BOTTOM, DIRECTION.LEFT]
         self.image = pygame.transform.scale(pygame.image.load("assets/car.png"), (3 * settings.BLOCK_SIZE, 3
                                                                                   * settings.BLOCK_SIZE))
@@ -20,9 +25,9 @@ class Robot:
         self.arrow = pygame.transform.scale(pygame.image.load("assets/icons8-arrow-100.png"), (3 * settings.BLOCK_SIZE,
                                                                                                3 * settings.BLOCK_SIZE))
         self.arrow = pygame.transform.rotate(self.arrow, 90)
-        self.command = "S"
+
+        self.command = None
         self.obstacles = ob
-        print(self.obstacles)
 
     def drawCar(self, SCREEN):
         """
@@ -30,6 +35,19 @@ class Robot:
         :param SCREEN: SCREEN
         :return: None
         """
+        if self.orientation != self.oldOrientation:
+            self.image = pygame.transform.rotate(self.image, -(
+                    radiansToDegrees(self.oldOrientation) - radiansToDegrees(self.orientation)))
+            self.arrow = pygame.transform.rotate(self.arrow, -(
+                    radiansToDegrees(self.oldOrientation) - radiansToDegrees(self.orientation)))
+        self.oldOrientation = self.orientation
+        self.pos = (self.x, self.y)
+        print(self.pos)
+        self.car_rect.bottomleft = Arena.posConverter(self.pos)
+        SCREEN.blit(self.image, self.car_rect)
+        SCREEN.blit(self.arrow, self.car_rect)
+
+    def moveToDo(self, command: tuple):
         turn = 0
         if self.command == "R":
             turn = 90
@@ -49,8 +67,15 @@ class Robot:
         :param command: tuple (direction, command)
         :return:
         """
-        self.command = command[1]
 
+        self.x = command[0]
+        self.y = command[1]
+        self.orientation = command[2]
+
+    def setCurrentCommand(self, command):
+        self.command = STMCommand(command)
+        self.command.setTick()
+        self.command = command[1]
         # if the car is going straight or reverse
         if self.command == 'S':
             if command[0] == DIRECTION.TOP:
@@ -62,7 +87,7 @@ class Robot:
             else:
                 self.y -= 10
         # if car is going reverse:
-        elif self.command == 'RV':
+        elif self.command == 'SV':
             if command[0] == DIRECTION.TOP:
                 self.y -= 10
             elif command[0] == DIRECTION.LEFT:
@@ -73,26 +98,41 @@ class Robot:
                 self.y += 10
         # if car going to turn right:
         elif self.command == 'R':
+            print(command)
+
             if command[0] == DIRECTION.TOP:
-                pass
+                self.x += 20
+                self.y += 20
 
             elif command[0] == DIRECTION.LEFT:
-                pass
+                self.x -= 20
+                self.y += 20
 
             elif command[0] == DIRECTION.RIGHT:
-                pass
+
+                self.x += 20
+                self.y -= 20
             else:
-                pass
+
+                self.x -= 20
+                self.y -= 20
         # if the car is to turn left:
         elif self.command == 'L':
+
             if command[0] == DIRECTION.TOP:
-                pass
+                self.x -= 20
+                self.y += 20
 
             elif command[0] == DIRECTION.LEFT:
-                pass
+                self.x -= 20
+                self.y -= 20
 
             elif command[0] == DIRECTION.RIGHT:
-                pass
+                self.x += 20
+                self.y += 20
             else:
-                pass
+                self.x += 20
+                self.y -= 20
+
+        
 
