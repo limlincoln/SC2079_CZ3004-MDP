@@ -18,6 +18,7 @@ from algorithm.Entities.Obstacle import Obstacle
 import re as re
 import algorithm.settings as settings
 from algorithm.constants import DIRECTION
+from algorithm.algo.HStar import Node
 
 class Client:
     """
@@ -164,16 +165,18 @@ class Client:
         print(list_of_ob_objects)
         self.env = AdvancedEnvironment((200, 200), list_of_ob_objects)
         self.TSP = NearestNeighbour(self.env, (15,15,DIRECTION.TOP.value))
+        start = time.perf_counter()
         path = self.TSP.computeSequence()
+        end = time.perf_counter()
+        print("Time Taken:", end-start)
         return path
     def send_path(self):
         """
         Send path to server
         :return:
         """
-        #path = self.path_calculation()
-        #string = self.convertToPath(path)
-        string = [('1', "f,f,r,f,l"), ('2', "b,b,r")]
+        path = self.path_calculationV2()
+        string = self.convertToPath(path)
         a = pickle.dumps(string)
         message = struct.pack(">L", len(a)) + a
         self.socket.sendall(message)
@@ -292,6 +295,7 @@ class Client:
         for oneOb in path[0]:
             key = oneOb[-1].pos[3]
             tempString= ""
+            coords = []
             for index , node in enumerate(oneOb):
                 trail = ","
                 if type(node.moves) == tuple:
@@ -303,7 +307,8 @@ class Client:
                     if index == len(oneOb) - 1:
                         trail = ""
                     tempString += str(node.moves) + trail
-            pathString.append((key, tempString))
+                coords.append(node.path)
+            pathString.append((key, tempString, coords))
         return pathString
 
     def run(self):

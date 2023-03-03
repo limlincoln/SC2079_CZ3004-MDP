@@ -116,7 +116,7 @@ class SimSum(unittest.TestCase):
         env = AdvancedEnvironment((200, 400), [Obstacle((60, 200), 'W', (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '2')], 2)
         dubins = DubinsV2(28, 10, env)
         start = (30, 200, DIRECTION.RIGHT.value)
-        end = (60, 250, DIRECTION.RIGHT.value)
+        end = (60, 140, DIRECTION.RIGHT.value)
         path = dubins.computeAllPath(start, end)
         coord_list = []
         for p in path:
@@ -135,6 +135,7 @@ class SimSum(unittest.TestCase):
             print(oneOb)
             key = oneOb[-1].pos[3]
             tempString = ""
+            coords = []
             for index , node in enumerate(oneOb):
                 trail = ","
                 if type(node.moves) == tuple:
@@ -146,13 +147,13 @@ class SimSum(unittest.TestCase):
                     if index == len(oneOb) - 1:
                         trail = ""
                     tempString += str(node.moves) + trail
-            pathString.append((key, tempString))
-
+                coords.extend(node.path)
+            pathString.append((key, tempString, coords))
         print(pathString)
         # (ObstacleID, "s3.012,s1.204")
 
     def testTSPPlot(self):
-        env = AdvancedEnvironment((200, 200), getTestObstacles())
+        env = AdvancedEnvironment((200, 200), getTestObstacles3())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
         clock = time.perf_counter()
         path = tsp.computeSequence()[0]

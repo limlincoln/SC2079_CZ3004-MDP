@@ -4,7 +4,7 @@ import numpy as np
 from algorithm.algo.Environment import AdvancedEnvironment
 import matplotlib.pyplot as plt
 import matplotlib
-from algorithm.HelperFunctions import basic_angle
+from algorithm.HelperFunctions import basic_angle , radiansToDegrees
 
 class DubinsV2:
     def __init__(self, radius, velocity, env: AdvancedEnvironment):
@@ -13,6 +13,7 @@ class DubinsV2:
         self.env = env
         self.radius = radius
         self.velocity = velocity
+        self.turningSpeed = 8
 
     def computeAllPath(self, start, end):
         """
@@ -76,17 +77,17 @@ class DubinsV2:
         """
         command = None
         if path[4] == 'LSL':
-            command = ("l"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.radius, 4)), 'lsl'), end
+            command = ("l"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lsl'), end
         elif path[4] == 'RSR':
-            command = ("r"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.radius, 4)), 'rsr'), end
+            command = ("r"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rsr'), end
         elif path[4] == 'RSL':
-            command = ("r"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "l"+str(np.round(path[3] / self.radius, 4)), 'rsl'), end
+            command = ("r"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rsl'), end
         elif path[4] == 'LSR':
-            command = ("l"+str(np.round(path[2] / self.radius, 4)), "s"+str(np.round(path[1] / self.velocity, 4)), "r"+str(np.round(path[3] / self.radius, 4)), 'lsr'), end
+            command = ("l"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lsr'), end
         elif path[4] == 'RLR':
-            command = ("r"+str(np.round(path[1] / self.radius, 4)), "l"+str(np.round(path[2] / self.radius, 4)), "r"+str(np.round(path[3] / self.radius, 4)), 'rlr'), end
+            command = ("r"+str(np.round(path[1] / self.turningSpeed, 4) * 1000), "l"+str(np.round(path[2] / self.turningSpeed, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rlr'), end
         elif path[4] == 'LRL':
-            command = ("l"+str(np.round(path[1] / self.radius, 4)), "r"+str(np.round(path[2] / self.radius, 4)), "l"+str(np.round(path[3] / self.radius, 4)), 'lrl'), end
+            command = ("l"+str(np.round(path[1] / self.turningSpeed, 4) * 1000), "r"+str(np.round(path[2] / self.turningSpeed, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lrl'), end
         return command
 
     def lsl(self, start, end, p1, p2):

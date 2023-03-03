@@ -47,7 +47,7 @@ class HybridAstar:
         cost[startNode] = 0
         backtrack[startNode] = None
         while not frontier.empty():
-            if time.perf_counter() - clock > len(self.env.targets) + 1:
+            if time.perf_counter() - clock > len(self.env.targets) + 4:
                 print("inifinite loop break")
                 return None
             priority, _, currentNode = frontier.get()
@@ -86,7 +86,7 @@ class HybridAstar:
         points = []
         current = pos
         length = (2 * np.pi * 20) / 4
-        if t == 'S' or t == 'Z':
+        if t == 's' or t == 'b':
             length = 10
         for x in np.arange(0, length, delta):
             current = self.nextPos(current, t, delta)
@@ -103,27 +103,27 @@ class HybridAstar:
         :return:
         """
 
-        if type == "S":
+        if type == "d":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
             new_orientation = pos[2]
-        elif type == "R":
+        elif type == "s":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
             new_orientation = basic_angle(pos[2] - delta / 20)
-        elif type == "L":
+        elif type == "u":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
             new_orientation = basic_angle(pos[2] + delta / 20)
-        elif type == "Z":
+        elif type == "b":
             new_X = pos[0] - delta * np.cos(pos[2])
             new_Y = pos[1] - delta * np.sin(pos[2])
             new_orientation = pos[2]
-        elif type == "RR":
+        elif type == "w":
             new_X = pos[0] - delta * np.cos(pos[2])
             new_Y = pos[1] - delta * np.sin(pos[2])
             new_orientation = basic_angle(pos[2] + delta / 20)
-        elif type == "RL":
+        elif type == "v":
             new_X = pos[0] - delta * np.cos(pos[2])
             new_Y = pos[1] - delta * np.sin(pos[2])
             new_orientation = basic_angle(pos[2] - delta / 20)
@@ -149,12 +149,12 @@ class HybridAstar:
 
     def motionsCommands(self, pos):
         moves = []
-        available_moves = {'L': (pos, 10, 20),
-                           'R': (pos, 10, 20),
-                           'Z': (pos, -10, 25),
-                           'RR': (pos, -10, 30),
-                           'S': (pos, 10, 10),
-                           'RL': (pos, -10, 30)}
+        available_moves = {'u': (pos, 10, 20),
+                           's': (pos, 10, 20),
+                           'b': (pos, -10, 25),
+                           'w': (pos, -10, 30),
+                           'd': (pos, 10, 10),
+                           'v': (pos, -10, 30)}
         for key in available_moves:
             add = True
             move = available_moves[key]
@@ -187,16 +187,16 @@ class HybridAstar:
 
     def generateEndState(self, pos, t):
         command = CommandV2(pos, 20, 10)
-        if t == 'S':
+        if t == 'd':
             return command.moveStraight()
-        elif t == 'Z':
+        elif t == 'b':
             return command.moveRevese()
-        elif t == "R":
+        elif t == 's':
             return command.moveRight()
-        elif t == 'L':
+        elif t == 'u':
             return command.moveLeft()
-        elif t == 'RL':
+        elif t == 'v':
             return command.faceLeftReverse()
-        elif t == 'RR':
+        elif t == 'w':
             return command.faceRightReverse()
 
