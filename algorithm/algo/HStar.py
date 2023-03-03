@@ -103,11 +103,11 @@ class HybridAstar:
         :return:
         """
 
-        if type == "d":
+        if type == "s":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
             new_orientation = pos[2]
-        elif type == "s":
+        elif type == "d":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
             new_orientation = basic_angle(pos[2] - delta / 20)
@@ -150,10 +150,10 @@ class HybridAstar:
     def motionsCommands(self, pos):
         moves = []
         available_moves = {'u': (pos, 10, 20),
-                           's': (pos, 10, 20),
+                           'd': (pos, 10, 20),
                            'b': (pos, -10, 25),
                            'w': (pos, -10, 30),
-                           'd': (pos, 10, 10),
+                           's': (pos, 10, 10),
                            'v': (pos, -10, 30)}
         for key in available_moves:
             add = True
@@ -187,11 +187,11 @@ class HybridAstar:
 
     def generateEndState(self, pos, t):
         command = CommandV2(pos, 20, 10)
-        if t == 'd':
+        if t == 's':
             return command.moveStraight()
         elif t == 'b':
             return command.moveRevese()
-        elif t == 's':
+        elif t == 'd':
             return command.moveRight()
         elif t == 'u':
             return command.moveLeft()
