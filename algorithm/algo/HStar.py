@@ -52,6 +52,7 @@ class HybridAstar:
                 return None
             priority, _, currentNode = frontier.get()
             if self.in_goal_region(currentNode.pos):
+                currentNode.pos = goalNode.pos
                 self.extract_path(backtrack, currentNode, startNode)
                 return currentNode
             for newNode in self.get_neighbours(currentNode):

@@ -22,6 +22,27 @@ def sampleTSP(dubins, env, start):
         print(dubins.compute_best(start, options))
         start = options
 
+def convertToPath(path):
+
+    pathString = []
+    print(path)
+    for oneOb in path:
+        print(oneOb[-1].pos)
+        key = oneOb[-1].pos[3]
+        tempString= ""
+        for index , node in enumerate(oneOb):
+            trail = ","
+            if type(node.moves) == tuple:
+                for i, dubinsTuple in enumerate(node.moves[:3]):
+                    if i == len(node.moves[:3])-1 and index == len(oneOb) - 1:
+                        trail = ""
+                    tempString += dubinsTuple + trail
+            else:
+                if index == len(oneOb) - 1:
+                    trail = ""
+                tempString += str(node.moves) + trail
+        pathString.append((key, tempString))
+    return pathString
 def sampleHstarTSP( start, env, dubins):
     path = []
     for options in env.targets:
@@ -167,7 +188,8 @@ class SimSum(unittest.TestCase):
             for node in ob:
                 ob_coords.extend(node.path)
             coords.append(ob_coords)
-        tsp.dubins.plot(coords)
+        tsp.dubins.save_path(coords)
+        print(convertToPath(path))
 
 
     def testtesttest(self):

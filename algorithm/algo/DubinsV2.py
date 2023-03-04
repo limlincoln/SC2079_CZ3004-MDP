@@ -77,17 +77,17 @@ class DubinsV2:
         """
         command = None
         if path[4] == 'LSL':
-            command = ("l"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lsl'), end
+            command = ("l"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "l"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'lsl'), end
         elif path[4] == 'RSR':
-            command = ("r"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rsr'), end
+            command = ("r"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "r"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'rsr'), end
         elif path[4] == 'RSL':
-            command = ("r"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rsl'), end
+            command = ("r"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "l"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'rsl'), end
         elif path[4] == 'LSR':
-            command = ("l"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lsr'), end
+            command = ("l"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "r"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'lsr'), end
         elif path[4] == 'RLR':
-            command = ("r"+str(np.round(path[1] / self.turningSpeed, 4) * 1000), "l"+str(np.round(path[2] / self.turningSpeed, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rlr'), end
+            command = ("r"+str(int(np.round(path[1] / self.turningSpeed, 4) * 1000)), "l"+str(int(np.round(path[2] / self.turningSpeed, 4)* 1000)), "r"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'rlr'), end
         elif path[4] == 'LRL':
-            command = ("l"+str(np.round(path[1] / self.turningSpeed, 4) * 1000), "r"+str(np.round(path[2] / self.turningSpeed, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lrl'), end
+            command = ("l"+str(int(np.round(path[1] / self.turningSpeed, 4) * 1000)), "r"+str(int(np.round(path[2] / self.turningSpeed, 4)* 1000)), "l"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'lrl'), end
         return command
 
     def lsl(self, start, end, p1, p2):
