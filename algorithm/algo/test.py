@@ -71,15 +71,15 @@ class SimSum(unittest.TestCase):
     def testOneObstacle(self):
         env = AdvancedEnvironment((200, 200), getTestObstacles())
         dubins = DubinsV2(26,10,env)
-        start = (15,15,DIRECTION.TOP.value)
+        start = (15, 15, DIRECTION.TOP.value)
         end = env.targets[4]
         path = dubins.compute_best(start,end)
         dubins.plot(path)
 
     def testFailedObstacle(self):
         env = AdvancedEnvironment((200, 200), getTestObstacles())
-        dubins = DubinsV2(26,10,env)
-        start = (15,15,DIRECTION.TOP.value)
+        dubins = DubinsV2(26, 10, env)
+        start = (15, 15, DIRECTION.TOP.value)
         end = env.targets[2]
         path = dubins.computeAllPath(start, end)
         coords = dubins.generatePathCoords(start, end, path[1])

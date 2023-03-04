@@ -153,6 +153,7 @@ class Client:
         self.env = StaticEnvironment((200, 200), list_of_ob_objects)
         self.TSP = NearestNeighbour(self.env, (0, 0, DIRECTION.TOP, "P"))
         self.TSP.computeSequence()
+
         return self.TSP.getCommandList()
 
     def path_calculationV2(self):
@@ -164,11 +165,18 @@ class Client:
             list_of_ob_objects.append(Obstacle(values[0], values[1], values[2], values[3]))
         print(list_of_ob_objects)
         self.env = AdvancedEnvironment((200, 200), list_of_ob_objects)
-        self.TSP = NearestNeighbour(self.env, (15,15,DIRECTION.TOP.value))
+        self.TSP = NearestNeighbour(self.env, (15, 15,DIRECTION.TOP.value))
         start = time.perf_counter()
         path = self.TSP.computeSequence()
         end = time.perf_counter()
         print("Time Taken:", end-start)
+        coords = []
+        for ob in path[0]:
+            ob_coords = []
+            for node in ob:
+                ob_coords.extend(node.path)
+            coords.append(ob_coords)
+        self.TSP.dubins.save_path(coords)
         return path
     def send_path(self):
         """

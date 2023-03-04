@@ -143,13 +143,13 @@ class AdvancedEnvironment:
         targetLocations = []
         for ob in obstacles:
             if ob.imageOrientation == 'E':
-                targetLocations.append((ob.pos[0] + 20, ob.pos[1] + 5, DIRECTION.LEFT.value, ob.ObId))
+                targetLocations.append((ob.pos[0] + 40, ob.pos[1] + 5, DIRECTION.LEFT.value, ob.ObId))
             elif ob.imageOrientation == 'N':
-                targetLocations.append((ob.pos[0] + 5, ob.pos[1] + 20, DIRECTION.BOTTOM.value, ob.ObId))
+                targetLocations.append((ob.pos[0] + 5, ob.pos[1] + 40, DIRECTION.BOTTOM.value, ob.ObId))
             elif ob.imageOrientation == 'W':
-                targetLocations.append((ob.pos[0] - 20, ob.pos[1] + 5, DIRECTION.RIGHT.value, ob.ObId))
+                targetLocations.append((ob.pos[0] - 40, ob.pos[1] + 5, DIRECTION.RIGHT.value, ob.ObId))
             else:
-                targetLocations.append((ob.pos[0] + 5, ob.pos[1] - 20, DIRECTION.TOP.value, ob.ObId))
+                targetLocations.append((ob.pos[0] + 5, ob.pos[1] - 40, DIRECTION.TOP.value, ob.ObId))
         return targetLocations
 
     def generateVirtualObstacles(self, obstacles: list[Obstacle]):

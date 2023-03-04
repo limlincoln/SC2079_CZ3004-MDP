@@ -13,7 +13,7 @@ class DubinsV2:
         self.env = env
         self.radius = radius
         self.velocity = velocity
-        self.turningSpeed = 8
+        self.turningSpeed = 9
 
     def computeAllPath(self, start, end):
         """
@@ -435,3 +435,13 @@ class DubinsV2:
             plt.plot(x, y)
         plt.show()
 
+    def save_path(self, path):
+        matplotlib.use('TkAgg')
+        for c in path:
+            x = np.array([x[0] for x in c])
+            y = np.array([y[1] for y in c])
+            plt.scatter(x, y)
+        for obs in self.env.virtualObstacles:
+            x, y = obs.polygon.exterior.xy
+            plt.plot(x, y)
+        plt.savefig("path.png")
