@@ -175,7 +175,7 @@ class SimSum(unittest.TestCase):
         # (ObstacleID, "s3.012,s1.204")
 
     def testTSPPlot(self):
-        env = AdvancedEnvironment((200, 200), getTestObstacles())
+        env = AdvancedEnvironment((200, 200), getTestObstacles3())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
         clock = time.perf_counter()
         path = tsp.computeSequence()[0]
@@ -224,13 +224,13 @@ class SimSum(unittest.TestCase):
 
 
     def testDubinsCurves(self):
-        env = AdvancedEnvironment((200,200), getTestObstacles())
+        env = AdvancedEnvironment((200,200), getTestObstacles3())
         dubins = DubinsV2(28,10,env)
-        start = (15,15,DIRECTION.TOP.value)
-        options = dubins.computeAllPath(start, env.targets[0])
+        start = (80,60,DIRECTION.RIGHT.value)
+        options = dubins.computeAllPath(start, env.targets[4])
         coords_list = []
-        option = options[5]
-        path = dubins.generatePathCoords(start, env.targets[0], option)
+        option = options[3]
+        path = dubins.generatePathCoords(start, env.targets[4], option)
         print(option)
 
         coords_list.append(path)

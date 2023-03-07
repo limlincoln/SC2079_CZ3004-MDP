@@ -13,7 +13,7 @@ class DubinsV2:
         self.env = env
         self.radius = radius
         self.velocity = velocity
-        self.turningSpeed = 9
+        self.turningSpeed = 12
 
     def computeAllPath(self, start, end):
         """
@@ -50,7 +50,7 @@ class DubinsV2:
         paths = self.computeAllPath(start, end)
         loopPath = paths.copy()
         for path in loopPath:
-            points = self.generatePathCoords(start, end, path, 0.5)
+            points = self.generatePathCoords(start, end, path, 2)
             for point in points:
                 if not self.env.isWalkable(point):
                     paths.pop(paths.index(path))
@@ -59,11 +59,11 @@ class DubinsV2:
             return None
         best = min(paths, key=lambda x: x[0])
         commands = self.path_converter(best, end)
-        coords = self.generatePathCoords(start, end, best, 1)
+        coords = self.generatePathCoords(start, end, best, 2)
         return commands, coords
 
     def collision_check(self, path, start, end):
-        points = self.generatePathCoords(start, end, path, 1)
+        points = self.generatePathCoords(start, end, path, 2)
         for point in points:
             if not self.env.isWalkable(point):
                 return False

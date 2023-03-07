@@ -159,7 +159,7 @@ class HybridAstar:
         for key in available_moves:
             add = True
             move = available_moves[key]
-            points, final_pos = self.generateState(move[0], key, 0.5)
+            points, final_pos = self.generateState(move[0], key, 2)
             for point in points:
                 if not self.env.isWalkable(point):
                     add = False
