@@ -8,7 +8,7 @@ from algorithm.Entities.Obstacle import Obstacle
 from algorithm.Entities.Robot import Robot
 from algorithm.algo.Environment import StaticEnvironment
 from algorithm.constants import DIRECTION
-from algorithm.algo.TSP import NearestNeighbour
+from algorithm.algo.TSP import NearestNeighbour1
 from algorithm.algo.Astar import Astar
 class Simulator:
     """
@@ -64,10 +64,10 @@ class Simulator:
             self.optimalCoords = TSP.getPath()
             self.commandList = TSP.getCommandPath()
         else:
-            TSP = NearestNeighbour(self.env, (0,0, DIRECTION.TOP, 'P'))
+            TSP = NearestNeighbour1(self.env, (0,0, DIRECTION.TOP, 'P'))
             TSP.computeSequence()
             self.optimalCoords = TSP.getOptimalWithCoords()
-            self.commandList = TSP.getSTMCommands(self.optimalCoords)
+            self.commandList = TSP.getOptimalWithCoords()
 
         pygame.display.set_caption("Starting simulator....")
         self.ScanCheck = [x for x in self.env.getTargetLocation()]
@@ -89,7 +89,7 @@ class Simulator:
         :return: None
         """
         if len(self.commandList) > 0 and self.commandCounter <= len(self.commandList)-1:
-            self.text = self.font.render("Command: " + self.commandList[self.commandCounter], True, settings.GREEN, settings.BLUE)
+            self.text = self.font.render("Command: " + self.commandList[self.commandCounter][3], True, settings.GREEN, settings.BLUE)
             self.text.get_rect().center = (600,400)
             self.screen.blit(self.text, self.text.get_rect())
             direction = self.font.render("Direction: " + self.optimalCoords[self.commandCounter][2].name, True, settings.GREEN, settings.BLUE)

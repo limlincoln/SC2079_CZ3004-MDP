@@ -62,6 +62,11 @@ class DubinsV2:
         coords = self.generatePathCoords(start, end, best, 2)
         return commands, coords
 
+    def dubins_distance(self, start, end):
+        paths = self.computeAllPath(start, end)
+        best = min(paths, key=lambda x:x[0])
+        return best[0]
+
     def collision_check(self, path, start, end):
         points = self.generatePathCoords(start, end, path, 2)
         for point in points:

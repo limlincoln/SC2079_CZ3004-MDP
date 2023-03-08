@@ -11,7 +11,7 @@ class NearestNeighbour:
         self.env = env
         self.start = start
         self.targetLocations = env.targets
-        self.dubins = DubinsV2(30.5, 19, self.env)
+        self.dubins = DubinsV2(30, 19, self.env)
 
     def computeSequence(self):
         """

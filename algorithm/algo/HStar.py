@@ -47,7 +47,7 @@ class HybridAstar:
         cost[startNode] = 0
         backtrack[startNode] = None
         while not frontier.empty():
-            if time.perf_counter() - clock > len(self.env.targets) + 4:
+            if time.perf_counter() - clock > len(self.env.targets) + 30:
                 print("inifinite loop break")
                 return None
             priority, _, currentNode = frontier.get()
@@ -66,7 +66,8 @@ class HybridAstar:
         return None
 
     def heuristic(self, start, end):
-        return self.dubins.distCenter(start, end)
+        return self.dubins.dubins_distance(start, end)
+       # return self.dubins.distCenter(start, end)
 
     def get_neighbours(self, node: Node):
         """

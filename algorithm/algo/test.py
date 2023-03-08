@@ -175,7 +175,7 @@ class SimSum(unittest.TestCase):
         # (ObstacleID, "s3.012,s1.204")
 
     def testTSPPlot(self):
-        env = AdvancedEnvironment((200, 200), getTestObstacles3())
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
         clock = time.perf_counter()
         path = tsp.computeSequence()[0]

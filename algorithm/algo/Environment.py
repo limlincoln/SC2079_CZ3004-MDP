@@ -100,13 +100,13 @@ class StaticEnvironment:
 
         for ob in self.obstacles:
             if ob.imageOrientation == "E":
-                targetLocations.append((ob.pos[0] + 50, ob.pos[1] - 10, DIRECTION.LEFT))
+                targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 10, DIRECTION.LEFT))
             elif ob.imageOrientation == "N":
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM))
+                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 40, DIRECTION.BOTTOM))
             elif ob.imageOrientation == "W":
-                targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT))
+                targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 10, DIRECTION.RIGHT))
             else:
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 50, DIRECTION.TOP))
+                targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 40, DIRECTION.TOP))
             self.obID.append(ob.ObId)
         return targetLocations
 

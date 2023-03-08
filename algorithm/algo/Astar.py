@@ -134,7 +134,7 @@ class Astar:
         while current != self.start:
             commands.append(current)
             current = backtrack[current]
-        commands.append(self.start)
+        #commands.append(self.start)
 
         commands.reverse()
         self.path.extend(commands)
@@ -159,6 +159,12 @@ class Astar:
         get minimal version required to transmit to STM
         :return: list(string)
         """
-        STMCommands = [x[3] for x in self.path]
-        return STMCommands
+        path = ""
+        for index, x in enumerate(self.path):
+            trail = ","
+            if index == len(self.path)-1:
+                trail= ""
+            if x[3] is not 'P':
+                path = path + x[3] + trail
+        return path
 

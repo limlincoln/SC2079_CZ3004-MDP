@@ -11,7 +11,7 @@ import numpy as np
 
 import algorithm.RPI.clientConfig as config
 from ultralytics import YOLO
-#from algorithm.algo.TSP import NearestNeighbour
+from algorithm.algo.TSP import NearestNeighbour1
 from algorithm.algo.TSPV2 import NearestNeighbour
 from algorithm.algo.Environment import StaticEnvironment, AdvancedEnvironment
 from algorithm.Entities.Obstacle import Obstacle
@@ -151,7 +151,7 @@ class Client:
             list_of_ob_objects.append(Obstacle(values[0], values[1], values[2], values[3]))
         print(list_of_ob_objects)
         self.env = StaticEnvironment((200, 200), list_of_ob_objects)
-        self.TSP = NearestNeighbour(self.env, (0, 0, DIRECTION.TOP, "P"))
+        self.TSP = NearestNeighbour1(self.env, (0, 0, DIRECTION.TOP, "P"))
         self.TSP.computeSequence()
 
         return self.TSP.getCommandList()
@@ -183,8 +183,8 @@ class Client:
         Send path to server
         :return:
         """
-        path = self.path_calculationV2()
-        string = self.convertToPath(path)
+        string = self.path_calculation()
+        #string = self.convertToPath(path)
         a = pickle.dumps(string)
         message = struct.pack(">L", len(a)) + a
         self.socket.sendall(message)
