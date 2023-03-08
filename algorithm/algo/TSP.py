@@ -14,6 +14,7 @@ class NearestNeighbour1:
         self.start = start
         self.optimalPathWithCoords = None
         self.commandList = None
+        self.simulatorCommandList = []
 
     def computeSequence(self):
         """
@@ -39,10 +40,11 @@ class NearestNeighbour1:
         optimalPath = min(costList, key=lambda tup: tup[2])
         print("Stm path", optimalPath[0])
         print("coords", optimalPath[1])
+        simCoords = optimalPath[1].copy()
         coords = self.convert_to_coords(optimalPath[1])
         self.commandList = list(optimalPath[0]), coords
         print(("rpi path", self.commandList))
-        self.optimalPathWithCoords = optimalPath[1]
+        self.optimalPathWithCoords = simCoords
 
     def euclideanDistance(self, start, end):
 
@@ -152,3 +154,11 @@ class NearestNeighbour1:
     def convertTuple(self, tup):
         str = ', '.join(tup)
         return str
+
+    def convert_to_simulator_commands(self):
+        commands = []
+        for x in self.commandList[0]:
+            commands.extend(x[1].split(','))
+        return commands
+
+

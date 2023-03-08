@@ -100,15 +100,30 @@ class StaticEnvironment:
 
         for ob in self.obstacles:
             if ob.imageOrientation == "E":
-                targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 10, DIRECTION.LEFT))
+                if self.isWalkable(ob.pos[0] + 50, ob.pos[1]-10):
+                    targetLocations.append((ob.pos[0] + 50, ob.pos[1] - 10, DIRECTION.LEFT))
+                else:
+                    targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 10, DIRECTION.LEFT))
+
             elif ob.imageOrientation == "N":
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 40, DIRECTION.BOTTOM))
+                if self.isWalkable(ob.pos[0] - 10, ob.pos[1] + 50):
+                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM))
+                else:
+                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 40, DIRECTION.BOTTOM))
             elif ob.imageOrientation == "W":
-                targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 10, DIRECTION.RIGHT))
+                if self.isWalkable(ob.pos[0] - 50, ob.pos[1] - 10):
+                    targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT))
+                else:
+                    targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 10, DIRECTION.RIGHT))
             else:
-                targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 40, DIRECTION.TOP))
+                if self.isWalkable(ob.pos[0] - 10, ob.pos[1] - 50):
+                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 50, DIRECTION.TOP))
+                else:
+                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 40, DIRECTION.TOP))
             self.obID.append(ob.ObId)
         return targetLocations
+
+
 
     def generateTargetLocationInRads(self):
         """

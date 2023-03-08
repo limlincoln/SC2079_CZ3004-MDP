@@ -67,7 +67,8 @@ class Simulator:
             TSP = NearestNeighbour1(self.env, (0,0, DIRECTION.TOP, 'P'))
             TSP.computeSequence()
             self.optimalCoords = TSP.getOptimalWithCoords()
-            self.commandList = TSP.getOptimalWithCoords()
+            self.commandList = TSP.convert_to_simulator_commands()
+            print(self.optimalCoords)
 
         pygame.display.set_caption("Starting simulator....")
         self.ScanCheck = [x for x in self.env.getTargetLocation()]
@@ -89,7 +90,7 @@ class Simulator:
         :return: None
         """
         if len(self.commandList) > 0 and self.commandCounter <= len(self.commandList)-1:
-            self.text = self.font.render("Command: " + self.commandList[self.commandCounter][3], True, settings.GREEN, settings.BLUE)
+            self.text = self.font.render("Command: " + self.commandList[self.commandCounter], True, settings.GREEN, settings.BLUE)
             self.text.get_rect().center = (600,400)
             self.screen.blit(self.text, self.text.get_rect())
             direction = self.font.render("Direction: " + self.optimalCoords[self.commandCounter][2].name, True, settings.GREEN, settings.BLUE)
@@ -125,13 +126,13 @@ class Simulator:
             if event.type == self.moveCar:
                 if self.commandCounter <= len(self.commandList)-1:
                     if self.robot.command is None:
-                        self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
+                        self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter])
                     elif self.robot.command.tick == 0 and not self.pause:
                         self.commandCounter += 1
                         if self.commandCounter <= len(self.commandList) - 1:
-                            self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter][3])
+                            self.robot.setCurrentCommand(self.optimalCoords[self.commandCounter])
                 if self.commandCounter <= len(self.commandList) - 1:
-                    self.robot.moveToDo(self.optimalCoords[self.commandCounter])
+                    self.robot.moveToDo(self.optimalCoords[self.commandCounter], self.screen)
                 if self.robot.command is not None and  self.robot.command.tick > 0:
                     self.robot.command.yoloTick()
                 # check if already scan image:

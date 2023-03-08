@@ -291,8 +291,8 @@ class Client:
                 row = np.hstack(tuple(col_list))
                 row_list.append(row)
                 col_list = []
-
         stacked_image = np.stack(tuple(row_list))
+        print(stacked_image)
         cv2.imshow("Stitched Image", stacked_image)
         cv2.waitKey('A')
         cv2.destoryAllWindows()
