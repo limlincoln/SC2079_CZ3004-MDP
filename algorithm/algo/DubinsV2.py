@@ -13,7 +13,7 @@ class DubinsV2:
         self.env = env
         self.radius = radius
         self.velocity = velocity
-        self.turningSpeed = 12
+        self.turningSpeed = (np.pi*self.radius)/7.2
 
     def computeAllPath(self, start, end):
         """

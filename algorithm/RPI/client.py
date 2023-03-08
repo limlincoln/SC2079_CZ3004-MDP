@@ -195,12 +195,13 @@ class Client:
         Listen to server for image recognition
         :return: None
         """
+        # 'b' or 'B'produces an instance of the bytes type instead of the str type
+        # used in handling binary data from network connections
+        data = b""
+        # Q: unsigned long long integer(8 bytes)
+        payload_size = struct.calcsize(">L")
+
         while True:
-            # 'b' or 'B'produces an instance of the bytes type instead of the str type
-            # used in handling binary data from network connections
-            data = b""
-            # Q: unsigned long long integer(8 bytes)
-            payload_size = struct.calcsize(">L")
 
             # Receive stream frames
             result_list = []
@@ -318,6 +319,9 @@ class Client:
                 coords.append(node.path)
             pathString.append((key, tempString, coords))
         return pathString
+
+
+
 
     def run(self):
         """

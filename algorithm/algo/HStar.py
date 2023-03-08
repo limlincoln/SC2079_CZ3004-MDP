@@ -180,6 +180,11 @@ class HybridAstar:
         return round(new_x), round(new_y), new_angle
 
     def in_goal_region(self, pos):
+        """
+        Check if the final pos is near the goal state with a certain precision
+        :param pos:
+        :return:
+        """
         for i, value in enumerate(pos):
             if i <= 2:
                 if abs(self.goal[i] - value) > self.precision[i]:
