@@ -30,10 +30,10 @@ class NearestNeighbour1:
             for i in range(len(perm)-1):
                 distance += self.euclideanDistance(perm[i], perm[i+1])
             if distance <= lowestDistance:
-                print(distance)
                 lowestDistance = distance
                 stmPath, path = self.findPath(list(perm))
                 cost = self.calculateCost(stmPath)
+
                 costList.append((stmPath, path, cost))
             else:
                 continue
@@ -94,7 +94,7 @@ class NearestNeighbour1:
                 elif command == 'OL' or command == 'OR':
                     cost += 10
                 elif command == 'v' or command == 'w':
-                    cost += 8
+                    cost += 10
                 elif command == '3P':
                     cost += 10
         return cost

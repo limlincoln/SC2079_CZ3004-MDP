@@ -45,7 +45,7 @@ class Arena:
 
     def drawInvisibleObstacle(self, obstacle: Obstacle, SCREEN, COLOUR):
         newRect = Rectangle(obstacle.pos, 'O')
-        dim = ((newRect.length//10)*settings.BLOCK_SIZE, (newRect.length//10)*settings.BLOCK_SIZE)
+        dim = (int(newRect.length/10)*settings.BLOCK_SIZE, int(newRect.length/10)*settings.BLOCK_SIZE)
         rectOb = pygame.Rect(obstacle.pos, dim)
         rectOb.topleft = self.posConverter((newRect.x, newRect.y))
         pygame.draw.line(SCREEN, COLOUR, rectOb.topleft, rectOb.topright, 2)

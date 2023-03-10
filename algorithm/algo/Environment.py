@@ -10,6 +10,7 @@ from algorithm.Entities.RectRobot import RectRobot
 from algorithm.HelperFunctions import radiansToDegrees
 from algorithm.Entities.VirtualRect import VirtualRect
 import shapely as sp
+from algorithm.HelperFunctions import basic_angle
 
 class StaticEnvironment:
     """
@@ -67,7 +68,81 @@ class StaticEnvironment:
             if robotRect.isCollided(obstacle):
                 return False
         return True
+    def turn_check(self, pos):
+        """
+              points = []
+        current = pos
+        length = (2 * np.pi * 20) / 4
+        if t == 's' or t == 'b':
+            length = 10
+        for x in np.arange(0, length, 2):
+            current = self.nextPos(current, t, 2)
+            points.append(current)
+        for point in points:
+            if not self.isWalkable(point[0],point[1]):
+                return False
+        return True
+        :param pos:
+        :param t:
+        :return:
+        """
+        for obs in self.obstacles:
+            ob_pos = Rectangle(obs.pos, 'O')
+            print(pos[2])
+            if not self.direction_turn_check(pos[2], pos, (ob_pos.x, ob_pos.y)):
+                return False
+        return True
 
+
+    def direction_turn_check(self, dir, pos1, pos2):
+        if dir == DIRECTION.TOP:
+            if pos1[1] - pos2[1] < 10:
+                return False
+        elif dir == DIRECTION.RIGHT:
+            if pos1[0] - pos2[0] < 40:
+                return False
+        elif dir == DIRECTION.LEFT:
+            if pos2[0] - pos1[0] < 40:
+                return False
+        else:
+            if pos2[1] - pos1[1] < 10:
+                return False
+        return True
+
+    def nextPos(self, pos, type, delta):
+        """
+        Get the next position in continuous step
+        :param pos:
+        :param v:
+        :param steeringAngle:
+        :return:
+        """
+        direction = pos[2]
+        if type == "s":
+            new_X = pos[0] + delta * np.cos(direction)
+            new_Y = pos[1] + delta * np.sin(direction)
+            new_orientation = direction
+        elif type == "d":
+            new_X = pos[0] + delta * np.cos(direction)
+            new_Y = pos[1] + delta * np.sin(direction)
+            new_orientation = basic_angle(direction - delta / 20)
+        elif type == "u":
+            new_X = pos[0] + delta * np.cos(direction)
+            new_Y = pos[1] + delta * np.sin(direction)
+            new_orientation = basic_angle(direction + delta / 20)
+        elif type == "b":
+            new_X = pos[0] - delta * np.cos(direction)
+            new_Y = pos[1] - delta * np.sin(direction)
+            new_orientation = direction
+        elif type == "w":
+            new_X = pos[0] - delta * np.cos(direction)
+            new_Y = pos[1] - delta * np.sin(direction)
+            new_orientation = basic_angle(direction + delta / 20)
+        elif type == "v":
+            new_X = pos[0] - delta * np.cos(direction)
+            new_Y = pos[1] - delta * np.sin(direction)
+            new_orientation = basic_angle(direction - delta / 20)
+        return new_X, new_Y, new_orientation
     def randomFreeSpace(self):
         x = np.random.rand() * self.dimensions[0]
         y = np.random.rand() * self.dimensions[1]
@@ -97,30 +172,36 @@ class StaticEnvironment:
         """
 
         targetLocations = []
+        possible_pos = {"E": [(40,-10), (40,0), (40,-20)],
+                        "N": [(-10, 40), (0,40), (-20,40)],
+                        "W": [(-40,-10), (-40,0), (-40,-20)],
+                        "S": [(-10,-40), (-20,-40), (0,-40)]}
 
         for ob in self.obstacles:
+            valid_pos = None
             if ob.imageOrientation == "E":
-                if self.isWalkable(ob.pos[0] + 50, ob.pos[1]-10):
-                    targetLocations.append((ob.pos[0] + 50, ob.pos[1] - 10, DIRECTION.LEFT))
-                else:
-                    targetLocations.append((ob.pos[0] + 40, ob.pos[1] - 10, DIRECTION.LEFT))
-
+                for x in possible_pos["E"]:
+                    if self.isWalkable(ob.pos[0]+x[0], ob.pos[1]+x[1]):
+                        valid_pos = ob.pos[0]+x[0], ob.pos[1]+x[1], DIRECTION.LEFT
+                        break
             elif ob.imageOrientation == "N":
-                if self.isWalkable(ob.pos[0] - 10, ob.pos[1] + 50):
-                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 50, DIRECTION.BOTTOM))
-                else:
-                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] + 40, DIRECTION.BOTTOM))
+                for x in possible_pos["N"]:
+                    if self.isWalkable(ob.pos[0]+x[0], ob.pos[1]+x[1]):
+                        valid_pos = ob.pos[0]+x[0], ob.pos[1]+x[1], DIRECTION.BOTTOM
+                        break
             elif ob.imageOrientation == "W":
-                if self.isWalkable(ob.pos[0] - 50, ob.pos[1] - 10):
-                    targetLocations.append((ob.pos[0] - 50, ob.pos[1] - 10, DIRECTION.RIGHT))
-                else:
-                    targetLocations.append((ob.pos[0] - 40, ob.pos[1] - 10, DIRECTION.RIGHT))
+                for x in possible_pos["W"]:
+                    if self.isWalkable(ob.pos[0]+x[0], ob.pos[1]+x[1]):
+                        valid_pos = ob.pos[0]+x[0], ob.pos[1]+x[1], DIRECTION.RIGHT
+                        break
             else:
-                if self.isWalkable(ob.pos[0] - 10, ob.pos[1] - 50):
-                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 50, DIRECTION.TOP))
-                else:
-                    targetLocations.append((ob.pos[0] - 10, ob.pos[1] - 40, DIRECTION.TOP))
-            self.obID.append(ob.ObId)
+                for x in possible_pos["S"]:
+                    if self.isWalkable(ob.pos[0]+x[0], ob.pos[1]+x[1]):
+                        valid_pos = ob.pos[0]+x[0], ob.pos[1]+x[1], DIRECTION.TOP
+                        break
+            if valid_pos:
+                targetLocations.append(valid_pos)
+                self.obID.append(ob.ObId)
         return targetLocations
 
 

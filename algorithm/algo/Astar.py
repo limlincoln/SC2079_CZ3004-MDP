@@ -134,7 +134,7 @@ class Astar:
         while current != self.start:
             commands.append(current)
             current = backtrack[current]
-        #commands.append(self.start)
+        #commands.append((self.start[0], self.start[1], self.start[2], 'y'))
 
         commands.reverse()
         self.path.extend(commands)
