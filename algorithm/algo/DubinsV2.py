@@ -13,7 +13,7 @@ class DubinsV2:
         self.env = env
         self.radius = radius
         self.velocity = velocity
-        self.turningSpeed = 8
+        self.turningSpeed = (np.pi*self.radius)/7.2
 
     def computeAllPath(self, start, end):
         """
@@ -53,7 +53,7 @@ class DubinsV2:
         paths = self.computeAllPath(start, end)
         loopPath = paths.copy()
         for path in loopPath:
-            points = self.generatePathCoords(start, end, path, 0.5)
+            points = self.generatePathCoords(start, end, path, 2)
             for point in points:
                 if not self.env.isWalkable(point):
                     paths.pop(paths.index(path))
@@ -62,11 +62,16 @@ class DubinsV2:
             return None
         best = min(paths, key=lambda x: x[0])
         commands = self.path_converter(best, end)
-        coords = self.generatePathCoords(start, end, best, 1)
+        coords = self.generatePathCoords(start, end, best, 2)
         return commands, coords
 
+    def dubins_distance(self, start, end):
+        paths = self.computeAllPath(start, end)
+        best = min(paths, key=lambda x:x[0])
+        return best[0]
+
     def collision_check(self, path, start, end):
-        points = self.generatePathCoords(start, end, path, 1)
+        points = self.generatePathCoords(start, end, path, 2)
         for point in points:
             if not self.env.isWalkable(point):
                 return False
@@ -80,17 +85,17 @@ class DubinsV2:
         """
         command = None
         if path[4] == 'LSL':
-            command = ("l"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lsl'), end
+            command = ("l"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "l"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'lsl'), end
         elif path[4] == 'RSR':
-            command = ("r"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rsr'), end
+            command = ("r"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "r"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'rsr'), end
         elif path[4] == 'RSL':
-            command = ("r"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rsl'), end
+            command = ("r"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "l"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'rsl'), end
         elif path[4] == 'LSR':
-            command = ("l"+str(np.round(path[2] / self.turningSpeed, 4) * 1000), "f"+str(np.round(path[1] / self.velocity, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lsr'), end
+            command = ("l"+str(int(np.round(path[2] / self.turningSpeed, 4) * 1000)), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "r"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'lsr'), end
         elif path[4] == 'RLR':
-            command = ("r"+str(np.round(path[1] / self.turningSpeed, 4) * 1000), "l"+str(np.round(path[2] / self.turningSpeed, 4)* 1000), "r"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'rlr'), end
+            command = ("r"+str(int(np.round(path[1] / self.turningSpeed, 4) * 1000)), "l"+str(int(np.round(path[2] / self.turningSpeed, 4)* 1000)), "r"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'rlr'), end
         elif path[4] == 'LRL':
-            command = ("l"+str(np.round(path[1] / self.turningSpeed, 4) * 1000), "r"+str(np.round(path[2] / self.turningSpeed, 4)* 1000), "l"+str(np.round(path[3] / self.turningSpeed, 4)* 1000), 'lrl'), end
+            command = ("l"+str(int(np.round(path[1] / self.turningSpeed, 4) * 1000)), "r"+str(int(np.round(path[2] / self.turningSpeed, 4)* 1000)), "l"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'lrl'), end
         return command
 
     def lsl(self, start, end, p1, p2):
@@ -438,3 +443,13 @@ class DubinsV2:
             plt.plot(x, y)
         plt.show()
 
+    def save_path(self, path):
+        matplotlib.use('TkAgg')
+        for c in path:
+            x = np.array([x[0] for x in c])
+            y = np.array([y[1] for y in c])
+            plt.scatter(x, y)
+        for obs in self.env.virtualObstacles:
+            x, y = obs.polygon.exterior.xy
+            plt.plot(x, y)
+        plt.savefig("path.png")

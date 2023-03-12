@@ -47,11 +47,12 @@ class HybridAstar:
         cost[startNode] = 0
         backtrack[startNode] = None
         while not frontier.empty():
-            if time.perf_counter() - clock > len(self.env.targets) + 4:
+            if time.perf_counter() - clock > len(self.env.targets) + 30:
                 print("inifinite loop break")
                 return None
             priority, _, currentNode = frontier.get()
             if self.in_goal_region(currentNode.pos):
+                currentNode.pos = goalNode.pos
                 self.extract_path(backtrack, currentNode, startNode)
                 return currentNode
             for newNode in self.get_neighbours(currentNode):
@@ -65,7 +66,8 @@ class HybridAstar:
         return None
 
     def heuristic(self, start, end):
-        return self.dubins.distCenter(start, end)
+        return self.dubins.dubins_distance(start, end)
+       # return self.dubins.distCenter(start, end)
 
     def get_neighbours(self, node: Node):
         """
@@ -103,11 +105,11 @@ class HybridAstar:
         :return:
         """
 
-        if type == "d":
+        if type == "s":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
             new_orientation = pos[2]
-        elif type == "s":
+        elif type == "d":
             new_X = pos[0] + delta * np.cos(pos[2])
             new_Y = pos[1] + delta * np.sin(pos[2])
             new_orientation = basic_angle(pos[2] - delta / 20)
@@ -150,15 +152,15 @@ class HybridAstar:
     def motionsCommands(self, pos):
         moves = []
         available_moves = {'u': (pos, 10, 20),
-                           's': (pos, 10, 20),
+                           'd': (pos, 10, 20),
                            'b': (pos, -10, 25),
                            'w': (pos, -10, 30),
-                           'd': (pos, 10, 10),
+                           's': (pos, 10, 10),
                            'v': (pos, -10, 30)}
         for key in available_moves:
             add = True
             move = available_moves[key]
-            points, final_pos = self.generateState(move[0], key, 0.5)
+            points, final_pos = self.generateState(move[0], key, 2)
             for point in points:
                 if not self.env.isWalkable(point):
                     add = False
@@ -179,6 +181,11 @@ class HybridAstar:
         return round(new_x), round(new_y), new_angle
 
     def in_goal_region(self, pos):
+        """
+        Check if the final pos is near the goal state with a certain precision
+        :param pos:
+        :return:
+        """
         for i, value in enumerate(pos):
             if i <= 2:
                 if abs(self.goal[i] - value) > self.precision[i]:
@@ -187,11 +194,11 @@ class HybridAstar:
 
     def generateEndState(self, pos, t):
         command = CommandV2(pos, 20, 10)
-        if t == 'd':
+        if t == 's':
             return command.moveStraight()
         elif t == 'b':
             return command.moveRevese()
-        elif t == 's':
+        elif t == 'd':
             return command.moveRight()
         elif t == 'u':
             return command.moveLeft()

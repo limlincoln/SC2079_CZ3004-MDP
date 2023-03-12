@@ -10,7 +10,7 @@ class Rectangle:
             self.length = 30
         elif type == 'O':
             self.x = pos[0] - 10
-            self.y = pos[1] + 25
+            self.y = pos[1] + 20
             self.length = 30
 
 

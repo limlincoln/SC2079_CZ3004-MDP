@@ -9,7 +9,9 @@ def main():
     obs = DataPopulator.getTestObstacles()
     obs1 = DataPopulator.getTestObstacles1()
     obs2 = DataPopulator.getTestObstacles2()
-    sim = Simulator(StaticEnvironment((200, 200), obs), obs, False)
+    obs4 = DataPopulator.getTestObstacles4()
+    sim = Simulator(StaticEnvironment((200, 200), obs4), obs4, False)
+    print(sim.env.isWalkable(60,90))
     sim.init()
     sim.run()
 
@@ -21,7 +23,7 @@ def startRpiClient():
     client.run()
 
 if __name__ == '__main__':
-    #main()
+   #main()
    startRpiClient()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

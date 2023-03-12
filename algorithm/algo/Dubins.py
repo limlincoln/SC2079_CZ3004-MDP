@@ -52,6 +52,8 @@ class Dubins:
             options.sort(key=lambda x: x[0])
         return options
 
+    def heuristic_dubins_path(self, start, end):
+        paths = self.computeAllPath(start, end)
 
     def dubinsPath(self, start, end):
         """

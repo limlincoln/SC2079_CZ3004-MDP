@@ -9,11 +9,11 @@ class STMCommand:
         self.tick = 0
 
     def setTick(self):
-        if self.command == 'S' or self.command  == 'SV' or self.command == 'P':
+        if self.command == 's' or self.command  == 'b' or self.command == 'P':
             self.tick = math.ceil(0.75)
-        elif self.command == 'L' or self.command == 'R':
+        elif self.command == 'd' or self.command == 'u':
             self.tick = math.ceil(3.95)
-        elif self.command == 'RR' or self.command == 'RL':
+        elif self.command == 'v' or self.command == 'w':
             self.tick = math.ceil(4)
         elif self.command == 'OL' or self.command == 'OR':
             self.tick = math.ceil(8)

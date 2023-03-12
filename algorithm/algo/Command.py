@@ -34,20 +34,20 @@ class Command:
         """
         if self.pos[2] == DIRECTION.TOP:
 
-            self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'S'))
-            self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'SV'))
+            self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 's'))
+            self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'b'))
 
         elif self.pos[2] == DIRECTION.LEFT:
-            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'S'))
-            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'SV'))
+            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1], self.pos[2], 's'))
+            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'b'))
 
         elif self.pos[2] == DIRECTION.RIGHT:
-            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'S'))
-            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'SV'))
+            self.commands.append((self.pos[0] + settings.SPEED_FACTOR, self.pos[1], self.pos[2], 's'))
+            self.commands.append((self.pos[0] - settings.SPEED_FACTOR, self.pos[1], self.pos[2], 'b'))
 
         else:
-            self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 'S'))
-            self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'SV'))
+            self.commands.append((self.pos[0], self.pos[1] - settings.SPEED_FACTOR, self.pos[2], 's'))
+            self.commands.append((self.pos[0], self.pos[1] + settings.SPEED_FACTOR, self.pos[2], 'b'))
 
     def moveRight(self):
         """
@@ -56,13 +56,13 @@ class Command:
         new pos after moving right
         """
         if self.pos[2] == DIRECTION.TOP:
-            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'd'))
         elif self.pos[2] == DIRECTION.LEFT:
-            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'd'))
         elif self.pos[2] == DIRECTION.RIGHT:
-            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'd'))
         else:
-            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'R'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'd'))
 
 
 
@@ -76,36 +76,38 @@ class Command:
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append(
                 (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[self.dirList.index(self.pos[2]) - 1],
-                 'L'))
+                 'u'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append(
                 (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
-                 'L'))
+                 'u'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append(
                 (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
-                 'L'))
+                 'u'))
         else:
             self.commands.append(
                 (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
-                 'L'))
+                 'u'))
 
     def faceRightReverse(self):
 
         """
-        90 degrees full lock reverse
+        90 degrees full lock
+        reverse left
         :return: tuple
         commands based on the current direction
         """
 
         if self.pos[2] == DIRECTION.TOP:
-            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'RR'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[
+                self.dirList.index(self.pos[2]) - 1], 'w'))
         elif self.pos[2] == DIRECTION.LEFT:
-            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'RR'))
+            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) - 1) % 4], 'w'))
         elif self.pos[2] == DIRECTION.RIGHT:
-            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'RR'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) - 1) % 4], 'w'))
         else:
-            self.commands.append((self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1) % 4], 'RR'))
+            self.commands.append((self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) - 1) % 4], 'w'))
 
     def faceLeftReverse(self):
         """
@@ -116,20 +118,20 @@ class Command:
 
         if self.pos[2] == DIRECTION.TOP:
             self.commands.append(
-                (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[self.dirList.index(self.pos[2]) - 1],
-                 'RL'))
+                (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[(self.dirList.index(self.pos[2]) + 1)%4],
+                 'v'))
         elif self.pos[2] == DIRECTION.LEFT:
             self.commands.append(
-                (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
-                 'RL'))
+                (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) + 1) % 4],
+                 'v'))
         elif self.pos[2] == DIRECTION.RIGHT:
             self.commands.append(
-                (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]-settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
-                 'RL'))
+                (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) + 1) % 4],
+                 'v'))
         else:
             self.commands.append(
-                (self.pos[0]-settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) - 1) % 4],
-                 'RL'))
+                (self.pos[0]+settings.TURNING_RADIUS_X, self.pos[1]+settings.TURNING_RADIUS_Y, self.dirList[abs(self.dirList.index(self.pos[2]) + 1) % 4],
+                 'v'))
 
     def turnOntheSpot(self):
         self.commands.append((

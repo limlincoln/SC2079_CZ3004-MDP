@@ -3,9 +3,9 @@ from algorithm.algo.Environment import StaticEnvironment
 import itertools
 from collections import deque
 from algorithm.algo.Astar import Astar
+from algorithm.constants import DIRECTION
 
-
-class NearestNeighbour:
+class NearestNeighbour1:
     def __init__(self, env: StaticEnvironment, start):
         self.env = env
         self.targetLocations = self.env.getTargetLocation()
@@ -14,6 +14,7 @@ class NearestNeighbour:
         self.start = start
         self.optimalPathWithCoords = None
         self.commandList = None
+        self.simulatorCommandList = []
 
     def computeSequence(self):
         """
@@ -29,18 +30,21 @@ class NearestNeighbour:
             for i in range(len(perm)-1):
                 distance += self.euclideanDistance(perm[i], perm[i+1])
             if distance <= lowestDistance:
-                print(distance)
                 lowestDistance = distance
                 stmPath, path = self.findPath(list(perm))
                 cost = self.calculateCost(stmPath)
+
                 costList.append((stmPath, path, cost))
             else:
                 continue
         optimalPath = min(costList, key=lambda tup: tup[2])
         print("Stm path", optimalPath[0])
         print("coords", optimalPath[1])
-        self.commandList = list(optimalPath[0])
-        self.optimalPathWithCoords = optimalPath[1]
+        simCoords = optimalPath[1].copy()
+        coords = self.convert_to_coords(optimalPath[1])
+        self.commandList = list(optimalPath[0]), coords
+        print(("rpi path", self.commandList))
+        self.optimalPathWithCoords = simCoords
 
     def euclideanDistance(self, start, end):
 
@@ -83,14 +87,14 @@ class NearestNeighbour:
         cost += (999 * diff)
         for tup in path:
             for command in tup[1]:
-                if command == 'S' or command == 'SV':
+                if command == 's' or command == 'b':
                     cost += 1
-                elif command == 'R' or command == 'L':
+                elif command == 'd' or command == 'u':
                     cost += 8
                 elif command == 'OL' or command == 'OR':
                     cost += 10
-                elif command == 'RR' or command == 'RL':
-                    cost += 8
+                elif command == 'v' or command == 'w':
+                    cost += 10
                 elif command == '3P':
                     cost += 10
         return cost
@@ -111,8 +115,11 @@ class NearestNeighbour:
         return commandList
 
     def getSTMCommands(self, path):
-        STMCommands = [x[3] for x in path]
-        return STMCommands
+        commands = []
+        for x in path:
+            if x[3] is not "P":
+                commands.extend(x[3])
+        return commands
 
 
 
@@ -124,4 +131,34 @@ class NearestNeighbour:
 
     def getCommandList(self):
         return self.commandList
+
+    def convert_to_coords(self, path):
+        coords_path = []
+
+        for x in path:
+            coords_path.append(self.convertTuple( ("ROBOT",str(x[0]//10), str(x[1]//10), self.convert_direction(x[2].name) )) )
+
+        return coords_path
+
+
+    def convert_direction(self,f):
+        if f == "TOP":
+            return "N"
+        elif f == "BOTTOM":
+            return "S"
+        elif f == "RIGHT":
+            return "E"
+        else:
+            return "W"
+
+    def convertTuple(self, tup):
+        str = ', '.join(tup)
+        return str
+
+    def convert_to_simulator_commands(self):
+        commands = []
+        for x in self.commandList[0]:
+            commands.extend(x[1].split(','))
+        return commands
+
 

@@ -47,19 +47,6 @@ class Robot:
         SCREEN.blit(self.image, self.car_rect)
         SCREEN.blit(self.arrow, self.car_rect)
 
-    def moveToDo(self, command: tuple):
-        turn = 0
-        if self.command == "R":
-            turn = 90
-        elif self.command == "L":
-            turn = -90
-
-        self.image = pygame.transform.rotate(self.image, turn)
-        self.arrow = pygame.transform.rotate(self.arrow, turn)
-        pos = (self.x, self.y)
-        self.car_rect.bottomleft = Arena.posConverter(pos)
-        SCREEN.blit(self.image, self.car_rect)
-        SCREEN.blit(self.arrow, self.car_rect)
 
     def moveToDo(self, command, SCREEN):
         """
@@ -75,64 +62,5 @@ class Robot:
     def setCurrentCommand(self, command):
         self.command = STMCommand(command)
         self.command.setTick()
-        self.command = command[1]
-        # if the car is going straight or reverse
-        if self.command == 'S':
-            if command[0] == DIRECTION.TOP:
-                self.y += 10
-            elif command[0] == DIRECTION.LEFT:
-                self.x -= 10
-            elif command[0] == DIRECTION.RIGHT:
-                self.x += 10
-            else:
-                self.y -= 10
-        # if car is going reverse:
-        elif self.command == 'SV':
-            if command[0] == DIRECTION.TOP:
-                self.y -= 10
-            elif command[0] == DIRECTION.LEFT:
-                self.x += 10
-            elif command[0] == DIRECTION.RIGHT:
-                self.x -= 10
-            else:
-                self.y += 10
-        # if car going to turn right:
-        elif self.command == 'R':
-            print(command)
-
-            if command[0] == DIRECTION.TOP:
-                self.x += 20
-                self.y += 20
-
-            elif command[0] == DIRECTION.LEFT:
-                self.x -= 20
-                self.y += 20
-
-            elif command[0] == DIRECTION.RIGHT:
-
-                self.x += 20
-                self.y -= 20
-            else:
-
-                self.x -= 20
-                self.y -= 20
-        # if the car is to turn left:
-        elif self.command == 'L':
-
-            if command[0] == DIRECTION.TOP:
-                self.x -= 20
-                self.y += 20
-
-            elif command[0] == DIRECTION.LEFT:
-                self.x -= 20
-                self.y -= 20
-
-            elif command[0] == DIRECTION.RIGHT:
-                self.x += 20
-                self.y += 20
-            else:
-                self.x += 20
-                self.y -= 20
-
         
 

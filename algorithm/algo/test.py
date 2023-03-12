@@ -22,6 +22,7 @@ def sampleTSP(dubins, env, start):
         print(dubins.compute_best(start, options))
         start = options
 
+
 def task2Path(dubins, start, pathList):
     coord_list = []
     for option in pathList:
@@ -33,9 +34,27 @@ def task2Path(dubins, start, pathList):
     return coord_list
 
 
-
-
-
+def convertToPath(path):
+    pathString = []
+    print(path)
+    for oneOb in path:
+        print(oneOb[-1].pos)
+        key = oneOb[-1].pos[3]
+        tempString= ""
+        for index , node in enumerate(oneOb):
+            trail = ","
+            if type(node.moves) == tuple:
+                for i, dubinsTuple in enumerate(node.moves[:3]):
+                    if i == len(node.moves[:3])-1 and index == len(oneOb) - 1:
+                        trail = ""
+                    tempString += dubinsTuple + trail
+            else:
+                if index == len(oneOb) - 1:
+                    trail = ""
+                tempString += str(node.moves) + trail
+        pathString.append((key, tempString))
+    return pathString
+    
 def sampleHstarTSP( start, env, dubins):
     path = []
     for options in env.targets:
@@ -85,15 +104,15 @@ class SimSum(unittest.TestCase):
     def testOneObstacle(self):
         env = AdvancedEnvironment((200, 200), getTestObstacles())
         dubins = DubinsV2(26,10,env)
-        start = (15,15,DIRECTION.TOP.value)
+        start = (15, 15, DIRECTION.TOP.value)
         end = env.targets[4]
         path = dubins.compute_best(start,end)
         dubins.plot(path)
 
     def testFailedObstacle(self):
         env = AdvancedEnvironment((200, 200), getTestObstacles())
-        dubins = DubinsV2(26,10,env)
-        start = (15,15,DIRECTION.TOP.value)
+        dubins = DubinsV2(26, 10, env)
+        start = (15, 15, DIRECTION.TOP.value)
         end = env.targets[2]
         path = dubins.computeAllPath(start, end)
         coords = dubins.generatePathCoords(start, end, path[1])
@@ -174,7 +193,7 @@ class SimSum(unittest.TestCase):
         # (ObstacleID, "s3.012,s1.204")
 
     def testTSPPlot(self):
-        env = AdvancedEnvironment((200, 200), getTestObstacles3())
+        env = AdvancedEnvironment((200, 200), getTestObstacles())
         tsp = NearestNeighbour(env, (15, 15, DIRECTION.TOP.value))
         clock = time.perf_counter()
         path = tsp.computeSequence()[0]
@@ -187,7 +206,8 @@ class SimSum(unittest.TestCase):
             for node in ob:
                 ob_coords.extend(node.path)
             coords.append(ob_coords)
-        tsp.dubins.plot(coords)
+        tsp.dubins.save_path(coords)
+        print(convertToPath(path))
 
 
     def testtesttest(self):
@@ -222,13 +242,13 @@ class SimSum(unittest.TestCase):
 
 
     def testDubinsCurves(self):
-        env = AdvancedEnvironment((200,200), getTestObstacles())
+        env = AdvancedEnvironment((200,200), getTestObstacles3())
         dubins = DubinsV2(28,10,env)
-        start = (15,15,DIRECTION.TOP.value)
-        options = dubins.computeAllPath(start, env.targets[0])
+        start = (80,60,DIRECTION.RIGHT.value)
+        options = dubins.computeAllPath(start, env.targets[4])
         coords_list = []
-        option = options[5]
-        path = dubins.generatePathCoords(start, env.targets[0], option)
+        option = options[3]
+        path = dubins.generatePathCoords(start, env.targets[4], option)
         print(option)
 
         coords_list.append(path)
