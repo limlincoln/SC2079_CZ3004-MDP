@@ -7,19 +7,26 @@ class VirtualRect:
     Class representing virtual obstacle that the robot cannot move to.
     """
 
-    def __init__(self, ob: Obstacle, task=1):
+    def __init__(self, ob: Obstacle, task=1, type=1):
         """
         Class representing virtual obstacle that the robot cannot move to.
         :param ob: Obstacle
         """
-        self.pos = (ob.pos[0] - 10, ob.pos[1] + 20)
+        if task == 1:
+            self.pos = (ob.pos[0] - 10, ob.pos[1] + 20)
         self.length = 30
         if task == 1:
             self.polygon = geometry.box(self.pos[0], self.pos[1] - self.length, self.pos[0] + self.length, self.pos[1])
-        elif task == 2:
+        elif task == 2 and type == 2:
+            self.pos = (ob.pos[0], ob.pos[1]+30)
             self.length = 60
             self.width = 10
-            self.polygon = geometry.box(self.pos[0], self.pos[1]- self.length, self.pos[0] + self.width, self.pos[1])
+            self.polygon = geometry.box(self.pos[0], self.pos[1] - self.length, self.pos[0] + self.width, self.pos[1])
+        elif task == 2 and type == 1:
+            self.pos = (ob.pos[0], ob.pos[1] + 5)
+            self.length = 10
+            self.width = 10
+            self.polygon = geometry.box(self.pos[0], self.pos[1] - self.length, self.pos[0] + self.width, self.pos[1])
         self.center = (self.pos[0] + 15, self.pos[1] - 15)
 
     def isCollided(self, robotPos):
