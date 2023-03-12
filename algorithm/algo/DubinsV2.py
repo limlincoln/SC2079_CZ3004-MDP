@@ -39,7 +39,10 @@ class DubinsV2:
             if np.isnan(option[0]) or option[0] == 999:
                 copy.pop(copy.index(option))
         return copy
-
+    def compute_best_task2(self, start, end):
+        paths = self.computeAllPath(start,end)
+        best = min(paths, key=lambda x: x[0])
+        return best
     def compute_best(self, start, end):
         """
         start the calculation of dubins path and return the shortest

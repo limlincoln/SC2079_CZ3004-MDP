@@ -132,6 +132,12 @@ class StaticEnvironment:
 
 class AdvancedEnvironment:
     def __init__(self, dimensions, obstacles: list[Obstacle], task=1):
+        """
+        For task 2, dimension should be at least 400x160
+        :param dimensions:
+        :param obstacles:
+        :param task:
+        """
         self.dimensions = dimensions
         self.obstacles = obstacles
         self.task = task
@@ -159,12 +165,12 @@ class AdvancedEnvironment:
         :return: list[VirutalObstacles]
         """
         list = []
-        for ob in obstacles:
+        for index,  ob in enumerate(obstacles):
             if self.task == 1:
                 virutalOb = VirtualRect(ob)
                 list.append(virutalOb)
             elif self.task == 2:
-                virutalOb = VirtualRect(ob, 2)
+                virutalOb = VirtualRect(ob, 2, index+1)
                 list.append(virutalOb)
 
         return list
