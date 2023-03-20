@@ -46,8 +46,12 @@ class Client:
         self.s_index = self.class_label.index("S")
         self.g_index = self.class_label.index("G")
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.correct_img_count=0
 
         path = "result_img"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        path = "result_img_failed"
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -246,6 +250,7 @@ class Client:
                 if res == -1:
                     self.final_result = res
                     print("Nothing detected")
+                    cv2.imwrite('./result_img_failed/image' + str(obs_id) + '.jpg', frame)
                     # input("hold")
                 else:
                     tl = (int(res[0][0]), int(res[0][1] / config.IMAGE_HEIGHT_CHANGE_RATIO))
@@ -264,6 +269,7 @@ class Client:
                     cv2.putText(frame, text1, (tx + 5, ty), 0, 0.8, (0, 0, 0), 2)
                     cv2.putText(frame, text2, (tx + 5, ty + 20), 0, 0.8, (0, 0, 0), 2)
                     cv2.imwrite('./result_img/image' + str(obs_id) + '.jpg', frame)
+                    self.correct_img_count += 1
                     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
                     result, frame = cv2.imencode('.jpg', frame, encode_param)
                     self.final_result = [self.class_id[res[1]], self.class_dcp[res[1]]]
@@ -273,6 +279,8 @@ class Client:
                 self.socket.sendall(message)
                 print("Results sent:")
                 print(self.final_result)
+                if self.correct_img_count == 2:
+                    break
             except Exception as e:
                 print(e)
                 print("yo we fked")
@@ -414,9 +422,9 @@ class Client:
         :return:
         """
         self.connect()
-        self.get_obstacles()
+        #self.get_obstacles()
         #self.path_calculationV2()
-        self.send_path()
+        #self.send_path()
         self.receive_image()
         self.display_images()
         self.close()

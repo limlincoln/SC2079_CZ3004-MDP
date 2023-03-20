@@ -25,13 +25,15 @@ def sampleTSP(dubins, env, start):
 
 def task2Path(dubins, start, pathList):
     coord_list = []
+    command_list = []
     for option in pathList:
         path = dubins.compute_best_task2(start, option)
+        command_list.append(dubins.path_converterV2(path, option))
         coords = dubins.generatePathCoords(start, option, path)
         coord_list.append(coords)
         start = option
 
-    return coord_list
+    return coord_list, command_list
 
 
 def convertToPath(path):
@@ -149,20 +151,20 @@ class SimSum(unittest.TestCase):
     def testTask2(self):
         distance_offset_1 = 90
         distance_offset_2 = 90
-        env = AdvancedEnvironment((400, 160), [Obstacle((60+distance_offset_1, 80), 'W', (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '2'), Obstacle((70+distance_offset_1+60+distance_offset_2,80),'S', (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '3')], 2)
-        dubins = DubinsV2(28, 10, env)
+        env = AdvancedEnvironment((400, 160), [Obstacle((60, 80), 'W', (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '2'), Obstacle((70+60,80),'S', (settings.BLOCK_SIZE, settings.BLOCK_SIZE), '3')], 2)
+        dubins = DubinsV2(30, 76, env)
         start = (0,80, DIRECTION.RIGHT.value)
         # for left, left
-        path_list_left_left = [(60+distance_offset_1+10, 100, DIRECTION.RIGHT.value),(70+distance_offset_1+60+distance_offset_2+10, 110, DIRECTION.RIGHT.value), (70+distance_offset_1+60+distance_offset_2+10+50, 80, DIRECTION.BOTTOM.value), (0,80, DIRECTION.LEFT.value)]
+        path_list_left_left = [(60+5, 105, DIRECTION.RIGHT.value),(70+60+5, 80+55, DIRECTION.RIGHT.value), (70+60+10+50, 80, DIRECTION.BOTTOM.value), (70+60+10, 80-55, DIRECTION.LEFT.value), (0,80, DIRECTION.LEFT.value)]
         # for left, right
-        path_list_left_right = [(60+distance_offset_1+10, 100, DIRECTION.RIGHT.value),(70+distance_offset_1+60+distance_offset_2+10, 50, DIRECTION.RIGHT.value), (70+distance_offset_1+60+distance_offset_2+10+50, 80, DIRECTION.TOP.value), (0,80, DIRECTION.LEFT.value)]
+        path_list_left_right = [(60+5, 105, DIRECTION.RIGHT.value),(70+60+5, 80-55, DIRECTION.RIGHT.value), (70+60+10+50, 80, DIRECTION.TOP.value), (70+60+10, 80+55, DIRECTION.LEFT.value),(0,80, DIRECTION.LEFT.value)]
 
         # for right, right =
-        path_list_right_right = [(60+distance_offset_1+10, 50, DIRECTION.RIGHT.value),(70+distance_offset_1+60+distance_offset_2+10, 40, DIRECTION.RIGHT.value), (70+distance_offset_1+60+distance_offset_2+10+50, 80, DIRECTION.TOP.value), (0,80, DIRECTION.LEFT.value)]
+        path_list_right_right = [(60+5, 55, DIRECTION.RIGHT.value),(70+60+5, 80-55, DIRECTION.RIGHT.value), (70++60+10+50, 80, DIRECTION.TOP.value), (70+60+10, 80+55, DIRECTION.LEFT.value), (0,80, DIRECTION.LEFT.value)]
         # for right, left
-        path_list_right_left = [(60+distance_offset_1+10, 50, DIRECTION.RIGHT.value),(70+distance_offset_1+60+distance_offset_2+10, 110, DIRECTION.RIGHT.value), (70+distance_offset_1+60+distance_offset_2+10+50, 80, DIRECTION.BOTTOM.value), (0,80, DIRECTION.LEFT.value)]
-        coord_list = task2Path(dubins,start,path_list_right_left)
-
+        path_list_right_left = [(60+5, 55, DIRECTION.RIGHT.value), (70+60+5, 80+55, DIRECTION.RIGHT.value), (70+60+10+50, 80, DIRECTION.BOTTOM.value), (70+60+10,80-55, DIRECTION.LEFT.value),(60,80-55,DIRECTION.LEFT.value), (0,80,DIRECTION.LEFT.value)]
+        coord_list, command_list = task2Path(dubins,start,path_list_right_left)
+        print(command_list)
         dubins.plot(coord_list)
 
     def testTSPForRPI(self):

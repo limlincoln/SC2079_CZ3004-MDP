@@ -4,7 +4,7 @@ import numpy as np
 from algorithm.algo.Environment import AdvancedEnvironment
 import matplotlib.pyplot as plt
 import matplotlib
-from algorithm.HelperFunctions import basic_angle , radiansToDegrees
+from algorithm.HelperFunctions import basic_angle
 
 class DubinsV2:
     def __init__(self, radius, velocity, env: AdvancedEnvironment):
@@ -96,6 +96,22 @@ class DubinsV2:
             command = ("r"+str(int(np.round(path[1] / self.turningSpeed, 4) * 1000)), "l"+str(int(np.round(path[2] / self.turningSpeed, 4)* 1000)), "r"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'rlr'), end
         elif path[4] == 'LRL':
             command = ("l"+str(int(np.round(path[1] / self.turningSpeed, 4) * 1000)), "r"+str(int(np.round(path[2] / self.turningSpeed, 4)* 1000)), "l"+str(int(np.round(path[3] / self.turningSpeed, 4)* 1000)), 'lrl'), end
+        return command
+
+    def path_converterV2(self, path, end):
+        command = None
+        if path[4] == 'LSL':
+            command = ("l"+str(int(np.rad2deg(path[2]/self.radius))), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "l"+str(int(np.rad2deg(path[3]/self.radius))))
+        elif path[4] == 'RSR':
+            command = ("r"+str(int(np.rad2deg(path[2]/self.radius))), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "r"+str(int(np.rad2deg(path[3]/self.radius))))
+        elif path[4] == 'RSL':
+            command = ("r"+str(int(np.rad2deg(path[2]/self.radius))), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "l"+str(int(np.rad2deg(path[3]/self.radius))))
+        elif path[4] == 'LSR':
+            command = ("l"+str(int(np.rad2deg(path[2]/self.radius))), "f"+str(int(np.round(path[1] / self.velocity, 4)* 1000)), "r"+str(int(np.rad2deg(path[3]/self.radius))))
+        elif path[4] == 'RLR':
+            command = ("r"+str(int(np.rad2deg(path[1]/self.radius))), "l"+str(int(np.rad2deg(path[2]/self.radius))), "r"+str(int(np.rad2deg(path[3]/self.radius))))
+        elif path[4] == 'LRL':
+            command = ("l"+str(int(np.rad2deg(path[1]/self.radius))), "r"+str(int(np.rad2deg(path[2]/self.radius))), "l"+str(int(np.rad2deg(path[3]/self.radius))))
         return command
 
     def lsl(self, start, end, p1, p2):
