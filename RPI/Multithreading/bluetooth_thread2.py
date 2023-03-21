@@ -22,19 +22,19 @@ from queue import Queue
 import time
 
 from config import *
-from STM_thread import *
+from STM_thread2 import *
 
 
 
 class Connect_Android_Client(threading.Thread):
 
-    def __init__(self, name, uuid, setup_info, run_cmd, IMG_label):#STM_thread, shoot_signal):
+    def __init__(self, name, uuid, run_cmd):
         super(Connect_Android_Client, self).__init__()
         self.name = name
         self.uuid = uuid
-        self.setup_info = setup_info
+        #self.setup_info = setup_info
         self.run_cmd = run_cmd
-        self.IMG_label = IMG_label
+        #self.IMG_label = IMG_label
         #self.STM_thread = STM_thread # manual test purpose
         #self.shoot_signal = shoot_signal # manual test purpose
  
@@ -47,7 +47,7 @@ class Connect_Android_Client(threading.Thread):
         self.client_sock.send(msg_str)
     
     def run(self):
-        is_cal_path_cmd_received = False
+        #is_cal_path_cmd_received = False
         is_run_cmd_received = False
         
         
@@ -63,7 +63,7 @@ class Connect_Android_Client(threading.Thread):
                                         profiles=[bluetooth.SERIAL_PORT_PROFILE],
                                         # protocols=[bluetooth.OBEX_UUID]
                                         )
-            '''                           
+            '''
             address = "D0:04:B0:66:F6:42"
             self.server_sock.connect((address, 1))
             # self.client_sock = client_sock
@@ -95,6 +95,16 @@ class Connect_Android_Client(threading.Thread):
             self.send_msg("TARGET, 4, 10")
             '''
             try:
+                while not is_run_cmd_received: 
+                    data = client_sock.recv(1024)
+                    s = data.decode('UTF-8').strip()
+                    print("Received via bluetooth:", s)
+                    self.run_cmd.put(data)
+                    if s == "run": # ** TBD
+                        is_run_cmd_received = True
+                        self.send_msg("run")
+
+                '''
                 while not is_cal_path_cmd_received:
                     data = client_sock.recv(1024)
                     s = data.decode('UTF-8').strip()
@@ -104,7 +114,7 @@ class Connect_Android_Client(threading.Thread):
                         is_cal_path_cmd_received = True
                         is_run_cmd_received = True
                         self.run_cmd.put(data)
-                        
+
                 while not is_run_cmd_received:
                     data = client_sock.recv(1024)
                     s = data.decode('UTF-8').strip()
@@ -112,6 +122,7 @@ class Connect_Android_Client(threading.Thread):
                     self.run_cmd.put(data)
                     if s == "run": # ** TBD
                         is_run_cmd_received = True
+                '''
                 '''
                 while True:
                     if self.empty():
@@ -123,27 +134,30 @@ class Connect_Android_Client(threading.Thread):
                     #elif not self.shoot_signal.empty()
                     #   pc_msg = self.shoot_signal.get()
                     #   client_sock.send()
-                     elif s.startswith("tp"):
+                  
+                    elif s.startswith("tp"):
                         img_map_id = s.split("tp")[-1]
                         self.shoot_signal.put(img_map_id)
                         print("Take Picture Command sent")
-                    
+                  
                     data = client_sock.recv(1024)
                     #client_sock.send('Hello') 
                     if not data:
                         break
                     s = data.decode('UTF-8').strip()
                     print("Received", s)
-                    self.setup_info.put(s)
+                    #self.setup_info.put(s)
                     #self.Andriod_msg.put(s)
                     # process the received string
                     if s == "end":
                         break
                 '''
+                '''
                 while True:
                     img_label_msg = self.IMG_label.get()
                     client_sock.send(img_label_msg)
-                    '''
+                
+                   
                     if not self.IMG_label.empty(): # got an image classification result
                         client_sock.send()
                     
@@ -158,9 +172,7 @@ class Connect_Android_Client(threading.Thread):
                     
                     else:
                         time.sleep(0.1)
-                    '''
-                        
-        
+                 '''
             except OSError:
                 pass
             

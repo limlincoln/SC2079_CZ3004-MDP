@@ -22,15 +22,15 @@ from config import *
 # Start server
 class Connect_PC_Client(threading.Thread):
 
-    def __init__(self, name, img_results, img_valid, shoot_signal, setup_info, car_path):
+    def __init__(self, name, img_results, img_valid, shoot_signal):
         super(Connect_PC_Client, self).__init__()
         self.name = name
         self.img_results = img_results
         self.img_valid = img_valid
         self.shoot_signal = shoot_signal
         # self.PC_close_signal = PC_close_signal
-        self.setup_info = setup_info
-        self.car_path = car_path
+        #self.setup_info = setup_info
+        #self.car_path = car_path
         self.server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # set the socket addr to be reusable
         self.host_name  = socket.gethostname()
@@ -61,7 +61,7 @@ class Connect_PC_Client(threading.Thread):
         print('Wifi Connection from:',addr)
         while True:
             try:
-                
+                '''
                 # Stage 1: Get obstacle info, calculate path command from android
                 while True:
                     setup_from_tablet = self.setup_info.get()
@@ -87,7 +87,7 @@ class Connect_PC_Client(threading.Thread):
                 data = data[msg_size:]
                 self.car_path.put(pickle.loads(result_data))
                 print("Car path received from PC:", pickle.loads(result_data))
-                
+                '''
                 # Stage 3: Wait for signal to take picture
                 # ** The signal is the obstacle's id on the map
                 while True:
@@ -211,9 +211,7 @@ class Receive_Img_Results(threading.Thread):
             # get obstable id and image id
             result_str = "TARGET, " + str(self.img_map_id)+", "+str(res[0])
             self.results.put(result_str)
-            print("SOS") 
             self.img_valid.put(True)
-            print("Help")
             print("Image recognition result:", result_str)
             # get bbox image
             #img_bbox = cv2.imdecode(res[0],cv2.IMREAD_COLOR)
@@ -229,7 +227,7 @@ if __name__ == '__main__':
     PC_thread.start()
     print("Waiting for PC thread to finish...")
     time.sleep(5)
-    
+    '''
     for i in range(8):
         t1 = time.time()
         # send the command to take picture
@@ -244,6 +242,6 @@ if __name__ == '__main__':
         print("Time taken:", t2-t1)
         print()
         time.sleep(3)
-   
+    '''
     PC_close_signal.put(1)
     PC_thread.join()

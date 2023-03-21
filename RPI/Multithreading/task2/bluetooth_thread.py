@@ -95,6 +95,7 @@ class Connect_Android_Client(threading.Thread):
             self.send_msg("TARGET, 4, 10")
             '''
             try:
+                '''
                 while not is_cal_path_cmd_received:
                     data = client_sock.recv(1024)
                     s = data.decode('UTF-8').strip()
@@ -104,14 +105,16 @@ class Connect_Android_Client(threading.Thread):
                         is_cal_path_cmd_received = True
                         is_run_cmd_received = True
                         self.run_cmd.put(data)
-                        
+                '''        
                 while not is_run_cmd_received:
                     data = client_sock.recv(1024)
                     s = data.decode('UTF-8').strip()
                     print("Received via bluetooth:", s)
                     self.run_cmd.put(data)
-                    if s == "run": # ** TBD
+                    if s == "run": 
                         is_run_cmd_received = True
+                while True:
+                    time.sleep(5)
                 '''
                 while True:
                     if self.empty():
@@ -140,12 +143,10 @@ class Connect_Android_Client(threading.Thread):
                     if s == "end":
                         break
                 '''
+                '''
                 while True:
-                    img_label_msg = self.IMG_label.get()
-                    client_sock.send(img_label_msg)
-                    '''
                     if not self.IMG_label.empty(): # got an image classification result
-                        client_sock.send()
+                        client_sock.send(self.IMG_label.get())
                     
                     data = client_sock.recv(1024)
                     s = data.decode('UTF-8').strip()
@@ -155,11 +156,9 @@ class Connect_Android_Client(threading.Thread):
                             self.shoot_signal.put(obstacle_id)
                         else: # got a command to move
                             self.STM_thread.send_msg(s)
-                    
                     else:
                         time.sleep(0.1)
-                    '''
-                        
+                '''
         
             except OSError:
                 pass

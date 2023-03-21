@@ -49,11 +49,6 @@ class Connect_PC_Client(threading.Thread):
         self.server_socket.listen(5)
         print('Wifi Socket now listening\n')
     
-    def send_all_msg(self, msg):
-        a = pickle.dumps([msg],0) 
-        message = struct.pack(">L",len(a))+a
-        self.client_socket.sendall(message)
-    
     def run(self):
         # assume the connection between PC and RPi is stable
         client_socket,addr = self.server_socket.accept()
@@ -61,14 +56,14 @@ class Connect_PC_Client(threading.Thread):
         print('Wifi Connection from:',addr)
         while True:
             try:
-                
-                # Stage 1: Get obstacle info, calculate path command from android
+                '''
+                 # Stage 1: Get obstacle info, calculate path command from android
                 while True:
                     setup_from_tablet = self.setup_info.get()
                     print("working")
                     client_socket.send(setup_from_tablet)
                     s = setup_from_tablet.decode('UTF-8').strip()
-                    if s == "run": # ** TBD
+                    if s == "path": # ** TBD
                         break
                         
                 # Stage 2: Get complete path from PC
@@ -87,6 +82,7 @@ class Connect_PC_Client(threading.Thread):
                 data = data[msg_size:]
                 self.car_path.put(pickle.loads(result_data))
                 print("Car path received from PC:", pickle.loads(result_data))
+                '''
                 
                 # Stage 3: Wait for signal to take picture
                 # ** The signal is the obstacle's id on the map
@@ -94,29 +90,22 @@ class Connect_PC_Client(threading.Thread):
                     if not self.shoot_signal.empty():
                         # get the obstacle id
                         img_map_id = self.shoot_signal.get()
-                        
-                        if img_map_id == -1: # main thread has cleared all the commands
-                            print("Tell PC to break img loop")
-                            self.send_all_msg("all finished")
-                        else:
-                            # create the thread for streaming
-                            stream_thread = Start_Stream("Stream Thread", client_socket, img_map_id)
-                            # create the thread for receiving img recog results
-                            #testing purpose
-                            self.image_valid = False
-                            img_result_thread = Receive_Img_Results("Img Result Thread", client_socket, img_map_id, \
-                                                                    self.img_results, self.img_valid)
+                        # create the thread for streaming
+                        stream_thread = Start_Stream("Stream Thread", client_socket)
+                        # create the thread for receiving img recog results
+                        img_result_thread = Receive_Img_Results("Img Result Thread", client_socket, img_map_id, \
+                                                                self.img_results, self.img_valid)
 
-                            # start threads
-                            stream_thread.start()
-                            print('Waiting for the stream thread to finish ...')
-                            img_result_thread.start()
-                            print('Waiting for the img result thread to finish ...')
+                        # start threads
+                        stream_thread.start()
+                        print('Waiting for the stream thread to finish ...')
+                        img_result_thread.start()
+                        print('Waiting for the img result thread to finish ...')
 
-                            stream_thread.join()
-                            img_result_thread.join()
-                            #res = self.img_results.get()
-                            #print(res)
+                        stream_thread.join()
+                        img_result_thread.join()
+                        #res = self.img_results.get()
+                        #print(res)
                     else:
                         time.sleep(0.1)
            
@@ -131,11 +120,10 @@ class Connect_PC_Client(threading.Thread):
 
 class Start_Stream(threading.Thread):
 
-    def __init__(self, name, client_socket, img_map_id):
+    def __init__(self, name, client_socket):
         super(Start_Stream, self).__init__()
         self.name = name
         self.client_socket = client_socket
-        self.img_map_id = img_map_id
 
     def run(self):
         '''
@@ -161,8 +149,7 @@ class Start_Stream(threading.Thread):
             frame = cv2.flip(frame,-1) # flip around both axes
             #cv2.imwrite('image'+str(0)+'.jpg', frame)
             result, frame = cv2.imencode('.jpg', frame, encode_param)
-            msg_to_send = [self.img_map_id, frame]
-            a = pickle.dumps(msg_to_send,0) 
+            a = pickle.dumps(frame,0) 
             message = struct.pack(">L",len(a))+a
             self.client_socket.sendall(message)
             print("Image sent")
@@ -191,7 +178,6 @@ class Receive_Img_Results(threading.Thread):
         payload_size = struct.calcsize(">L")
         #while True:
         while len(data) < payload_size:
-            print("Nothing received from PC")
             packet = self.client_socket.recv(4*1024)
             #if not packet: break
             data+=packet
@@ -199,7 +185,6 @@ class Receive_Img_Results(threading.Thread):
         data = data[payload_size:]
         msg_size = struct.unpack(">L",packed_msg_size)[0]
         while len(data) < msg_size:
-            print("Nothing received yet")
             data += self.client_socket.recv(4*1024)
         result_data = data[:msg_size]
         data  = data[msg_size:]
@@ -208,12 +193,10 @@ class Receive_Img_Results(threading.Thread):
             self.img_valid.put(False)
             print("Nothing Detected!")
         else:
-            # get obstable id and image id
-            result_str = "TARGET, " + str(self.img_map_id)+", "+str(res[0])
-            self.results.put(result_str)
-            print("SOS") 
+            # get obstable id and class label
+            result_str = str(self.img_map_id)+", "+res[1]
+            self.results.put(result_str) 
             self.img_valid.put(True)
-            print("Help")
             print("Image recognition result:", result_str)
             # get bbox image
             #img_bbox = cv2.imdecode(res[0],cv2.IMREAD_COLOR)
@@ -230,7 +213,7 @@ if __name__ == '__main__':
     print("Waiting for PC thread to finish...")
     time.sleep(5)
     
-    for i in range(8):
+    for i in range(3):
         t1 = time.time()
         # send the command to take picture
         # param: the img id on the map
@@ -244,6 +227,5 @@ if __name__ == '__main__':
         print("Time taken:", t2-t1)
         print()
         time.sleep(3)
-   
     PC_close_signal.put(1)
     PC_thread.join()

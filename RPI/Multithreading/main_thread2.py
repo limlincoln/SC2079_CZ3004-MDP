@@ -15,10 +15,10 @@ import math
 import numpy as np
 
 from config import *
-from PC_thread import *
-from bluetooth_thread import *
+from PC_thread2 import *
+from bluetooth_thread2 import *
 
-from STM_thread import *
+from STM_thread2 import *
 
 
 # Command
@@ -43,16 +43,17 @@ if __name__ == '__main__':
     # PC_close_signal = Queue(maxsize=1)
     STM_msg = Queue(maxsize=1)
     run_cmd = Queue(maxsize=1)
-    setup_info = Queue(maxsize=1)
-    car_path = Queue(maxsize=1)
+    #setup_info = Queue(maxsize=1)
+    #car_path = Queue(maxsize=1)
     
     # Start threads
-    STM_thread = Connect_STM_Client("STM Listen Thread", STM_msg)
-    STM_thread.start()
+    STM_thread2 = Connect_STM_Client("STM Listen Thread", STM_msg)
+    STM_thread2.start()
     PC_thread = Connect_PC_Client("PC Thread", img_label, img_valid, shoot_signal, setup_info, car_path)
     PC_thread.start()
-    BLE_thread = Connect_Android_Client("BLE Thread", UUID, setup_info, run_cmd, img_label)#, STM_thread, shoot_signal)
-    BLE_thread.start()
+    #BLE_thread = Connect_Android_Client("BLE Thread", UUID, setup_info, run_cmd, img_label)#, STM_thread, shoot_signal)
+    BLE_thread2 = Connect_Android_Client("BLE Thread", UUID, run_cmd)
+    BLE_thread2.start()
     time.sleep(5)
 
     # Just take a picture
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     #print("Check1")
     #while car_path.empty():
     #time.sleep(0.1)
-    car_path_received = car_path.get() 
+    #car_path_received = car_path.get() 
     #print("Check2")
     #while run_cmd.empty():
     #    time.sleep(0.1)
@@ -71,11 +72,26 @@ if __name__ == '__main__':
     run_cmd_received = run_cmd.get()
     #print("Check4")
     # Get the complete path
-    complete_path = car_path_received[0]
-    complete_location = car_path_received[1]
-    cmd_count = 0
+    #complete_path = car_path_received[0]
+    #complete_location = car_path_received[1]
+    #cmd_count = 0
     # Start sending commands to STM
-    print("Came Here")
+    #new_cmd_str = run_cmd_received + "," + "0"*num_padding
+    STM_thread2.send_msg(run_cmd_received)
+    print("Command sent to STM:",run_cmd_received)
+
+    print("Waiting for stop signal")
+    stop_msg = STM_msg.get()
+    if stop_msg == "Stop":
+        shoot_signal.put(0) # put obstacle id here
+        # If image recognition is successful, send more commands to STM
+        print("Main thread waiting for img result")
+        is_img_valid = img_valid.get()
+        print("Main thread got the img result")
+        if not is_img_valid:
+            print("Img detection failed")
+
+    '''
     for cmd_tuple in complete_path:
         print("Entered")
         obs_id = cmd_tuple[0]
@@ -137,7 +153,7 @@ if __name__ == '__main__':
         
     # image recognition stops
     shoot_signal.put(-1)
-    
+    '''
     # show current img recog results
     '''
     for i in range(5):
@@ -149,9 +165,9 @@ if __name__ == '__main__':
     '''
     
     # Wait for threads to end
-    PC_thread.join()
-    BLE_thread.join()
-    STM_thread.join()
+    PC_thread2.join()
+    BLE_thread2.join()
+    STM_thread2.join()
     
     
     

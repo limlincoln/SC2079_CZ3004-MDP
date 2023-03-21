@@ -47,6 +47,5 @@ if __name__ == '__main__':
     while True:
         msg = input("Type a message to send to STM:")
         STM_thread.send_msg(msg)
-    
     STM_thread.join()
     print("STM Listen thread ended")
